@@ -212,7 +212,7 @@ def get_target(request,taxonid,braveid):
 
     print("JIRE======>")
     jira_verifi_token_url = 'https://api.atlassian.com/jsm/assets/v1/imports/info' 
-    jira_token = 'ATCTT3xFfGN0HnaSVsmK8gu3OGq-kUsxz2-DVJEy5Tc-d6uzdN7OAYqftKfzoArQJOHir1zR7FiXs1UHoavE6SwFSASc_eliIfDtx9V229Yu5qHU9gP6VojKM_7dnROwX1dy0Re2bdT-hlnMpjhSIXripOdgnrG1zTGhPxhDHIatydEsyzIjpnU=C04DBF1F'
+    jira_token = 
     req = urllib.request.Request(jira_verifi_token_url, 
                                  headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
                                           'Accept':'application/json', 
