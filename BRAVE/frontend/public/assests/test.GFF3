@@ -1,0 +1,31 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region MK028842.1 1 11414
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+MK028842.1	Genbank	region	1	11414	.	+	.	ID=MK028842.1:1..11414;Dbxref=taxon:11021;gbkey=Src;isolate=Eastern Equine Encephalitis virus/76V-25343;mol_type=genomic RNA;nat-host=Homo sapiens;note=UCC strain
+MK028842.1	Genbank	five_prime_UTR	1	68	.	+	.	ID=id-MK028842.1:1..68;gbkey=5'UTR
+MK028842.1	Genbank	gene	69	7496	.	+	.	ID=gene-NSP;Name=NSP;gbkey=Gene;gene=NSP;gene_biotype=protein_coding
+MK028842.1	Genbank	CDS	69	7496	.	+	0	ID=cds-AYI50340.1;Dbxref=NCBI_GP:AYI50340.1;Name=AYI50340.1;Note=can be translated as p123 or p1234%3B p1234 depends on read-through of an opal termination codon at the end of nsP3;gbkey=CDS;gene=NSP;product=nonstructural polyprotein;protein_id=AYI50340.1;transl_except=(pos:5649..5651%2Caa:Other)
+MK028842.1	Genbank	mature_protein_region_of_CDS	69	1667	.	+	.	ID=id-AYI50340.1:1..533;gbkey=Prot;product=nsP1 peptide;Name=nsP1 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	1668	4049	.	+	.	ID=id-AYI50340.1:534..1327;gbkey=Prot;product=nsP2 peptide;Name=nsP2 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	4050	5648	.	+	.	ID=id-AYI50340.1:1328..1860;gbkey=Prot;product=nsP3 peptide;Name=nsP3 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	5652	7493	.	+	.	ID=id-AYI50340.1:1862..2475;gbkey=Prot;product=nsP4 peptide;Name=nsP4 peptide
+MK028842.1	Genbank	gene	7568	11296	.	+	.	ID=gene-SP;Name=SP;gbkey=Gene;gene=SP;gene_biotype=protein_coding
+MK028842.1	Genbank	CDS	7568	11296	.	+	0	ID=cds-AYI50341.1;Dbxref=NCBI_GP:AYI50341.1;Name=AYI50341.1;gbkey=CDS;gene=SP;product=structural polyprotein;protein_id=AYI50341.1
+MK028842.1	Genbank	mature_protein_region_of_CDS	7568	8350	.	+	.	ID=id-AYI50341.1:1..261;gbkey=Prot;product=capsid;Name=capsid
+MK028842.1	Genbank	mature_protein_region_of_CDS	8351	9799	.	+	.	ID=id-AYI50341.1:262..744;gbkey=Prot;product=PE2;Name=PE2
+MK028842.1	Genbank	mature_protein_region_of_CDS	8351	8539	.	+	.	ID=id-AYI50341.1:262..324;gbkey=Prot;product=E3 peptide;Name=E3 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	8540	9799	.	+	.	ID=id-AYI50341.1:325..744;gbkey=Prot;product=E2 peptide;Name=E2 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	9800	9970	.	+	.	ID=id-AYI50341.1:745..801;gbkey=Prot;product=6K peptide;Name=6K peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	9971	11293	.	+	.	ID=id-AYI50341.1:802..1242;gbkey=Prot;product=E1 peptide;Name=E1 peptide
+MK028842.1	Genbank	CDS	7568	9940	.	+	0	ID=cds-AYI50342.1;Dbxref=NCBI_GP:AYI50342.1;Name=AYI50342.1;exception=ribosomal slippage;gbkey=CDS;gene=SP;product=truncated structural polyprotein;protein_id=AYI50342.1
+MK028842.1	Genbank	CDS	9940	10029	.	+	0	ID=cds-AYI50342.1;Dbxref=NCBI_GP:AYI50342.1;Name=AYI50342.1;exception=ribosomal slippage;gbkey=CDS;gene=SP;product=truncated structural polyprotein;protein_id=AYI50342.1
+MK028842.1	Genbank	mature_protein_region_of_CDS	7568	8350	.	+	.	ID=id-AYI50342.1:1..261;gbkey=Prot;product=capsid;Name=capsid
+MK028842.1	Genbank	mature_protein_region_of_CDS	8351	9799	.	+	.	ID=id-AYI50342.1:262..744;gbkey=Prot;product=PE2;Name=PE2
+MK028842.1	Genbank	mature_protein_region_of_CDS	8351	8539	.	+	.	ID=id-AYI50342.1:262..324;gbkey=Prot;product=E3 peptide;Name=E3 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	8540	9799	.	+	.	ID=id-AYI50342.1:325..744;gbkey=Prot;product=E2 peptide;Name=E2 peptide
+MK028842.1	Genbank	mature_protein_region_of_CDS	9800	9940	.	+	.	ID=id-AYI50342.1:745..820;exception=ribosomal slippage;gbkey=Prot;product=transframe fusion protein;Name=transframe fusion protein
+MK028842.1	Genbank	mature_protein_region_of_CDS	9940	10026	.	+	.	ID=id-AYI50342.1:745..820;exception=ribosomal slippage;gbkey=Prot;product=transframe fusion protein;Name=transframe fusion protein
+MK028842.1	Genbank	three_prime_UTR	11297	11414	.	+	.	ID=id-MK028842.1:11297..11414;gbkey=3'UTR
+

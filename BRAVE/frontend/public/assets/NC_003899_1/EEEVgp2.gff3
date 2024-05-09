@@ -1,0 +1,8 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_003899.1 1 11675
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+NC_003899.1	RefSeq	region	1	11675	.	+	.	ID=NC_003899.1:1..11675;Dbxref=taxon:11021;cell-line=virus grown on vero cells;clone-lib=cDNA plasmid clones grown in E.coli JC-5183;gbkey=Src;genome=genomic;mol_type=genomic RNA;old-name=Eastern equine encephalomyelitis virus;strain=ssp. North American variant
+NC_003899.1	RefSeq	gene	47	7528	.	+	.	ID=gene-EEEVgp2;Dbxref=GeneID:944523;Name=EEEVgp2;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp2
+NC_003899.1	RefSeq	CDS	47	7528	.	+	0	ID=cds-NP_632021.2;xParent=gene-EEEVgp2;Dbxref=UniProtKB/TrEMBL:Q66581,GenBank:NP_632021.2,GeneID:944523;Name=NP_632021.2;Note=Readthrough product of p123;gbkey=CDS;locus_tag=EEEVgp2;product=nonstructural polyprotein p1234;protein_id=NP_632021.2;transl_except=(pos:5681..5683%2Caa:Other)
