@@ -18,8 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # .env.
 SECRET_KEY = os.environ.get("SECRET_KEY")
-ANL_API_KEY = "sglims_8e5b950c-5205-4768-846d-6c9e267ce6a1"  
-JIRA_KEY="ATCTT3xFfGN0HnaSVsmK8gu3OGq-kUsxz2-DVJEy5Tc-d6uzdN7OAYqftKfzoArQJOHir1zR7FiXs1UHoavE6SwFSASc_eliIfDtx9V229Yu5qHU9gP6VojKM_7dnROwX1dy0Re2bdT-hlnMpjhSIXripOdgnrG1zTGhPxhDHIatydEsyzIjpnU=C04DBF1F"
+ANL_API_KEY = os.environ.get("ANL_API_KEY")
+JIRA_KEY = os.environ.get("JIRA_KEY")
 
 # .env.
 DEBUG = int(os.environ.get("DEBUG", default=0))
