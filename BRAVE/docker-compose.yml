@@ -9,6 +9,7 @@ services:
       - 8001:8000
     env_file:
       - ./.env.dev
+      - ./backend/.env
     volumes:
       - ./backend/:/srv/app
       - static:/srv/app/static
