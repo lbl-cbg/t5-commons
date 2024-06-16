@@ -18,8 +18,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # .env.
 SECRET_KEY = os.environ.get("SECRET_KEY")
-ANL_API_KEY = os.environ.get("ANL_API_KEY")
-JIRA_KEY = os.environ.get("JIRA_KEY")
 
 # .env.
 DEBUG = int(os.environ.get("DEBUG", default=0))
