@@ -1,0 +1,7 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_003899.1 1 11675
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+NC_003899.1	RefSeq	gene	47	5683	.	+	.	ID=gene-EEEVgp1;Dbxref=GeneID:944521;Name=EEEVgp1;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp1
+NC_003899.1	RefSeq	CDS	47	5683	.	+	0	ID=cds-NP_632020.1;xParent=gene-EEEVgp1;Dbxref=UniProtKB/TrEMBL:Q66580,GenBank:NP_632020.1,GeneID:944521;Name=NP_632020.1;gbkey=CDS;locus_tag=EEEVgp1;product=nonstructural polyprotein p123;protein_id=NP_632020.1

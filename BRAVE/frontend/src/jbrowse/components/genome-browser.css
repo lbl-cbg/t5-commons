@@ -1,0 +1,6 @@
+
+
+
+[class*="trackRenderingContainer"]{
+    overflow-y: hidden !important;
+}

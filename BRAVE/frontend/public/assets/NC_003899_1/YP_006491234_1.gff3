@@ -1,0 +1,6 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_003899.1 1 11675
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	9821	9961	.	+	.	ID=id-YP_006491233.1:744..834;xParent=cds-YP_006491233.1;gbkey=Prot;product=transframe fusion protein;protein_id=YP_006491234.1
