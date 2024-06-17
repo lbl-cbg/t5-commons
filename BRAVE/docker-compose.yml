@@ -12,8 +12,8 @@ services:
       - ./backend/.env
     volumes:
       - ./backend/:/srv/app
-      - static:/srv/app/static
-      - media:/srv/app/media
+      # - static:/srv/app/static
+      # - media:/srv/app/media
     depends_on:
       - db
   react:
@@ -27,9 +27,9 @@ services:
     tty: true
     environment:
       - CHOKIDAR_USEPOLLING=true
-    volumes:
-      - ./frontend/:/srv/app
-      - node_modules:/srv/app/node_modules
+    # volumes:
+    #   - ./frontend/:/srv/app
+    #   - node_modules:/srv/app/node_modules
     depends_on:
       - django
   db:
@@ -46,16 +46,16 @@ services:
     ports:
       - 8080:80
     restart: always
-    volumes:
-      - static:/srv/app/static
-      - media:/srv/app/media
+    # volumes:
+    #   - static:/srv/app/static
+    #   - media:/srv/app/media
     depends_on:
       - django
       - react
       - db
 
 volumes:
-  node_modules:
+  # node_modules:
   postgres_data:
-  media:
-  static:
+  # media:
+  # static:
