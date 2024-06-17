@@ -1,5 +1,5 @@
 services:
-  django-prod:
+  django:
     build: ./backend
     container_name: django-prod
     command: python manage.py runserver 0.0.0.0:8000
@@ -13,24 +13,24 @@ services:
       - static:/srv/app/static
       - media:/srv/app/media
     depends_on:
-      - db-prod
+      - db
 
-  react-prod:
+  react:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.prod
     container_name: react-prod
     command: npm start
     ports:
-      - 3001:3000
+      - 3000:3000
     env_file:
       - ./.env.dev
     environment:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
-      - django-prod
+      - django
 
-  db-prod:
+  db:
     image: postgres:16.1-alpine
     container_name: db-prod
     ports:
@@ -39,7 +39,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  nginx-prod:
+  nginx:
     build: ./nginx
     container_name: nginx-prod
     ports:
@@ -49,9 +49,9 @@ services:
       - static:/srv/app/static
       - media:/srv/app/media
     depends_on:
-      - django-prod
-      - react-prod
-      - db-prod
+      - django
+      - react
+      - db
 
 volumes:
   node_modules:
