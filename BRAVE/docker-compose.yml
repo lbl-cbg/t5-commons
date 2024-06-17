@@ -21,7 +21,7 @@ services:
     container_name: dev-react
     command: npm start
     ports:
-      - 3001:3000
+      - 3000:3000
     env_file:
       - ./.env.dev
     tty: true
