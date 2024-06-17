@@ -1,9 +1,9 @@
-version: "3.8"
+
 
 services:
-  django:
+  django-prod:
     build: ./backend
-    container_name: dev-django
+    container_name: django-prod
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8001:8000
@@ -29,18 +29,18 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
-      - django
-  db:
+      - django-prod
+  db-prod:
     image: postgres:16.1-alpine
-    container_name: dev-db
+    container_name: db-prod
     ports:
       - 5432:5432
     env_file: ./.env.dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  nginx:
+  nginx-prod:
     build: ./nginx
-    container_name: dev-nginx
+    container_name: nginx-prod
     ports:
       - 8080:80
     restart: always
@@ -48,9 +48,9 @@ services:
       - static:/srv/app/static
       - media:/srv/app/media
     depends_on:
-      - django
-      - react
-      - db
+      - django-prod
+      - react-prod
+      - db-prod
 
 volumes:
   node_modules:
