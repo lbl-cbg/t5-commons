@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
 
     const fetchData = async () => {
-      const req = await fetch('http://localhost:8080/api/species-list');
+      const req = await fetch('/api/species-list');
       let data = await req.json(); 
       setSpeciesList(data);
     }
