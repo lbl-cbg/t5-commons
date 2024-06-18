@@ -54,7 +54,7 @@ services:
       - db
 
 volumes:
-  node_modules:
+  # node_modules:
   postgres_data:
   media:
   static:
