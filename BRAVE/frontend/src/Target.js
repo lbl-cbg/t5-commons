@@ -24,16 +24,17 @@ import HomeIcon from '@mui/icons-material/Home';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import * as util from "./util";
 
 export default function Target() {
    
   const { taxonId, braveId } = useParams();
   const [data, setData] = useState({});
-  const taxonidMap = {"11021":"EEEV",
+  /*const taxonidMap = {"11021":"EEEV",
                       "11036":"VEEV",
                       "37124":"CHIKV"
-              };
+              };*/
 
   useEffect(() => {
 
@@ -73,7 +74,7 @@ export default function Target() {
               to={"/species/"+taxonId}
             > 
               <CoronavirusIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-              {taxonidMap[taxonId]}
+              {util.taxonidMap[taxonId].abbr}
             </Link>
             <Typography
               sx={{ display: 'flex', alignItems: 'center' }}
@@ -84,7 +85,7 @@ export default function Target() {
           </Breadcrumbs>
 
           <h2>
-            {data.brave_id} - {data.af2_id}
+            {data.originaltargetid} - {data.targetannotation}
           </h2>
         </div>
       }
@@ -112,6 +113,51 @@ export default function Target() {
                 <ListItemText primary={"Sequences"} />
               </ListItemButton>
             </ListItem>
+          </List>
+        </Drawer>
+      }
+      mainContent={
+        <div>
+          <Paper elevation={1} sx={{ p:2, mb:1 }}>
+            <h3>Protein Sequence</h3>
+            {(!data.hasOwnProperty("originaltargetid")) && 
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+            }
+            <h4></h4>
+            <p style={{ wordWrap: "break-word"}}>{data.targetproteinsequence}</p>
+            
+            {/*<h4>TreeViewST DNA Sequence</h4>
+            <p style={{ wordWrap: "break-word"}}>{data.twist_dnaseq}</p>
+            */}
+          </Paper>
+          {/*<Paper elevation={1} sx={{ p:2, mb:1 }}>
+            <h3>Structure Prediction</h3> 
+            <img src={"/assets/"+ data.af2_id +"/"+data.af2_id+"_plddt.png"} style={{width:"100%"}}></img>
+          </Paper>
+          */}
+        </div>
+
+      }
+      timeline={
+        {/*<div>
+          <h3>Timeline</h3>
+          <div style={{height:1000}}></div>
+        </div>
+        */}
+      }
+    >
+    </PageContainer> 
+  );
+}
+
+ 
+
+
+
+
+/*
             <ListItem key={"StructurePrediction"} disablePadding>
               <ListItemButton>
                 <ListItemText primary={"Structure Prediction"} />
@@ -152,34 +198,4 @@ export default function Target() {
                 <ListItemText primary={"Assays"} />
               </ListItemButton>
             </ListItem>
-          </List>
-        </Drawer>
-      }
-      mainContent={
-        <div>
-          <Paper elevation={1} sx={{ p:2, mb:1 }}>
-            <h3>Sequences</h3>
-            <h4>Protein Sequence</h4>
-            <p style={{ wordWrap: "break-word"}}>{data.proteinseq}</p>
-            <h4>TreeViewST DNA Sequence</h4>
-            <p style={{ wordWrap: "break-word"}}>{data.twist_dnaseq}</p>
-          </Paper>
-          <Paper elevation={1} sx={{ p:2, mb:1 }}>
-            <h3>Structure Prediction</h3> 
-            <img src={"/assets/"+ data.af2_id +"/"+data.af2_id+"_plddt.png"} style={{width:"100%"}}></img>
-          </Paper>
-        </div>
-
-      }
-      timeline={
-        <div>
-          <h3>Timeline</h3>
-          <div style={{height:1000}}></div>
-        </div>
-      }
-    >
-    </PageContainer> 
-  );
-}
-
- 
+            */
