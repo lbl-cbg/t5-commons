@@ -61,15 +61,43 @@ export const defaultSession = {
             },
             {
                 type: 'FeatureTrack',
-                id: 'YP_913812_1-LinearBasicDisplay',
-                configuration: 'YP_913812_1',
+                id: 'YP_913812_1_EEEV_HEL-LinearBasicDisplay',
+                configuration: 'YP_913812_1_EEEV_HEL',
                 minimized: false,
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:120,
+                        height:50,
                         configuration:
-                        'YP_913812_1-LinearBasicDisplay',
+                        'YP_913812_1_EEEV_HEL-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_913812_1_EEEV_HEL_PEPT-LinearBasicDisplay',
+                configuration: 'YP_913812_1_EEEV_HEL_PEPT',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:50,
+                        configuration:
+                        'YP_913812_1_EEEV_HEL_PEPT-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_913812_1_EEEV_PEPT-LinearBasicDisplay',
+                configuration: 'YP_913812_1_EEEV_PEPT',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:50,
+                        configuration:
+                        'YP_913812_1_EEEV_PEPT-LinearBasicDisplay',
                     },
                 ],
             },
@@ -81,7 +109,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:50,
                         configuration:
                         'YP_913813_1-LinearBasicDisplay',
                     },
@@ -95,7 +123,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:50,
                         configuration:
                         'NP_740652_1-LinearBasicDisplay',
                     },

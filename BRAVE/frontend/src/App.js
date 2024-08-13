@@ -40,12 +40,10 @@ function App() {
         <h3>T5 Knowledge Base</h3>
       </header>
 
-
       <TableContainer component={Paper} sx={{ width:600 }} style={{alignSelf: "center"}}>
         <Table sx={{  minWidth: 500 }} aria-label="simple table">
           <TableHead>
-            <TableRow>
-              <TableCell>Taxon Id</TableCell>
+            <TableRow> 
               <TableCell>Species</TableCell> 
             </TableRow>
           </TableHead>
@@ -55,12 +53,8 @@ function App() {
                 key={row.taxon_id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
-                  {row.taxon_id}
-                </TableCell>
                 <TableCell>
-                  <Link to={`species/`+row.taxon_id}>{row.species}</Link>
-                  
+                  <Link to={`species/`+row.taxon_id}>{row.species}</Link>  
                 </TableCell> 
               </TableRow>
             ))}

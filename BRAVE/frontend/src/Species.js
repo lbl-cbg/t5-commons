@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,18 +18,33 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
+import CircularProgress from '@mui/material/CircularProgress';
 import HomeIcon from '@mui/icons-material/Home';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
-import * as d3 from 'd3';
-import GenomeBrowser from './jbrowse/components/GenomeBrowser';
+import * as d3 from "d3";
+import GenomeBrowser from "./jbrowse/components/GenomeBrowser";
+import * as util from "./util";
+
 
 export default function Species() {
   const { taxonId } = useParams();
-  const [data, setData] = useState({});
-  const taxonidMap = { 11021: 'EEEV', 11036: 'VEEV', 37124: 'CHIKV' };
-
+  const [data, setData] = useState([]);
+  /*const taxonidMap = {"11021":{abbr:"EEEV",
+                                fullname:"Eastern equine encephalitis virus"
+                              },
+                      "11036":{abbr:"VEEV",
+                                fullname:"Venezuelan equine encephalitis virus"
+                              },
+                      "37124":{abbr:"CHIKV",
+                                fullname:"Chikungunya virus"
+                              }
+              }; */
+  const [selectedMenuItem, setSelectedMenuItem] = useState("GenomeBrowser");
+  const gbRef = useRef(null)
+  const targetTableRef = useRef(null)
+  
   const width = 500;
   const root = d3.hierarchy({
     name: 'flare',
@@ -38,18 +53,19 @@ export default function Species() {
         name: 'analytics',
         children: [
           {
-            name: 'cluster',
-            children: [
-              { name: 'AgglomerativeCluster', size: 3938 },
-              { name: 'CommunityStructure', size: 3812 },
-              { name: 'HierarchicalCluster', size: 6714 },
-              { name: 'MergeEdge', size: 743 },
-            ],
-          },
-        ],
-      },
-    ],
-  });
+            "name": "cluster",
+            "children": [
+              {"name": "AgglomerativeCluster", "size": 3938},
+              {"name": "CommunityStructure", "size": 3812},
+              {"name": "HierarchicalCluster", "size": 6714},
+              {"name": "MergeEdge", "size": 743}
+            ]
+          }
+        ]
+      }
+    ]
+    });
+
   const dx = 10;
   const dy = width / (root.height + 1);
 
@@ -131,10 +147,21 @@ export default function Species() {
 
     fetchData();
   }, []);
+ 
 
-  // const bbb = (e)=>{
-  //   console.log("VVVSSS:", viewState.session);
-  // };
+  const listItemClickHandler = (section) =>{
+    console.log(".....",section);
+    setSelectedMenuItem(section);
+    if(section=='GenomeBrowser')
+    {
+      gbRef.current.scrollIntoView();
+    }
+    else if(section=='Targets')
+    {
+      targetTableRef.current.scrollIntoView({behavior: 'smooth'});
+    }
+  };
+
 
   return (
     <PageContainer
@@ -156,116 +183,122 @@ export default function Species() {
             <Typography
               sx={{ display: 'flex', alignItems: 'center' }}
               color="text.primary"
-            >
-              <CoronavirusIcon
-                sx={{ mr: 0.5 }}
-                fontSize="inherit"
-              />
-              {taxonidMap[taxonId]}
+            > 
+              <CoronavirusIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              {util.taxonidMap[taxonId].abbr}
             </Typography>
           </Breadcrumbs>
 
-          <h2>{data.species}</h2>
+          <h2>
+          {util.taxonidMap[taxonId].fullname}
+          </h2>
+          
         </div>
       }
       sideMenu={
         <Drawer
           sx={{
-            width: '10%',
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: 'calc(100% * 2 / 13  )',
-              boxSizing: 'border-box',
-              zIndex: 1,
-              background: 'unset',
-              border: 0,
-            },
+          width: "10%",
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: "calc(100% * 2 / 13  )",
+            boxSizing: 'border-box',
+            zIndex:1,
+            background: "unset",
+            border:0,
+            //position: 'absolute',
+          },
+          
           }}
           variant="permanent"
           anchor="left"
         >
-          <div style={{ height: '150px', minHeight: '150px' }}></div>
-          <List>
-            <ListItem
-              key={'Targets'}
-              disablePadding
-            >
-              <ListItemButton selected={true}>
-                <ListItemText primary={'Targets'} />
+          <div style={{height:"120px",minHeight:"100px"}}></div>
+          <List> 
+            <ListItem key={"GenomeBrowser"} disablePadding>
+              <ListItemButton selected={selectedMenuItem=="GenomeBrowser"} onClick={() => listItemClickHandler('GenomeBrowser')}>
+                <ListItemText primary={"Genome Browser"} />
               </ListItemButton>
             </ListItem>
-            <ListItem
-              key={'TreeView'}
-              disablePadding
-            >
+            <ListItem key={"Targets"} disablePadding>
+              <ListItemButton selected={selectedMenuItem=="Targets"} onClick={() => listItemClickHandler('Targets')}>
+                <ListItemText primary={"Targets"} />
+              </ListItemButton>
+            </ListItem>
+            {/*
+            <ListItem key={"TreeView"} disablePadding>
               <ListItemButton>
                 <ListItemText primary={'Tree View'} />
               </ListItemButton>
             </ListItem>
-            <ListItem
-              key={'Taxnomy'}
-              disablePadding
-            >
+            <ListItem key={'Taxnomy'} disablePadding>
               <ListItemButton>
                 <ListItemText primary={'Taxnomy'} />
               </ListItemButton>
             </ListItem>
+            */}
           </List>
         </Drawer>
       }
       mainContent={
         <div>
+          <span ref={gbRef}></span>
           <GenomeBrowser></GenomeBrowser>
-          <br />
-          <Paper
-            elevation={1}
-            sx={{ p: 1, mb: 1 }}
-          >
+          <br/>
+          <Paper elevation={1} sx={{ p:1, mb:1 }} ref={targetTableRef}>
             <h3>Tagets</h3>
-            <TableContainer>
+            <TableContainer >
+              {(!data || data.length==0) && 
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+              }
+              {data && data.length>0 && 
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Target ID</TableCell>
-                    <TableCell>NI (%)</TableCell>
-                    <TableCell>EXP (%)</TableCell>
-                    <TableCell>SOL (%)</TableCell>
-                    <TableCell>CONC (mg/mL)</TableCell>
+                    <TableCell>Org. Target ID</TableCell>
+                    <TableCell>Target Annotation</TableCell> 
+                    <TableCell>Vector</TableCell> 
+                    <TableCell>Expression Level (%)</TableCell> 
+                    <TableCell>Protein Concentration (mg/mL)</TableCell>  
+                    <TableCell>Protein Volume (µL)</TableCell>
+                    <TableCell>Buffer Content</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.target_summary &&
-                    data.target_summary.map((row) => (
-                      <TableRow
-                        key={row.target_id}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 },
-                        }}
-                      >
-                        <TableCell>
-                          <RouterLink to={'target/' + row.target_id}>
-                            {row.target_id}
-                          </RouterLink>
-                        </TableCell>
-                        <TableCell>{row.ni}</TableCell>
-                        <TableCell>{row.exp}</TableCell>
-                        <TableCell>{row.sol}</TableCell>
-                        <TableCell>{row.conc}</TableCell>
-                      </TableRow>
-                    ))}
+                  {data && data.map((row) => (
+                    <TableRow
+                      key={row.originaltargetid}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell>
+                        <RouterLink to={"target/"+row.originaltargetid}>{row.originaltargetid}</RouterLink>
+                      </TableCell> 
+                      <TableCell>{row.targetannotation}</TableCell>
+                      <TableCell>{row.vector}</TableCell>
+                      <TableCell>{row.expressionlevel}</TableCell>
+                      <TableCell>{row.proteinconcentration}</TableCell>
+                      <TableCell>{row.proteinvolume}</TableCell>
+                      <TableCell>{row.buffercontent}</TableCell>
+                    </TableRow>
+                  ))}
+
                 </TableBody>
               </Table>
+              }
             </TableContainer>
           </Paper>
-          <Paper
-            elevation={1}
-            sx={{ p: 1, mb: 1 }}
-          >
+          {/*
+          <Paper elevation={1} sx={{ p:1, mb:1 }}>
             <h3>Tree View</h3>
-            <div style={{ height: '500px' }}></div>
+            <div style={{height:"500px"}}>
+            </div>
           </Paper>
+          */}
         </div>
       }
+      /*
       timeline={
         <div>
           <h3>Timeline</h3>
@@ -692,6 +725,9 @@ export default function Species() {
           </div>
         </div>
       }
-    ></PageContainer>
+      */
+    >
+    </PageContainer> 
+
   );
 }

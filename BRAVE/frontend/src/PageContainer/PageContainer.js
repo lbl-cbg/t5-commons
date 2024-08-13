@@ -26,7 +26,7 @@ export default function PageContainer(props) {
       setSpeciesList(data);*/
     }
 
-    fetchData();
+    //fetchData();
 
     let pathArray = window.location.pathname.split('/');
     pathArray.shift();
@@ -37,6 +37,8 @@ export default function PageContainer(props) {
 
   }, []);
 
+
+  
    
 
   return (
@@ -44,18 +46,20 @@ export default function PageContainer(props) {
       <Grid xs={12} sx={{ p: 2 }} style={{background:"#fff", zIndex:3}}  >
         {props.header} 
       </Grid>
-      <Grid container xs={12} spacing={2}>
+      <Grid container xs={12} spacing={0}>
         <Grid xs={2}> 
           {props.sideMenu} 
         </Grid>
-        <Grid xs={8}>
+        <Grid xs={10}>
           {props.mainContent}
         </Grid>
+        {/*
         <Grid xs={2}>
           <Paper elevation={1} sx={{ p: 1 }}>
           {props.timeline}
           </Paper>
         </Grid>
+        */}
       </Grid>
     </Grid>
   );

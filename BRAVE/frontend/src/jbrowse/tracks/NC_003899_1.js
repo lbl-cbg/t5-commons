@@ -31,7 +31,7 @@ export const tracks = [
     {
         type: 'FeatureTrack',
         trackId: 'YP_913811_1',
-        name: 'YP_913811.1',
+        name: 'EEEV_MT',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -55,22 +55,78 @@ export const tracks = [
         ]
     },
     {
-        type: 'FeatureTrack',
-        trackId: 'YP_913812_1',
-        name: 'YP_913812.1',
-        assemblyNames: ['NC_003899.1'],
-        category: ['Genes'],
-        adapter: {
-            type: 'Gff3Adapter',
-            gffLocation: {
-            uri: '/assets/NC_003899_1/YP_913812_1.gff3',
-            }
-        }
+      type: 'FeatureTrack',
+      trackId: 'YP_913812_1_EEEV_HEL',
+      name: 'EEEV_HEL',
+      assemblyNames: ['NC_003899.1'],
+      category: ['Genes'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_003899_1/YP_913812_1_EEEV_HEL.gff3',
+          }
+      },
+      "displays": [
+          {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_913812_1_EEEV_HEL-LinearBasicDisplay",
+          "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" //"#34eb74"
+          }
+          }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_913812_1_EEEV_HEL_PEPT',
+      name: 'EEEV_HEL_PEPT',
+      assemblyNames: ['NC_003899.1'],
+      category: ['Genes'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_003899_1/YP_913812_1_EEEV_HEL_PEPT.gff3',
+          }
+      },
+      "displays": [
+          {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_913812_1_EEEV_HEL_PEPT-LinearBasicDisplay",
+          "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" //"#34eb74"
+          }
+          }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_913812_1_EEEV_PEPT',
+      name: 'EEEV_PEPT',
+      assemblyNames: ['NC_003899.1'],
+      category: ['Genes'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_003899_1/YP_913812_1_EEEV_PEPT.gff3',
+          }
+      },
+      "displays": [
+          {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_913812_1_EEEV_PEPT-LinearBasicDisplay",
+          "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" //"#34eb74"
+          }
+          }
+      ]
     },
     {
         type: 'FeatureTrack',
         trackId: 'YP_913813_1',
-        name: 'YP_913813.1',
+        name: 'EEEV_MACRO',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -79,11 +135,22 @@ export const tracks = [
             uri: '/assets/NC_003899_1/YP_913813_1.gff3',
             }
         }
+        ,
+        "displays": [
+            {
+            "type": "LinearBasicDisplay",
+            "displayId": "YP_913813_1-LinearBasicDisplay",
+            "renderer": {
+                "type": "SvgFeatureRenderer",
+                "color1": "jexl:colorFeature(feature)" //"#34eb74"
+            }
+            }
+        ]
     },
     {
         type: 'FeatureTrack',
         trackId: 'NP_740652_1',
-        name: 'NP_740652.1',
+        name: 'EEEV_RDRP',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -91,7 +158,17 @@ export const tracks = [
             gffLocation: {
             uri: '/assets/NC_003899_1/NP_740652_1.gff3',
             }
-        }
+        },
+        displays: [
+          {
+          "type": "LinearBasicDisplay",
+          "displayId": "NP_740652_1-LinearBasicDisplay",
+          "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" //"#34eb74"
+          }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
