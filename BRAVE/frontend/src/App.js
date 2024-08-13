@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="container">
       <header style={{background:"#fff", padding:"16px", marginBottom:"20px"}}>
-        <h3>T5 Knowledge Basse</h3>
+        <h3>T5 Knowledge Base</h3>
       </header>
 
 
