@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
 
     const fetchData = async () => {
-      const req = await fetch('http://localhost:8080/api/species-list');
+      const req = await fetch('/api/species-list');
       let data = await req.json(); 
       setSpeciesList(data);
     }
@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="container">
       <header style={{background:"#fff", padding:"16px", marginBottom:"20px"}}>
-        <h3>T5 Knowledge Basse</h3>
+        <h3>T5 Knowledge Base</h3>
       </header>
 
       <TableContainer component={Paper} sx={{ width:600 }} style={{alignSelf: "center"}}>

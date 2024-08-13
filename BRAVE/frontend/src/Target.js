@@ -40,7 +40,7 @@ export default function Target() {
 
     const fetchData = async () => {
       
-      const req = await fetch('http://localhost:8080/api/species/'+taxonId+"/target/"+braveId);
+      const req = await fetch('/api/species/'+taxonId+"/target/"+braveId);
       let data = await req.json();
       console.log("tr",data);
       setData(data);

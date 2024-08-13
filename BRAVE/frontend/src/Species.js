@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import Table from '@mui/material/Table';
@@ -9,10 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button'; 
+import Button from '@mui/material/Button';
 import { Routes, Route, useParams } from 'react-router-dom';
 import PageContainer from './PageContainer/PageContainer';
-import { Outlet, Link as RouterLink } from "react-router-dom";
+import { Outlet, Link as RouterLink } from 'react-router-dom';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -30,9 +28,7 @@ import GenomeBrowser from "./jbrowse/components/GenomeBrowser";
 import * as util from "./util";
 
 
-
 export default function Species() {
-   
   const { taxonId } = useParams();
   const [data, setData] = useState([]);
   /*const taxonidMap = {"11021":{abbr:"EEEV",
@@ -51,11 +47,11 @@ export default function Species() {
   
   const width = 500;
   const root = d3.hierarchy({
-    "name": "flare",
-    "children": [
+    name: 'flare',
+    children: [
       {
-        "name": "analytics",
-        "children": [
+        name: 'analytics',
+        children: [
           {
             "name": "cluster",
             "children": [
@@ -69,6 +65,7 @@ export default function Species() {
       }
     ]
     });
+
   const dx = 10;
   const dy = width / (root.height + 1);
 
@@ -84,7 +81,7 @@ export default function Species() {
   // tree extends right rather than down.
   let x0 = Infinity;
   let x1 = -x0;
-  root.each(d => {
+  root.each((d) => {
     if (d.x > x1) x1 = d.x;
     if (d.x < x0) x0 = d.x;
   });
@@ -92,56 +89,63 @@ export default function Species() {
   // Compute the adjusted height of the tree.
   const height = x1 - x0 + dx * 2;
 
-  const svg = d3.create("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [-dy / 3, x0 - dx, width, height])
-      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;");
+  const svg = d3
+    .create('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('viewBox', [-dy / 3, x0 - dx, width, height])
+    .attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif;');
 
-  const link = svg.append("g")
-      .attr("fill", "none")
-      .attr("stroke", "#555")
-      .attr("stroke-opacity", 0.4)
-      .attr("stroke-width", 1.5)
+  const link = svg
+    .append('g')
+    .attr('fill', 'none')
+    .attr('stroke', '#555')
+    .attr('stroke-opacity', 0.4)
+    .attr('stroke-width', 1.5)
     .selectAll()
-      .data(root.links())
-      .join("path")
-        .attr("d", d3.linkHorizontal()
-            .x(d => d.y)
-            .y(d => d.x));
-  
-  const node = svg.append("g")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-width", 3)
+    .data(root.links())
+    .join('path')
+    .attr(
+      'd',
+      d3
+        .linkHorizontal()
+        .x((d) => d.y)
+        .y((d) => d.x)
+    );
+
+  const node = svg
+    .append('g')
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-width', 3)
     .selectAll()
     .data(root.descendants())
-    .join("g")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
+    .join('g')
+    .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
-  node.append("circle")
-      .attr("fill", d => d.children ? "#555" : "#999")
-      .attr("r", 2.5);
+  node
+    .append('circle')
+    .attr('fill', (d) => (d.children ? '#555' : '#999'))
+    .attr('r', 2.5);
 
-  node.append("text")
-      .attr("dy", "0.31em")
-      .attr("x", d => d.children ? -6 : 6)
-      .attr("text-anchor", d => d.children ? "end" : "start")
-      .text(d => d.data.name)
-    .clone(true).lower()
-      .attr("stroke", "white");
-
+  node
+    .append('text')
+    .attr('dy', '0.31em')
+    .attr('x', (d) => (d.children ? -6 : 6))
+    .attr('text-anchor', (d) => (d.children ? 'end' : 'start'))
+    .text((d) => d.data.name)
+    .clone(true)
+    .lower()
+    .attr('stroke', 'white');
 
   useEffect(() => {
-
     const fetchData = async () => {
-      
-      const req = await fetch('http://localhost:8080/api/species/'+taxonId);
+      const req = await fetch('/api/species/' + taxonId);
       let data = await req.json();
-      console.log("sr:",data); 
+      console.log('sr:', data);
       setData(data);
-    }
+    };
 
-    fetchData();  
+    fetchData();
   }, []);
  
 
@@ -171,7 +175,10 @@ export default function Species() {
               component={RouterLink}
               to="/"
             >
-              <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              <HomeIcon
+                sx={{ mr: 0.5 }}
+                fontSize="inherit"
+              />
             </Link>
             <Typography
               sx={{ display: 'flex', alignItems: 'center' }}
@@ -189,7 +196,7 @@ export default function Species() {
         </div>
       }
       sideMenu={
-        <Drawer 
+        <Drawer
           sx={{
           width: "10%",
           flexShrink: 0,
@@ -221,12 +228,12 @@ export default function Species() {
             {/*
             <ListItem key={"TreeView"} disablePadding>
               <ListItemButton>
-                <ListItemText primary={"Tree View"} />
+                <ListItemText primary={'Tree View'} />
               </ListItemButton>
             </ListItem>
-            <ListItem key={"Taxnomy"} disablePadding>
+            <ListItem key={'Taxnomy'} disablePadding>
               <ListItemButton>
-                <ListItemText primary={"Taxnomy"} />
+                <ListItemText primary={'Taxnomy'} />
               </ListItemButton>
             </ListItem>
             */}
@@ -290,135 +297,437 @@ export default function Species() {
           </Paper>
           */}
         </div>
-
       }
       /*
       timeline={
         <div>
           <h3>Timeline</h3>
-          <div style={{height:"100%", display:"none", flexDirection:"column", color:"#000000de", fontSize:"14px"}}>
-
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#04aa04"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+          <div
+            style={{
+              height: '100%',
+              display: 'none',
+              flexDirection: 'column',
+              color: '#000000de',
+              fontSize: '14px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#04aa04',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
                 <div>STEP 1</div>
-                <div><b>Genome Sequence</b></div>
+                <div>
+                  <b>Genome Sequence</b>
+                </div>
                 <div>09/01/2023</div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#04aa04"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#04aa04',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
                 <div>STEP 2</div>
-                <div><b>ID Protein Classification</b></div>
+                <div>
+                  <b>ID Protein Classification</b>
+                </div>
                 <div>10/01/2023</div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#04aa04"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#04aa04',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Final Structural Orthologs</b></div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Final Structural Orthologs</b>
+                </div>
                 <div>10/10/2023</div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#fff", border:"1px solid #aaa"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    border: '1px solid #aaa',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>ID Complexes</b></div> 
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>ID Complexes</b>
+                </div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#04aa04"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#04aa04',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Design Constructs</b></div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Design Constructs</b>
+                </div>
                 <div>10/12/2023</div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#04aa04"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#04aa04',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Standardize Tags</b></div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Standardize Tags</b>
+                </div>
                 <div>10/12/2023</div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#fff", border:"1px solid #aaa"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    border: '1px solid #aaa',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>SAXS</b></div> 
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>SAXS</b>
+                </div>
               </div>
             </div>
 
-
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#fff", border:"1px solid #aaa"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#aaa"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    border: '1px solid #aaa',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#aaa' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Crystallography</b></div> 
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Crystallography</b>
+                </div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#fff", border:"1px solid #aaa"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    border: '1px solid #aaa',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Activity Assays</b></div> 
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Activity Assays</b>
+                </div>
               </div>
             </div>
 
-            <div style={{display:"flex", flexDirection:"row", alignItems:"start"}}>
-              <div style={{display:"flex", flexDirection:"column", flex:"20%", alignItems:"center"}}>
-                <div style={{height:"15px",width:"15px", borderRadius:"50%", background:"#fff", border:"1px solid #aaa"}}></div>
-                <div style={{width:"2px",height:"80px",background:"#ccc"}}></div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'start',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '20%',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    height: '15px',
+                    width: '15px',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    border: '1px solid #aaa',
+                  }}
+                ></div>
+                <div
+                  style={{ width: '2px', height: '80px', background: '#ccc' }}
+                ></div>
               </div>
-              <div style={{display:"flex", flexDirection:"column", flex:"80%"}}>
-                <div><b>Binding Assays</b></div> 
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: '80%',
+                }}
+              >
+                <div>
+                  <b>Binding Assays</b>
+                </div>
               </div>
             </div>
-
-
-
-
-
-
-
           </div>
         </div>
       }
       */
     >
     </PageContainer> 
+
   );
 }
-
- 
