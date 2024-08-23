@@ -39,9 +39,9 @@ export default class CustomTrackPlugin extends Plugin {
         'Core-extendPluggableElement',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (pluggableElement) => {
-          if (pluggableElement.name === 'LinearGenomeView') { console.log("AAA");
+          if (pluggableElement.name === 'LinearGenomeView') { 
             const { stateModel } = pluggableElement
-            const newStateModel = stateModel.extend(self => {  console.log("self:",self);
+            const newStateModel = stateModel.extend(self => { 
               const superRubberBandMenuItems = self.rubberBandMenuItems
               return {
                 views: {
@@ -58,7 +58,7 @@ export default class CustomTrackPlugin extends Plugin {
                           )
                           // console log the list of potentially multiple
                           // regions that were selected
-                          console.log(selectedRegions)
+                          //console.log(selectedRegions)
                         },
                       },
                     ]
