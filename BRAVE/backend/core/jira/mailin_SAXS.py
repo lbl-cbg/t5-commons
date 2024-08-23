@@ -6,7 +6,8 @@ import re
 import os
 from datetime import datetime
 
-class SimpleScatteringTask:    
+
+class MailinSAXSTask:    
 
     API_TOKEN = os.environ.get("SIMPLESCATTERING_API_TOKEN")
     ROTKEY = os.environ.get("SIMPLESCATTERING_API_ROTKEY") 
@@ -15,6 +16,7 @@ class SimpleScatteringTask:
     credentials = credentials.encode("ascii")
     base64_bytes = base64.b64encode(credentials)
     encoded_credentials = base64_bytes.decode("ascii")
+    #encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8') 
 
     JIRA_API_TOKEN_YONG = os.environ.get("JIRA_API_TOKEN_YONG")
     username = "yong@lbl.gov"
@@ -44,189 +46,109 @@ class SimpleScatteringTask:
     def run(self):
         json_data = self.get_data()
 
-        simplescattering_json = json_data["simplescattering_json"]     
-        create_record_response = self.create_new_simplescattering_jira_record(simplescattering_json)
+        #shifts_json = json_data["shifts_json"]     
+        #create_record_response = self.create_new_shifts_jira_record(shifts_json)
+
+        t5slots_samples_json = json_data["t5slots_samples_json"]     
+        create_record_response = self.create_new_t5slots_samples_jira_record(t5slots_samples_json)
 
         return json_data
     
 
     def get_data(self):
-        print('Get data...')  
+        print('Get data...') 
 
-        print("API_TOKEN:", self.API_TOKEN)
-        print("ROTKEY:", self.ROTKEY) 
-        print("credentials:", self.credentials)
-        print("encoded_credentials:", self.encoded_credentials)
+        mailin_saxs_url = "https://sibyls.als.lbl.gov/htsaxs/api/v1"
+        mailin_saxs_header = {'Content-Type': 'application/json',  
+                            'X-ROTKEY': '3f59d82ec81fc9ea1447f077377ba3aa1235b9f9bdb89c86816a71f104a69b4e'}
 
-        simplescattering_url = 'https://simplescattering.com' #prod  #'https://simple-saxs-staging.herokuapp.com' #staging
-    
-        response = requests.post(simplescattering_url+"/api-keys", 
-                                headers={'Content-Type': 'application/json', 
-                                        'authorization': 'Basic ' + self.encoded_credentials,
-                                        'ROTKEY': self.ROTKEY})
-        print("token:",response.text) 
-        data_tokens = response.text.split() 
-        token = data_tokens[0]
+        response = requests.get(mailin_saxs_url + "/shifts", 
+                                headers=mailin_saxs_header)
+        shifts_json = response.json()
+        
+        #response = requests.get(mailin_saxs_url + "/t5slots", 
+        #                        headers=mailin_saxs_header)
+        #slots_json = response.json()
 
-        print("Get Simple Scattering data...")
-        response = requests.get(simplescattering_url+"/api/v1/t5_datasets", 
-                            headers={'Content-Type': 'application/json', 
-                                     'Authorization': 'Bearer '+token,
-                                     'ROTKEY': self.ROTKEY})
-        print(response.text)
-        simplescattering_json = response.json()
-
-        '''
-        # Note: for another request, need request token again
-        response = requests.post(simplescattering_url+"/api-keys", 
-                                headers={'Content-Type': 'application/json', 
-                                        'authorization': 'Basic ' + self.encoded_credentials,
-                                        'ROTKEY': self.ROTKEY})
-        print("token:",response.text) 
-        data_tokens = response.text.split() 
-        token = data_tokens[0]
-
-        print("Get Simple Scattering Show data...")
-        response = requests.get(simplescattering_url+"/api/v1/t5_dataset/"+"XSXEB4SL", 
-                            headers={'Content-Type': 'application/json', 
-                                     'Authorization': 'Bearer '+token,
-                                     'ROTKEY': self.ROTKEY})
-        print(response.text)
-        simplescattering_show_json = response.json()
-        '''
-
-        return {"simplescattering_json":simplescattering_json}
+        response = requests.get(mailin_saxs_url + "/t5slots_samples", 
+                                headers=mailin_saxs_header)
+        t5slots_samples_json = response.json()
+         
+        return {"shifts_json":shifts_json,
+                #"slots_json":slots_json,
+                "t5slots_samples_json":t5slots_samples_json}
 
 
-    def create_new_simplescattering_jira_record(self, data):
+    def create_new_shifts_jira_record(self, data):
         for data_item in data:
-            found = self.check_jira_record_exit(data_item, "Code", "code")   
-            #print("found jira record?", found) 
+            found = self.check_jira_record_exit(data_item, "Id", "id")    
+            attributes_data = self.get_shift_attributes_data(data_item)
             if found:
                 print("found, update existing...")
-                self.update_record(data_item, found[0]["id"])
+                self.update_record(data_item, 29, found[0]["id"], attributes_data) #Shift object id:29
             else:
                 print("not found, create new...")
-                self.push_new_record(data_item)
+                self.push_new_record(data_item, 29, attributes_data) #Shift object id:29
+        return None
+    
+
+    def create_new_t5slots_samples_jira_record(self, data):
+        for data_item in data:
+            found = self.check_jira_record_exit(data_item, "Id", "id")    
+            attributes_data = self.get_slot_attributes_data(data_item)
+            if found:
+                print("found, update existing...")
+                self.update_record(data_item, 30, found[0]["id"], attributes_data ) #Slot object id:30
+            else:
+                print("not found, create new...")
+                self.push_new_record(data_item, 30, attributes_data) #Slot object id:30
         return None
 
 
-    def get_attributes_data(self, data):
+    def get_shift_attributes_data(self, data):
         return [
             {
-                    "objectTypeAttributeId": "459", 
+                    "objectTypeAttributeId": "502", 
                     "objectAttributeValues": [
                         {
-                            "value": data["experimental_description"] 
+                            "value": data["created_at"] #datetime.strptime(data["created_at"], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%Y-%m-%dT%H:%M:%S.%fZ") 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "460", 
+                    "objectTypeAttributeId": "503", 
                     "objectAttributeValues": [
                         {
-                            "value": data["file_description"] 
+                            "value": data["id"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "461", 
+                    "objectTypeAttributeId": "504", 
                     "objectAttributeValues": [
                         {
-                            "value": data["data_collection_technique"] 
+                            "value": data["shift_type"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "462", 
+                    "objectTypeAttributeId": "505", 
                     "objectAttributeValues": [
                         {
-                            "value": data["authors"] 
+                            "value": data["shifts"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "463", 
+                    "objectTypeAttributeId": "506", 
                     "objectAttributeValues": [
                         {
-                            "value": data["country"] 
+                            "value": data["start_date"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "464", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["user_id"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "465", 
-                    "objectAttributeValues": [
-                        {
-                            "value": datetime.strptime(data["created_at"], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%Y-%m-%dT%H:%M:%S.%fZ") #data["created_at"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "466", 
-                    "objectAttributeValues": [
-                        {
-                            "value": datetime.strptime(data["updated_at"], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%Y-%m-%dT%H:%M:%S.%fZ") #data["updated_at"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "467", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["title"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "468", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["code"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "469", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["abstract"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "470", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["institute_id"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "471", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["project_leader_id"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "472", 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["slug"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "473", 
+                    "objectTypeAttributeId": "507", 
                     "objectAttributeValues": [
                         {
                             "value": data["status"] 
@@ -234,110 +156,156 @@ class SimpleScatteringTask:
                     ]
             },
             {
-                    "objectTypeAttributeId": "474", 
+                    "objectTypeAttributeId": "508", 
                     "objectAttributeValues": [
                         {
-                            "value": data["status_toggled_on"] 
+                            "value": data["updated_at"] #datetime.strptime(data["updated_at"], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%Y-%m-%dT%H:%M:%S.%fZ")   
+                        }
+                    ]
+            } 
+        ] 
+
+
+
+    def get_slot_attributes_data(self, data):
+        return [
+            {
+                    "objectTypeAttributeId": "509", 
+                    "objectAttributeValues": [
+                        {
+                            "value": data["created_at"]  
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "475", 
+                    "objectTypeAttributeId": "510", 
                     "objectAttributeValues": [
                         {
-                            "value": data["mailin_slot"] 
+                            "value": data["date_available"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "476", 
+                    "objectTypeAttributeId": "511", 
                     "objectAttributeValues": [
                         {
-                            "value": data["mailin_shift"] 
+                            "value": data["date_awaiting"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "477", 
+                    "objectTypeAttributeId": "512", 
                     "objectAttributeValues": [
                         {
-                            "value": data["mailin_sample"] 
+                            "value": data["date_collected"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "478", 
+                    "objectTypeAttributeId": "513", 
                     "objectAttributeValues": [
                         {
-                            "value": data["mailin_code"] 
+                            "value": data["date_received"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "479", 
+                    "objectTypeAttributeId": "514", 
                     "objectAttributeValues": [
                         {
-                            "value": data["wavelength"] 
+                            "value": data["id"] 
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "480", 
+                    "objectTypeAttributeId": "515", 
                     "objectAttributeValues": [
                         {
-                            "value": data["sample_to_detector_distance"] 
+                            "value": data["note"]    
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "481", 
+                    "objectTypeAttributeId": "516", 
                     "objectAttributeValues": [
                         {
-                            "value": data["journal_doi"] 
+                            "value": data["shift_id"]    
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "482", 
+                    "objectTypeAttributeId": "517", 
                     "objectAttributeValues": [
                         {
-                            "value": data["source"] 
+                            "value": data["shipping_company"]    
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "483", 
+                    "objectTypeAttributeId": "518", 
                     "objectAttributeValues": [
                         {
-                            "value": data["beamline"] 
+                            "value": data["status"]    
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "484", 
+                    "objectTypeAttributeId": "519", 
                     "objectAttributeValues": [
                         {
-                            "value": data["taskforce5"] 
+                            "value": data["tag"]    
                         }
                     ]
             },
             {
-                    "objectTypeAttributeId": "485", 
+                    "objectTypeAttributeId": "520", 
                     "objectAttributeValues": [
                         {
-                            "value": json.dumps(data["samples"])
+                            "value": data["taskforce5"]    
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "521", 
+                    "objectAttributeValues": [
+                        {
+                            "value": data["tracking_number"]    
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "522", 
+                    "objectAttributeValues": [
+                        {
+                            "value": data["updated_at"]    
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "523", 
+                    "objectAttributeValues": [
+                        {
+                            "value": data["user_id"]    
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "524", 
+                    "objectAttributeValues": [
+                        {
+                            "value": json.dumps(data["sec_samples"])    
                         }
                     ]
             }
         ] 
 
 
-    def update_record(self, data, record_id):
+    def update_record(self, data, object_id, record_id, attributes_data):
         print("Update jira record...")  
      
         create_data = {
-            "objectTypeId": "27",  # Create a "Simple scattering" object
-            "attributes": self.get_attributes_data(data),
+            "objectTypeId": object_id,  # Create a object
+            "attributes": attributes_data,
             "hasAvatar": False  # Optional avatar
         }
 
@@ -360,13 +328,12 @@ class SimpleScatteringTask:
             return None
     
 
-
-    def push_new_record(self, data):
+    def push_new_record(self, data, object_id, attributes_data):
         print("Create new jira record...")  
      
         create_data = {
-            "objectTypeId": "27",  # Create a "Simple scattering" object
-            "attributes": self.get_attributes_data(data),
+            "objectTypeId": object_id,  # Create a object
+            "attributes": attributes_data,
             "hasAvatar": False  # Optional avatar
         }
 
@@ -421,4 +388,36 @@ class SimpleScatteringTask:
             return False
     
 
+
+
+
+
+
+
+
+
+    '''
+    print("simplescattering =======>")
+    simplescattering_url = 'https://simplescattering.com' # 'https://simple-saxs-staging.herokuapp.com'
+    username = 'Yeongshnn-Ong-T5'
+    s = f'{username}:{self.API_TOKEN}'
+    s = s.encode("ascii")
+    base64_bytes = base64.b64encode(s)
+    ttt_token = base64_bytes.decode("ascii")
     
+    response = requests.post(simplescattering_url+"/api-keys", 
+                            headers={'Content-Type': 'application/json', 
+                                     'authorization': 'Basic '+ttt_token,
+                                     'ROTKEY': self.ROTKEY})
+    print(response.text) 
+
+    d_tokens = response.text.split() 
+    print(d_tokens)
+    data_response = requests.get(simplescattering_url+"/api/v1/t5_datasets", 
+                            headers={'Content-Type': 'application/json', 
+                                     'Authorization': 'Bearer '+d_tokens[0],
+                                     'ROTKEY': self.ROTKEY})
+    print(data_response.text)
+
+    print("simplescattering <=======")
+    '''
