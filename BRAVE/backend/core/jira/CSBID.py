@@ -48,6 +48,7 @@ class CSBIDTask(JIRAImportUtil):
         #self.delete_jira_record(97)
 
         json_data = self.get_data()   
+        print("allcrystalsummary_json:",len( json_data["allcrystalsummary_json"]["allcrystals"] ))
         return json_data["structuresummary_json_list"]
         
         targets_json = json_data["targets_json"]["targets"]
@@ -236,13 +237,13 @@ class CSBIDTask(JIRAImportUtil):
         print("Get Structure...")
         print("CC:", len(crystals_json["crystals"]))
         structuresummary_json_list=[]
-        for citem in crystals_json["crystals"][0:2]:   #TODO: REMOVE 0:2 limit   TOBEREMOVED
+        for citem in crystals_json["crystals"][0:1]:   #TODO: REMOVE 0:2 limit   TOBEREMOVED
             print("harvestid:",citem["harvestid"])
             json_to_get_structuresummary = '{"data" : [{"apiaction" : "structuresummary", "metadata" : "harvestid=' + citem["harvestid"] +'"}],"submissionid" : "' + sessionid +'"}'
             response = requests.post(braveapi_endpoint, data = json_to_get_structuresummary)
             structuresummary_json = response.json()
             if 'crystals' in structuresummary_json:
-                print("jjj:",structuresummary_json)
+                #print("jjj:",structuresummary_json)
                 structuresummary_json_list.append(structuresummary_json)
 
         return {"targets_json":targets_json,
