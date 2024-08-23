@@ -251,7 +251,7 @@ export default function Species() {
           <br/>
 
           <Paper elevation={1} sx={{ p:1, mb:1 }} ref={targetTableRef}>
-            <h3>Tagets</h3>
+            <h3>Targets</h3>
             <TableContainer >
               {(!data || data.length==0) && 
               <div style={{ display: 'flex', justifyContent: 'center' }}>
