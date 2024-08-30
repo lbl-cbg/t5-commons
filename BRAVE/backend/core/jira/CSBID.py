@@ -5,7 +5,7 @@ import base64
 #import re
 import os
 from .jira_import_util import JIRAImportUtil, JIRAObjectID
-
+from urllib.parse import quote
 
 class CSBIDTask(JIRAImportUtil):    
 
@@ -22,6 +22,7 @@ class CSBIDTask(JIRAImportUtil):
                 "venezuelan equine encephalitis virus":409,
                 "wuhan seafood market pneumonia virus":764}
     target_id_map = {}
+    all_pur_protein_id_map = {}
     pur_protein_id_map = {}
 
 
@@ -44,23 +45,17 @@ class CSBIDTask(JIRAImportUtil):
  
 
     def run(self):
-        #return None
-        #self.delete_jira_record(97)
-
         json_data = self.get_data()   
-        print("allcrystalsummary_json:",len( json_data["allcrystalsummary_json"]["allcrystals"] ))
-        return json_data["structuresummary_json_list"]
+         
+        
         
         targets_json = json_data["targets_json"]["targets"]
-        #return targets_json
-        #remove empty targetannotation
-        #targets_json = list(filter(lambda x: x["targetannotation"]!="", targets_json))
+        #targets_json = list(filter(lambda x: x["targetannotation"]!="", targets_json)) #remove empty targetannotation
         #build attributes_data_list ,a list of attributes data/payload
         attributes_data_list = []
         for data_item in targets_json:
             attributes_data = self.get_target_attributes_data(data_item) 
-            attributes_data_list.append(attributes_data)
-        #create_record_response = self.create_new_targets_jira_record(targets_json["targets"]);
+            attributes_data_list.append(attributes_data) 
         create_record_response = super().create_new_jira_record(
                                     JIRAObjectID.TARGET.value,
                                     targets_json,
@@ -74,8 +69,7 @@ class CSBIDTask(JIRAImportUtil):
         attributes_data_list = []
         for data_item in constructs_json:
             attributes_data = self.get_construct_attributes_data(data_item) 
-            attributes_data_list.append(attributes_data)
-        #create_record_response = self.create_new_construct_jira_record(constructs_json["constructs"]);
+            attributes_data_list.append(attributes_data) 
         create_record_response = super().create_new_jira_record(
                                     JIRAObjectID.CONSTRUCT.value,
                                     constructs_json,
@@ -88,8 +82,7 @@ class CSBIDTask(JIRAImportUtil):
         attributes_data_list = []
         for data_item in purifiedproteins_json["purifiedproteins"]:
             attributes_data = self.get_purifiedproteins_attributes_data(data_item) 
-            attributes_data_list.append(attributes_data)
-        #create_record_response = self.create_new_purifiedproteins_jira_record(purifiedproteins_json["purifiedproteins"]);
+            attributes_data_list.append(attributes_data) 
         create_record_response = super().create_new_jira_record(
                                     JIRAObjectID.PURIFIED_PROTEINS.value,
                                     purifiedproteins_json["purifiedproteins"],
@@ -101,8 +94,7 @@ class CSBIDTask(JIRAImportUtil):
         attributes_data_list = []
         for data_item in purifiedproteins_json["proteininventory"]:
             attributes_data = self.get_proteininventory_attributes_data(data_item) 
-            attributes_data_list.append(attributes_data)
-        #create_record_response = self.create_new_proteininventory_jira_record(purifiedproteins_json["proteininventory"]);
+            attributes_data_list.append(attributes_data) 
         create_record_response = super().create_new_jira_record(
                                     JIRAObjectID.PROTEIN_INVENTORY.value,
                                     purifiedproteins_json["proteininventory"],
@@ -124,10 +116,9 @@ class CSBIDTask(JIRAImportUtil):
                                     "All Purified Proteins",
                                     "Purbatchcproprcid", 
                                     "purbatchcproprcid")
-        self.setPurProteinIDMap(create_record_response, "374")
-        #create_record_response = self.create_new_all_purifiedproteins_jira_record(all_purifiedproteins_json["allpurifiedproteins"]);
-        
-        allcrystalsummary_json = json_data["allcrystalsummary_json"]["allcrystals"]     
+        self.setAllPurProteinIDMap(create_record_response, "374")
+         
+        allcrystalsummary_json = json_data["allcrystalsummary_json"]["allcrystals"] #[0:50] #TODO, TEST ONLY REMOVE [0:50]  
         attributes_data_list = []
         for data_item in allcrystalsummary_json:
             attributes_data = self.get_allcrystalsummary_attributes_data(data_item) 
@@ -138,9 +129,8 @@ class CSBIDTask(JIRAImportUtil):
                                     attributes_data_list,
                                     "All Crystal Summary",
                                     "Crystallization ID", 
-                                    "crystallizationid")
-        #create_record_response = self.create_new_allcrystalsummary_jira_record(allcrystalsummary_json["allcrystals"]); 
-
+                                    "crystallizationid") 
+        '''
         crystals_json = json_data["crystals_json"]["crystals"]
         attributes_data_list = []
         for data_item in crystals_json:
@@ -151,29 +141,34 @@ class CSBIDTask(JIRAImportUtil):
                                     crystals_json,
                                     attributes_data_list,
                                     "Crystal",
-                                    "Crystallization ID", 
-                                    "crystallizationid")     
-        #create_record_response = self.create_new_crystals_jira_record(crystals_json["crystals"])
-        
+                                    "Crystallization Harvest ID", 
+                                    ["crystallizationid","harvestid"])      
+
+        for structure_json in json_data["structuresummary_json_list"]: 
+            attributes_data_list = []
+            for data_item in structure_json:
+                attributes_data = self.get_structuresummary_attributes_data(data_item) 
+                attributes_data_list.append(attributes_data) 
+            create_record_response = super().create_new_jira_record(
+                                        JIRAObjectID.STRUCTURE.value,
+                                        structure_json,
+                                        attributes_data_list,
+                                        "Structure",
+                                        "Harvest ID", 
+                                        "harvestid")   
+            if len(create_record_response) == len(structure_json):
+                for index,ritem in enumerate(create_record_response):
+                    self.upload_attachment(ritem["id"], structure_json[index])  
+            else:
+                print("Something wrong in push structures, len(create_record_response) not equal len(structure_json)")
+        '''
         print("Total targets from api:",len(targets_json)) 
         print("Total constructs from api:",len(constructs_json)) 
         print("Total purified proteins from api:",len(purifiedproteins_json["purifiedproteins"]))
         print("Total protein inventory from api:",len(purifiedproteins_json["proteininventory"]))
         print("Total all purifiedproteins from api:",len(all_purifiedproteins_json))
         print("Total allcrystalsummary from api:",len(allcrystalsummary_json))
-        print("Total crystals from api:",len(crystals_json)) 
-
-        return create_record_response
-
-
-        '''
-        
-    
-        
-        
-
-        
-        '''
+        #print("Total crystals from api:",len(crystals_json)) 
 
         return create_record_response
     
@@ -228,23 +223,39 @@ class CSBIDTask(JIRAImportUtil):
         json_to_get_allcrystalsummary = '{"data" : [{"apiaction" : "allcrystalsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
         response = requests.post(braveapi_endpoint, data = json_to_get_allcrystalsummary)
         allcrystalsummary_json = response.json()
+        print("All Crystal Summary source size:", len(allcrystalsummary_json["allcrystals"]))
+
+        #============REMOVE
+        for item in purifiedproteins_json["purifiedproteins"]:
+            if item["purbatchcproprcid"]=="30884":
+                print("p:", item)
+        the_item = None 
+        for item in allcrystalsummary_json["allcrystals"]:
+            if item["crystallizationid"]=="102464":
+                the_item = item
+                print("ac:", item)
+        allcrystalsummary_json["allcrystals"] = [the_item]
+        #============REMOVE
+
         
         print("Get Crystal Summary...")
         json_to_get_crystalsummary = '{"data" : [{"apiaction" : "crystalsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
         response = requests.post(braveapi_endpoint, data = json_to_get_crystalsummary)
         crystals_json = response.json()
+        print("Crystal Summary source size:", len(crystals_json["crystals"]))
 
-        print("Get Structure...")
-        print("CC:", len(crystals_json["crystals"]))
+        print("Get Structure...") 
+        crystallizationid_harvestid_map = {}
         structuresummary_json_list=[]
-        for citem in crystals_json["crystals"][0:1]:   #TODO: REMOVE 0:2 limit   TOBEREMOVED
-            print("harvestid:",citem["harvestid"])
-            json_to_get_structuresummary = '{"data" : [{"apiaction" : "structuresummary", "metadata" : "harvestid=' + citem["harvestid"] +'"}],"submissionid" : "' + sessionid +'"}'
-            response = requests.post(braveapi_endpoint, data = json_to_get_structuresummary)
-            structuresummary_json = response.json()
-            if 'crystals' in structuresummary_json:
-                #print("jjj:",structuresummary_json)
-                structuresummary_json_list.append(structuresummary_json)
+        for citem in crystals_json["crystals"]:    
+            if (citem["crystallizationid"]+citem["harvestid"]) not in crystallizationid_harvestid_map:
+                print(".", end="\r")#print("c harvestid:",citem["crystallizationid"],citem["harvestid"])
+                crystallizationid_harvestid_map[citem["crystallizationid"]+citem["harvestid"]] = True
+                json_to_get_structuresummary = '{"data" : [{"apiaction" : "structuresummary", "metadata" : "harvestid=' + citem["harvestid"] +'"}],"submissionid" : "' + sessionid +'"}'
+                response = requests.post(braveapi_endpoint, data = json_to_get_structuresummary)
+                structuresummary_json = response.json()
+                if 'crystals' in structuresummary_json: 
+                    structuresummary_json_list.append(structuresummary_json["crystals"])
 
         return {"targets_json":targets_json,
                 "constructs_json":constructs_json,
@@ -1027,232 +1038,240 @@ class CSBIDTask(JIRAImportUtil):
     
 
     def get_allcrystalsummary_attributes_data(self, data):
-        return [ 
-            {
+        out=[]
+        out.append({
                     "objectTypeAttributeId": "396",  # Crystallizationid
                     "objectAttributeValues": [
                         {
                             "value": data["crystallizationid"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "397",  # Cloneid
                     "objectAttributeValues": [
                         {
                             "value": data["cloneid"]  
                         }
                     ]
-            },
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "398",  # Clone IDF
                     "objectAttributeValues": [
                         {
                             "value": data["cloneidf"].strip()  
                         }
                     ]
-            }, 
-            {
-                    "objectTypeAttributeId": "399",  # Purbatchcproprcid
-                    "objectAttributeValues": [
-                        {
-                            "value": self.getPurProteinObjectID(data["purbatchcproprcid"].strip())  
-                        }
-                    ]
-            }, 
-            {
+            })
+        
+        v = self.getPurProteinObjectID(data["purbatchcproprcid"].strip())  
+        print("pid:", data["purbatchcproprcid"].strip())
+        print("m:",self.pur_protein_id_map)
+        print("V:",v)
+        if v != None:
+            out.append({
+                        "objectTypeAttributeId": "399",  # Purbatchcproprcid
+                        "objectAttributeValues": [
+                            {
+                                "value": v
+                            }
+                        ]
+                })
+            
+        out.append({
                     "objectTypeAttributeId": "400",  # Setupdate
                     "objectAttributeValues": [
                         {
                             "value": data["setupdate"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "401",  # Screenname
                     "objectAttributeValues": [
                         {
                             "value": data["screenname"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "402",  # Temperature
                     "objectAttributeValues": [
                         {
                             "value": data["temperature"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "403",  # Temperatureunit
                     "objectAttributeValues": [
                         {
                             "value": data["temperatureunit"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "404",  # Plate
                     "objectAttributeValues": [
                         {
                             "value": data["plate"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "405",  # Subwell
                     "objectAttributeValues": [
                         {
                             "value": data["subwell"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "406",  # Well
                     "objectAttributeValues": [
                         {
                             "value": data["well"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "407",  # Growthtime
                     "objectAttributeValues": [
                         {
                             "value": data["growthtime"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "408",  # Growthtimeunit
                     "objectAttributeValues": [
                         {
                             "value": data["growthtimeunit"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "409",  # Score 
                     "objectAttributeValues": [
                         {
                             "value": data["score"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "410",  # Modifications 
                     "objectAttributeValues": [
                         {
                             "value": data["modifications"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "411",  # Purifier
                     "objectAttributeValues": [
                         {
                             "value": data["purifier"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "412",  # Distributedto
                     "objectAttributeValues": [
                         {
                             "value": data["distributedto"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "413",  # Crystallographer
                     "objectAttributeValues": [
                         {
                             "value": data["crystallographer"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "414",  # Description
                     "objectAttributeValues": [
                         {
                             "value": data["description"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "415",  # Resolution
                     "objectAttributeValues": [
                         {
                             "value": data["resolution"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "416",  # Resolutionunit
                     "objectAttributeValues": [
                         {
                             "value": data["resolutionunit"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "417",  # Cryoname
                     "objectAttributeValues": [
                         {
                             "value": data["cryoname"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "418",  # Testdate
                     "objectAttributeValues": [
                         {
                             "value": data["testdate"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "419",  # Pdbid
                     "objectAttributeValues": [
                         {
                             "value": data["pdbid"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "420",  # Notes
                     "objectAttributeValues": [
                         {
                             "value": data["notes"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "421",  # Ligandname
                     "objectAttributeValues": [
                         {
                             "value": data["ligandname"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "422",  # Ligandtype
                     "objectAttributeValues": [
                         {
                             "value": data["ligandtype"]  
                         }
                     ]
-            }, 
-            {
+            })
+        out.append({
                     "objectTypeAttributeId": "423",  # Harvestid
                     "objectAttributeValues": [
                         {
                             "value": data["harvestid"]  
                         }
                     ]
-            } 
-        ]
+            } ) 
+        
+        return out
 
 
     def get_crystal_attributes_data(self, data):
@@ -1480,1029 +1499,54 @@ class CSBIDTask(JIRAImportUtil):
                             "value": data["harvestid"]  
                         }
                     ]
-            } 
+            }, 
+            {
+                    "objectTypeAttributeId": "568",  # Crystallization Harvest ID
+                    "objectAttributeValues": [
+                        {
+                            "value": data["crystallizationid"]+"_"+data["harvestid"]  
+                        }
+                    ]
+            }  
         ]
 
-
-    '''
-    def create_new_targets_jira_record(self, data):
-        for data_item in data:
-            found = self.check_jira_record_exit(data_item)
-            print("found jira record?", found)
-            attributes_data = self.get_shift_attributes_data(data_item)
-            if found:
-                print("found, update existing...")
-                self.update_record(data_item, 29, found[0]["id"], attributes_data) #Shift object id:29
-            else:
-                print("not found, create new...")
-                self.push_new_record(data_item, 29, attributes_data) #Shift object id:29
- 
-        return None
-
-
-    def create_new_construct_jira_record(self, data):
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_construct_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-        return None
-    '''
-    '''
-    def create_new_purifiedproteins_jira_record(self, data):
-
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_purifiedproteins_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-            
-        return None
-    '''
-    '''
-    def create_new_proteininventory_jira_record(self, data):
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_proteininventory_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-            
-        return None
-    '''
-    '''    
-    def create_new_all_purifiedproteins_jira_record(self, data):
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_all_purifiedproteins_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-        return None
-    '''
-    '''
-    def create_new_allcrystalsummary_jira_record(self, data):
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_allcrystalsummary_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-        return None
-    '''
-    '''
-    def create_new_crystals_jira_record(self, data):
-        for data_item in data:
-            #found = self.check_jira_record_exit(data_item)
-            #print("found jira record?", found)
-            self.push_new_crystals_record(data_item) #REMOVE: TEST ONLY
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-        return None
-    '''
-
-    '''
-    def push_new_record(self, data):
-        print("Create new jira record...") 
-         
-        #print("target_id: "+data["targets"][0]["targetid"])
-        #print("target_id2: "+data["targetid"])
-        #return None
     
-        attributes_data = [
+    def get_structuresummary_attributes_data(self, data):
+        return [ 
             {
-                    "objectTypeAttributeId": "96",  # Attribute ID for Targetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetid"] #Targetid    
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "97", #Originaltargetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["originaltargetid"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "98", #Speciesname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["speciesname"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "99", #Taxonid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["taxonid"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "100", #Targetannotation
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetannotation"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "101", #Parentproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseguid"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "102", #Parentproteinseq
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseq"] 
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "103", #Parentdnaseq
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentdnaseq"] 
-                        }
-                    ]
-            }
-        ]
-
-        create_data = {
-            "objectTypeId": "9",  # Create a "Target" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_construct_record(self, data):
-        print("Create new construct jira record...") 
-          
-        attributes_data = [
-            {
-                    "objectTypeAttributeId": "104",  # Designid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["designid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "105",  # Targetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "106",  # Originaltargetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["originaltargetid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "107",  # Cloneidf
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneidf"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "108",  # Oligoplate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["oligoplate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "109",  # Platewell
-                    "objectAttributeValues": [
-                        {
-                            "value": data["platewell"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "110",  # Pcryield
-                    "objectAttributeValues": [
-                        {
-                            "value": data["pcryield"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "111",  # Trexpid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["trexpid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "112",  # Expupdated
-                    "objectAttributeValues": [
-                        {
-                            "value": data["expupdated"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "113",  # Vector
-                    "objectAttributeValues": [
-                        {
-                            "value": data["vector"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "114",  # Growthtemperature
-                    "objectAttributeValues": [
-                        {
-                            "value": data["growthtemperature"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "115",  # Inductiontemperature
-                    "objectAttributeValues": [
-                        {
-                            "value": data["inductiontemperature"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "116",  # Inductionreagent
-                    "objectAttributeValues": [
-                        {
-                            "value": data["inductionreagent"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "117",  # Expressionlevel
-                    "objectAttributeValues": [
-                        {
-                            "value": data["expressionlevel"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "118",  # Imaclevel
-                    "objectAttributeValues": [
-                        {
-                            "value": data["imaclevel"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "119",  # Distributionbit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["distributionbit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "120",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "121",  # Targetproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "122",  # Parentproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "123",  # Speciesname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["speciesname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "124",  # Targetannotation
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetannotation"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "125",  # Targetproteinsequence
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinsequence"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "126",  # Codingsequence
-                    "objectAttributeValues": [
-                        {
-                            "value": data["codingsequence"]  
-                        }
-                    ]
-            }, 
-        ]
-
-        create_data = {
-            "objectTypeId": "10",  # Create a "Construct" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_purifiedproteins_record(self, data):
-        print("Create new purifiedproteins jira record...") 
-          
-        attributes_data = [ 
-            {
-                    "objectTypeAttributeId": "323",  # Targetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "324",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "325",  # Cloneidf
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneidf"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "326",  # Purbatchcproprcid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purbatchcproprcid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "327",  # Purifier
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purifier"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "328",  # Purificationdate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationdate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "329",  # Purificationworkflow
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationworkflow"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "330",  # Proteinconcentration
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinconcentration"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "331",  # Proteinconcentrationunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinconcentrationunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "332",  # Proteinvolume
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinvolume"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "333",  # Proteinvolumeunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinvolumeunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "334",  # Buffername
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffername"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "335",  # Buffercontent
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffercontent"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "336",  # Targetproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "337",  # Parentproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "338",  # Speciesname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["speciesname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "339",  # Targetannotation
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetannotation"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "340",  # targetproteinsequence
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinsequence"]  
-                        }
-                    ]
-            } 
-        ]
-
-        create_data = {
-            "objectTypeId": "22",  # Create a "purifiedproteins" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_proteininventory_record(self, data):
-        print("Create new proteininventory jira record...") 
-          
-        attributes_data = [ 
-            {
-                    "objectTypeAttributeId": "345",  # Targetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "346",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "347",  # Cloneidf
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneidf"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "348",  # Purbatchcproprcid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purbatchcproprcid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "349",  # Purifier
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purifier"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "350",  # Purificationdate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationdate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "351",  # Purificationworkflow
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationworkflow"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "352",  # Buffername
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffername"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "353",  # Buffercontent
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffercontent"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "354",  # Targetproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "355",  # Parentproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "356",  # Speciesname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["speciesname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "357",  # Targetannotation
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetannotation"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "358",  # targetproteinsequence
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinsequence"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "359",  # Inventoryid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["inventoryid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "360",  # Currentvolume
-                    "objectAttributeValues": [
-                        {
-                            "value": data["currentvolume"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "361",  # Currentvolumeunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["currentvolumeunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "362",  # Currentconcentration
-                    "objectAttributeValues": [
-                        {
-                            "value": data["currentconcentration"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "363",  # Currentconcentrationunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["currentconcentrationunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "364",  # Storageinfo
-                    "objectAttributeValues": [
-                        {
-                            "value": data["storageinfo"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "365",  # Inventorynotes
-                    "objectAttributeValues": [
-                        {
-                            "value": data["inventorynotes"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "366",  # Shipments
-                    "objectAttributeValues": [
-                        {
-                            "value": json.dumps(data["shipments"]) #TODO: might need parse  
-                        }
-                    ]
-            }        
-        ]
-
-        create_data = {
-            "objectTypeId": "23",  # Create a "proteininventory" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_all_purifiedproteins_record(self, data):
-        print("Create new all purifiedproteins jira record...") 
-          
-        attributes_data = [ 
-            {
-                    "objectTypeAttributeId": "371",  # Targetid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "372",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "373",  # Cloneidf
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneidf"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "374",  # Purbatchcproprcid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purbatchcproprcid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "375",  # Purifier
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purifier"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "376",  # Purificationdate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationdate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "377",  # Purificationworkflow
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purificationworkflow"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "378",  # Proteinconcentration
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinconcentration"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "379",  # Proteinconcentrationunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinconcentrationunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "380",  # Proteinvolume
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinvolume"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "381",  # Proteinvolumeunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["proteinvolumeunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "382",  # Buffername
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffername"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "383",  # Buffercontent
-                    "objectAttributeValues": [
-                        {
-                            "value": data["buffercontent"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "384",  # Covalentmodification
-                    "objectAttributeValues": [
-                        {
-                            "value": data["covalentmodification"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "385",  # Limitedproteolysis
-                    "objectAttributeValues": [
-                        {
-                            "value": data["limitedproteolysis"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "386",  # Ligands
-                    "objectAttributeValues": [
-                        {
-                            "value": data["ligands"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "387",  # Targetproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "388",  # Parentproteinseguid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["parentproteinseguid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "389",  # Speciesname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["speciesname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "390",  # Targetannotation
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetannotation"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "391",  # targetproteinsequence
-                    "objectAttributeValues": [
-                        {
-                            "value": data["targetproteinsequence"]  
-                        }
-                    ]
-            } 
-        ]
-
-        create_data = {
-            "objectTypeId": "24",  # Create a "all purifiedproteins" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_allcrystalsummary_record(self, data):
-        print("Create new all crystal summary jira record...") 
-          
-        attributes_data = [ 
-            {
-                    "objectTypeAttributeId": "396",  # Crystallizationid
+                    "objectTypeAttributeId": "539",  # Crystallization ID
                     "objectAttributeValues": [
                         {
                             "value": data["crystallizationid"]  
                         }
                     ]
-            }, 
-            {
-                    "objectTypeAttributeId": "397",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
             },
             {
-                    "objectTypeAttributeId": "398",  # Cloneidf
+                    "objectTypeAttributeId": "540",  # Clone ID
                     "objectAttributeValues": [
                         {
-                            "value": data["cloneidf"]  
+                            "value": data["cloneid"].strip()  
                         }
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "399",  # Purbatchcproprcid
+                    "objectTypeAttributeId": "541",  # Clone IDF
                     "objectAttributeValues": [
                         {
-                            "value": data["purbatchcproprcid"]  
+                            "value": data["cloneidf"].strip()
                         }
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "400",  # Setupdate
+                    "objectTypeAttributeId": "542",  # Purbatchcproprcid
+                    "objectAttributeValues": [
+                        {
+                            "value": self.getPurProteinObjectID(data["purbatchcproprcid"].strip())  
+                        }
+                    ]
+            }, 
+            {
+                    "objectTypeAttributeId": "543",  # Setupdate
                     "objectAttributeValues": [
                         {
                             "value": data["setupdate"]  
@@ -2510,7 +1554,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "401",  # Screenname
+                    "objectTypeAttributeId": "544",  # Screenname
                     "objectAttributeValues": [
                         {
                             "value": data["screenname"]  
@@ -2518,7 +1562,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "402",  # Temperature
+                    "objectTypeAttributeId": "545",  # Temperature
                     "objectAttributeValues": [
                         {
                             "value": data["temperature"]  
@@ -2526,7 +1570,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "403",  # Temperatureunit
+                    "objectTypeAttributeId": "546",  # Temperatureunit
                     "objectAttributeValues": [
                         {
                             "value": data["temperatureunit"]  
@@ -2534,7 +1578,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "404",  # Plate
+                    "objectTypeAttributeId": "547",  # Plate
                     "objectAttributeValues": [
                         {
                             "value": data["plate"]  
@@ -2542,7 +1586,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "405",  # Subwell
+                    "objectTypeAttributeId": "548",  # Subwell
                     "objectAttributeValues": [
                         {
                             "value": data["subwell"]  
@@ -2550,7 +1594,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "406",  # Well
+                    "objectTypeAttributeId": "549",  # Well
                     "objectAttributeValues": [
                         {
                             "value": data["well"]  
@@ -2558,7 +1602,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "407",  # Growthtime
+                    "objectTypeAttributeId": "550",  # Growthtime
                     "objectAttributeValues": [
                         {
                             "value": data["growthtime"]  
@@ -2566,7 +1610,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "408",  # Growthtimeunit
+                    "objectTypeAttributeId": "551",  # Growthtimeunit
                     "objectAttributeValues": [
                         {
                             "value": data["growthtimeunit"]  
@@ -2574,7 +1618,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "409",  # Score 
+                    "objectTypeAttributeId": "552",  # Score
                     "objectAttributeValues": [
                         {
                             "value": data["score"]  
@@ -2582,7 +1626,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "410",  # Modifications 
+                    "objectTypeAttributeId": "553",  # Modifications
                     "objectAttributeValues": [
                         {
                             "value": data["modifications"]  
@@ -2590,7 +1634,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "411",  # Purifier
+                    "objectTypeAttributeId": "554",  # Purifier
                     "objectAttributeValues": [
                         {
                             "value": data["purifier"]  
@@ -2598,7 +1642,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "412",  # Distributedto
+                    "objectTypeAttributeId": "555",  # Distributedto
                     "objectAttributeValues": [
                         {
                             "value": data["distributedto"]  
@@ -2606,7 +1650,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "413",  # Crystallographer
+                    "objectTypeAttributeId": "556",  # Crystallographer
                     "objectAttributeValues": [
                         {
                             "value": data["crystallographer"]  
@@ -2614,7 +1658,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "414",  # Description
+                    "objectTypeAttributeId": "557",  # Description
                     "objectAttributeValues": [
                         {
                             "value": data["description"]  
@@ -2622,7 +1666,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "415",  # Resolution
+                    "objectTypeAttributeId": "558",  # Resolution
                     "objectAttributeValues": [
                         {
                             "value": data["resolution"]  
@@ -2630,7 +1674,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "416",  # Resolutionunit
+                    "objectTypeAttributeId": "559",  # Resolutionunit
                     "objectAttributeValues": [
                         {
                             "value": data["resolutionunit"]  
@@ -2638,7 +1682,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "417",  # Cryoname
+                    "objectTypeAttributeId": "560",  # Cryoname
                     "objectAttributeValues": [
                         {
                             "value": data["cryoname"]  
@@ -2646,7 +1690,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "418",  # Testdate
+                    "objectTypeAttributeId": "561",  # Testdate
                     "objectAttributeValues": [
                         {
                             "value": data["testdate"]  
@@ -2654,7 +1698,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "419",  # Pdbid
+                    "objectTypeAttributeId": "562",  # Pdbid
                     "objectAttributeValues": [
                         {
                             "value": data["pdbid"]  
@@ -2662,7 +1706,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "420",  # Notes
+                    "objectTypeAttributeId": "563",  # Notes
                     "objectAttributeValues": [
                         {
                             "value": data["notes"]  
@@ -2670,7 +1714,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "421",  # Ligandname
+                    "objectTypeAttributeId": "564",  # Ligandname
                     "objectAttributeValues": [
                         {
                             "value": data["ligandname"]  
@@ -2678,7 +1722,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "422",  # Ligandtype
+                    "objectTypeAttributeId": "565",  # Ligandtype
                     "objectAttributeValues": [
                         {
                             "value": data["ligandtype"]  
@@ -2686,7 +1730,7 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             }, 
             {
-                    "objectTypeAttributeId": "423",  # Harvestid
+                    "objectTypeAttributeId": "567",  # Harvest ID
                     "objectAttributeValues": [
                         {
                             "value": data["harvestid"]  
@@ -2694,317 +1738,6 @@ class CSBIDTask(JIRAImportUtil):
                     ]
             } 
         ]
-
-        create_data = {
-            "objectTypeId": "25",  # Create a "all crystal summary" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-    '''
-    def push_new_crystals_record(self, data):
-        print("Create new crystal jira record...") 
-          
-        attributes_data = [ 
-            {
-                    "objectTypeAttributeId": "427",  # Crystallizationid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["crystallizationid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "428",  # Cloneid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneid"]  
-                        }
-                    ]
-            },
-            {
-                    "objectTypeAttributeId": "429",  # Cloneidf
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cloneidf"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "430",  # Purbatchcproprcid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purbatchcproprcid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "431",  # Setupdate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["setupdate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "432",  # Screenname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["screenname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "433",  # Temperature
-                    "objectAttributeValues": [
-                        {
-                            "value": data["temperature"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "434",  # Temperatureunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["temperatureunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "435",  # Plate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["plate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "436",  # Subwell
-                    "objectAttributeValues": [
-                        {
-                            "value": data["subwell"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "437",  # Well
-                    "objectAttributeValues": [
-                        {
-                            "value": data["well"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "438",  # Growthtime
-                    "objectAttributeValues": [
-                        {
-                            "value": data["growthtime"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "439",  # Growthtimeunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["growthtimeunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "440",  # Score 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["score"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "441",  # Modifications 
-                    "objectAttributeValues": [
-                        {
-                            "value": data["modifications"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "442",  # Purifier
-                    "objectAttributeValues": [
-                        {
-                            "value": data["purifier"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "443",  # Distributedto
-                    "objectAttributeValues": [
-                        {
-                            "value": data["distributedto"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "444",  # Crystallographer
-                    "objectAttributeValues": [
-                        {
-                            "value": data["crystallographer"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "445",  # Description
-                    "objectAttributeValues": [
-                        {
-                            "value": data["description"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "446",  # Resolution
-                    "objectAttributeValues": [
-                        {
-                            "value": data["resolution"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "447",  # Resolutionunit
-                    "objectAttributeValues": [
-                        {
-                            "value": data["resolutionunit"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "448",  # Cryoname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["cryoname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "449",  # Testdate
-                    "objectAttributeValues": [
-                        {
-                            "value": data["testdate"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "450",  # Pdbid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["pdbid"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "451",  # Notes
-                    "objectAttributeValues": [
-                        {
-                            "value": data["notes"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "452",  # Ligandname
-                    "objectAttributeValues": [
-                        {
-                            "value": data["ligandname"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "453",  # Ligandtype
-                    "objectAttributeValues": [
-                        {
-                            "value": data["ligandtype"]  
-                        }
-                    ]
-            }, 
-            {
-                    "objectTypeAttributeId": "454",  # Harvestid
-                    "objectAttributeValues": [
-                        {
-                            "value": data["harvestid"]  
-                        }
-                    ]
-            } 
-        ]
-
-        create_data = {
-            "objectTypeId": "26",  # Create a "crystal" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:") #, create_results
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
-    '''
-
-
-    '''
-    def check_jira_record_exit(self, data_item):
-        print("target_id:",data_item["targetid"])
-
-        headers = {
-            'Authorization': f'Basic {self.encoded_credentials}',
-            'Content-Type': 'application/json'
-        }
-        # IQL search query
-        iql_query = f'Targetid == "{data_item["targetid"]}" '
-        search_url = f'{self.base_url}/object/aql'
-        search_data = {
-            "qlQuery": iql_query
-        }
-
-        # Perform the IQL search\
-        search_response = requests.post(search_url, headers=headers, data=json.dumps(search_data))
-        if search_response.status_code == 200:
-            search_results = search_response.json()
-            if 'values' in search_results and len(search_results['values']) > 0: 
-                print("found")#print("Search results:", search_results['values'])
-                return True
-            else:
-                print("No objects found with the specified query.")
-                return False
-        else:
-            print("Search failed:", search_response.status_code, search_response.text)
-            return False
-    '''
         
 
     def delete_jira_record(self, record_id):
@@ -3050,24 +1783,53 @@ class CSBIDTask(JIRAImportUtil):
     
 
     def getPurProteinObjectID(self, purbatchcproprcid): 
-        if purbatchcproprcid not in self.pur_protein_id_map[purbatchcproprcid]:
+        try:
+            if (len(self.all_pur_protein_id_map)!=0) and (purbatchcproprcid in self.all_pur_protein_id_map):
+                return self.all_pur_protein_id_map[purbatchcproprcid]
+            elif (len(self.pur_protein_id_map)!=0) and (purbatchcproprcid in self.pur_protein_id_map):
+                return self.pur_protein_id_map[purbatchcproprcid]
+            else:
+                return None
+        except:
+            return None
+        '''
+        if (len(self.pur_protein_id_map)==0) or (purbatchcproprcid not in self.pur_protein_id_map):
             return None
         try:
             return self.pur_protein_id_map[purbatchcproprcid]
         except:
             return None
+        '''
+     
 
     def setPurProteinIDMap(self, response_list, attribute_id):
-        for item in response_list:  
-            attributes = item["attributes"] 
-            for attr in attributes:
-                if attr["objectTypeAttributeId"] == attribute_id:  #Pur Protein Purbatchcproprcid attribute 326,374
-                    key = attr["objectAttributeValues"][0]["value"].strip() 
-                    if key in self.pur_protein_id_map:
-                        print("Something wrong!! Duplicated Pur protein Purbatchcproprcid in pur_protein_id_map",key)
-                    else:    
-                        self.pur_protein_id_map[key] = item["id"] 
-
+        try:
+            for item in response_list:  
+                attributes = item["attributes"] 
+                for attr in attributes:
+                    if attr["objectTypeAttributeId"] == attribute_id:  #Pur Protein Purbatchcproprcid attribute 326,374
+                        key = attr["objectAttributeValues"][0]["value"].strip() 
+                        if key in self.pur_protein_id_map:
+                            print("Something wrong!! Duplicated Pur protein Purbatchcproprcid in pur_protein_id_map",key)
+                        else:    
+                            self.pur_protein_id_map[key] = item["id"] 
+        except:
+            print("Erroe:setPurProteinIDMap response_list:",response_list)
+    
+    
+    def setAllPurProteinIDMap(self, response_list, attribute_id):
+        try:
+            for item in response_list:  
+                attributes = item["attributes"] 
+                for attr in attributes:
+                    if attr["objectTypeAttributeId"] == attribute_id:  #Pur Protein Purbatchcproprcid attribute 326,374
+                        key = attr["objectAttributeValues"][0]["value"].strip() 
+                        if key in self.all_pur_protein_id_map:
+                            print("Something wrong!! Duplicated Pur protein Purbatchcproprcid in all_pur_protein_id_map",key)
+                        else:    
+                            self.all_pur_protein_id_map[key] = item["id"] 
+        except:
+            print("Error:setAllPurProteinIDMap response_list:",response_list)
             
     def remove_purifiedproteins_from_all_purifiedproteins(self, purifiedproteins_json, all_purifiedproteins_json):
         out=[]
@@ -3082,54 +1844,92 @@ class CSBIDTask(JIRAImportUtil):
                 out.append(apitem)
          
         return out
-
-
-
-    '''
-    print('CSBID run task...') 
-    jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace'  
-    response = requests.get(jira_servicedeskapi_url, 
-                            headers={'Content-Type': 'application/json', 
-                                    'authorization': 'Basic '+ self.encoded_credentials})
-    workspaces_response_json = response.json()
-    print(workspaces_response_json["values"])
-    print(workspaces_response_json)
-
-
-    workspace_id = workspaces_response_json["values"][0]["workspaceId"]
-    jira_servicedeskapi_url = "https://api.atlassian.com/jsm/assets/workspace/" + workspace_id + "/v1/objectschema/list"
-    response = requests.get(jira_servicedeskapi_url, 
-                            headers={'Content-Type': 'application/json', 
-                                    'authorization': 'Basic '+ self.encoded_credentials})
-
-    print(response.json())
-
-    #update assets
-    base_url = f'https://api.atlassian.com/jsm/assets/workspace/{workspace_id}/v1'
     
-    return update_response.json()
-    '''
 
-    '''
-    req = urllib.request.Request(jira_servicedeskapi_url, 
-                                headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
-                                        'Content-Type':'application/json', 
-                                        'authorization':'Basic ' + jira_servicedeskapi_token}) 
-    response = urllib.request.urlopen(req)
-    content = response.read().decode(response.info().get_param('charset') or 'utf-8')
-    print(content) 
-    ''' 
+    def upload_attachment(self, object_id, structure_json):
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/temp_files/"  #current path: /srv/app/core/jira
+        filename = 'structure.pdb'
 
-    '''
-    print("ANL============")
-    req = urllib.request.Request(login_endpoint, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11','Accept':'application/json', 'authorization':'Bearer ' + api_key})
-    #req.add_header('Accept', 'application/json')
-    #req.add_header('authorization', 'Bearer ' + api_key)
-    response = urllib.request.urlopen(req)
-    content = response.read().decode(response.info().get_param('charset') or 'utf-8')
-    response_json = json.loads(content)
-    print(content) 
-    sessionid = response_json['data']['sessionid']
-    print(sessionid) 
-    print("ANL<===========")
-    '''
+        file_generated = False    
+        media = structure_json['media']
+        for mediatypes in media:       
+            if 'commonname' in mediatypes:
+                if mediatypes['commonname'] == 'coordinates':
+                    #print ('found coordinates')
+                    coordinates = base64.b64decode(mediatypes['filedata'])
+                    with open(file_path+"structure.pdb", "w") as f:
+                        print(coordinates, file=f)
+                        file_generated = True
+
+        if file_generated==False:
+            print("No structure file generated, skip attachement.")
+            return
+
+        headers = {
+        'Authorization': f'Basic {self.encoded_credentials}',
+        'Accept': 'application/json'
+        }
+        credentials_url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments/object/{object_id}/credentials'
+        credentials_response = requests.get(credentials_url, headers=headers)
+        credentials_data = credentials_response.json()
+
+        # Extract needed values
+        client_id = credentials_data['clientId']
+        media_base_url = credentials_data['mediaBaseUrl']
+        media_jwt_token = credentials_data['mediaJwtToken']
+
+        print(client_id,media_base_url,media_jwt_token)
+
+        # Step 2: Upload the file to the media server
+        upload_url = f"{media_base_url}/file/binary?name={quote(filename.split('/')[-1])}"
+        upload_headers = {
+            'X-Client-Id': client_id,
+            'Authorization': f'Bearer {media_jwt_token}',
+            'Content-Type': 'multipart/form-data'
+        }
+            
+        file_content = {'file': open(file_path+filename, 'rb')}
+        upload_response = requests.post(upload_url, headers=upload_headers, files=file_content)
+        upload_data = upload_response.json()
+
+        # Check if the upload was successful before proceeding
+        if upload_response.status_code == 200 or upload_response.status_code == 201:
+            upload_data = upload_response.json()
+            try:
+                media_id = upload_data['data']['id']
+                media_size = upload_data['data']['size']
+            except KeyError as e:
+                print(f"Failed to extract necessary information from upload response: {e}")
+                print("Response was:", upload_data)
+                exit(1)
+        else:
+            print("Failed to upload file:", upload_response.status_code, upload_response.text)
+            exit(1)
+
+        # Step 3: Attach the file to the asset
+        attach_url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments/object/{object_id}'
+        attach_headers = {
+            'Authorization': f'Basic {self.encoded_credentials}',
+            'Content-Type': 'application/json'
+        }
+        attach_data = {
+            "attachments": [
+                {
+                    "contentType": "text/plain",  # Correct MIME type for a text file
+                    "filename": filename.split('/')[-1],
+                    "mediaId": media_id,
+                    "size": media_size,
+                    "comment": "Attaching a text file"
+                }
+            ]
+        }
+        attach_response = requests.post(attach_url, headers=attach_headers, json=attach_data)
+
+        # Output the result
+        if attach_response.status_code in [200, 201]:
+            print("Attachment successful:") #, attach_response.json()
+        else:
+            print("Failed to attach file:", attach_response.status_code, attach_response.text)
+
+
+

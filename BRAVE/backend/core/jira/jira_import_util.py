@@ -14,6 +14,7 @@ class JIRAObjectID(Enum):
     PURIFIED_PROTEINS = 22
     ALL_CRYSTAL_SUMMARY = 25
     CRYSTAL = 26
+    STRUCTURE = 31
 
 
 class JIRAImportUtil(ABC):
@@ -58,16 +59,18 @@ class JIRAImportUtil(ABC):
         """ 
         req_result_list = []
         for index, data_item in enumerate(data_list):
-            found = self.check_jira_record_exit(data_item, jira_record_search_object_type, jira_record_search_id, data_search_id)  
-            #print("found jira record?", found)
-            attributes_data = attributes_data_list[index] #self.get_attributes_data(data_item) 
-            if found:
-                print("found, update existing...")
-                req_result = self.update_record(jira_object_id, found[0]["id"], attributes_data)  
-            else:
-                print("not found, create new...")
-                req_result = self.push_new_record(jira_object_id, attributes_data)  
-            req_result_list.append(req_result)
+            try:
+                found = self.check_jira_record_exit(data_item, jira_record_search_object_type, jira_record_search_id, data_search_id)  
+                attributes_data = attributes_data_list[index] #self.get_attributes_data(data_item) 
+                if found:
+                    print("found, update existing...")
+                    req_result = self.update_record(jira_object_id, found[0]["id"], attributes_data)  
+                else:
+                    print("not found, create new...")
+                    req_result = self.push_new_record(jira_object_id, attributes_data)  
+                req_result_list.append(req_result)
+            except:
+                req_result_list.append(None)
         return req_result_list
     
 
