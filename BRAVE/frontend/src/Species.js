@@ -283,6 +283,11 @@ export default function Species() {
           <span ref={gbRef}></span>
           <GenomeBrowser taxonId={taxonId}></GenomeBrowser>
           <br/>
+          <a href="https://www.ncbi.nlm.nih.gov/nuccore/NC_003899.1?report=graph" target="_blank">https://www.ncbi.nlm.nih.gov/nuccore/NC_003899.1?report=graph</a>
+          <br/>
+          <br/>
+          <br/>
+
           <Paper elevation={1} sx={{ p:1, mb:1 }} ref={targetTableRef}>
             <h3>Tagets</h3>
 

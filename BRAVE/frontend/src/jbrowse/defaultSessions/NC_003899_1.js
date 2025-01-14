@@ -8,11 +8,12 @@ export const defaultSession = {
         id: 'linearGenomeView',
         minimized: false,
         type: 'LinearGenomeView', 
+        bpPerPx:10,
         displayedRegions: [
             {
                 refName:"NC_003899.1",
                 start: 1,
-                end: 11675,
+                end: 11675, 
                 reversed: false,
                 assemblyName: 'NC_003899.1',
             }

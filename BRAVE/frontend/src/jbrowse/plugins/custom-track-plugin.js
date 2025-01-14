@@ -149,7 +149,7 @@ export default class CustomTrackPlugin extends Plugin {
                           )
                           // console log the list of potentially multiple
                           // regions that were selected
-                          console.log(selectedRegions)
+                          //console.log(selectedRegions)
                         },
                       },
                     ]

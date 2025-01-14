@@ -31,10 +31,10 @@ def get_ANL_sessionid():
 
 def get_species_list(request):
     content = [
-        {"taxon_id": 11021, "species":'Eastern equine encephalitis virus'}, 
-        {"taxon_id": 11036,"species":'Venezuelan equine encephalitis virus'},
         {"taxon_id": 37124,"species":'Chikungunya virus'},
-        {"taxon_id": 2697049, "species": 'Wuhan seafood market pneumonia virus'},
+        {"taxon_id": 11021, "species":'Eastern equine encephalitis virus'}, 
+        {"taxon_id": 2697049,"species":'Wuhan seafood market pneumonia virus'},
+        {"taxon_id": 11036,"species":'Venezuelan equine encephalitis virus'},
     ]
     return JsonResponse(content, safe=False)
 
