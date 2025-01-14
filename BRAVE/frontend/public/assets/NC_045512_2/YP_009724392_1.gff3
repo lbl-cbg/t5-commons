@@ -1,0 +1,12 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+
+NC_045512.2	RefSeq	gene	26245	26472	.	+	.	ID=gene-GU280_gp04;Dbxref=GeneID:43740570;Name=E;gbkey=Gene;gene=E;gene_biotype=protein_coding;locus_tag=GU280_gp04
+NC_045512.2	RefSeq	CDS	26245	26472	.	+	0	ID=cds-YP_009724392.1;_Parent=gene-GU280_gp04;Dbxref=GenBank:YP_009724392.1,GeneID:43740570;Name=YP_009724392.1;Note=ORF4%3B structural protein%3B E protein;gbkey=CDS;gene=E;locus_tag=GU280_gp04;product=envelope protein;protein_id=YP_009724392.1

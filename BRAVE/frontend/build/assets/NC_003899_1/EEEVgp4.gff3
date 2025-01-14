@@ -1,0 +1,8 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_003899.1 1 11675
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+NC_003899.1	RefSeq	gene	7592	10095	.	+	.	ID=gene-EEEVgp4;Dbxref=GeneID:13165421;Name=EEEVgp4;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp4
+NC_003899.1	RefSeq	CDS	7592	9961	.	+	0	ID=cds-YP_006491233.1;xParent=gene-EEEVgp4;Dbxref=GenBank:YP_006491233.1,GeneID:13165421;Name=YP_006491233.1;Note=Truncated version of structural polyprotein and transframe fusion protein have been added by NCBI Staff with the kind help of Dr. David Karlin (Department of Zoology%2C University of Oxford%2C UK) and Dr. Andrew Firth (Department of Pathology%2C University of Cambridge%2C UK).;gbkey=CDS;locus_tag=EEEVgp4;product=truncated polyprotein;protein_id=YP_006491233.1
+NC_003899.1	RefSeq	CDS	9961	10095	.	+	0	ID=cds-YP_006491233.1;xParent=gene-EEEVgp4;Dbxref=GenBank:YP_006491233.1,GeneID:13165421;Name=YP_006491233.1;Note=Truncated version of structural polyprotein and transframe fusion protein have been added by NCBI Staff with the kind help of Dr. David Karlin (Department of Zoology%2C University of Oxford%2C UK) and Dr. Andrew Firth (Department of Pathology%2C University of Cambridge%2C UK).;gbkey=CDS;locus_tag=EEEVgp4;product=truncated polyprotein;protein_id=YP_006491233.1

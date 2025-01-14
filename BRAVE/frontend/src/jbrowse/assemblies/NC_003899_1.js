@@ -10,10 +10,10 @@ export const assembly = {
         adapter: { 
         "type": "IndexedFastaAdapter",
         fastaLocation: {
-            uri: '/assets/nc_003899_1_sequence.fasta',
+            uri: '/assets/NC_003899_1/nc_003899_1_sequence.fasta',
         },
         faiLocation: {
-            uri: '/assets/nc_003899_1_sequence.fasta.fai',
+            uri: '/assets/NC_003899_1/nc_003899_1_sequence.fasta.fai',
         }
         },
     }

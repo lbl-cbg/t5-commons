@@ -33,7 +33,8 @@ def get_species_list(request):
     content = [
         {"taxon_id": 11021, "species":'Eastern equine encephalitis virus'}, 
         {"taxon_id": 11036,"species":'Venezuelan equine encephalitis virus'},
-        {"taxon_id": 37124,"species":'Chikungunya virus'}
+        {"taxon_id": 37124,"species":'Chikungunya virus'},
+        {"taxon_id": 2697049, "species": 'Wuhan seafood market pneumonia virus'},
     ]
     return JsonResponse(content, safe=False)
 
@@ -49,6 +50,7 @@ def get_species(request,taxonid):
     print("Get Targets...")
     json_to_get_targets = '{"data" : [{"apiaction" : "targetsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
     response = requests.post(braveapi_endpoint, data = json_to_get_targets) 
+    #print("rt:",response.text)
     targets_json = response.json()
     target_list = get_target_list_from_json(taxonid, targets_json["targets"])
 

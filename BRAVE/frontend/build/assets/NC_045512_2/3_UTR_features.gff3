@@ -1,0 +1,10 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+NC_045512.2	RefSeq	three_prime_UTR	29675	29903	.	+	.	ID=id-NC_045512.2:29675..29903;gbkey=3'UTR

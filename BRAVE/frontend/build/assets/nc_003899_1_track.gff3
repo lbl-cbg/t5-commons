@@ -1,0 +1,35 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_003899.1 1 11675
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
+NC_003899.1	RefSeq	region	1	11675	.	+	.	ID=NC_003899.1:1..11675;Dbxref=taxon:11021;cell-line=virus grown on vero cells;clone-lib=cDNA plasmid clones grown in E.coli JC-5183;gbkey=Src;genome=genomic;mol_type=genomic RNA;old-name=Eastern equine encephalomyelitis virus;strain=ssp. North American variant
+NC_003899.1	RefSeq	gene	47	7528	.	+	.	ID=gene-EEEVgp2;Dbxref=GeneID:944523;Name=EEEVgp2;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp2
+NC_003899.1	RefSeq	CDS	47	7528	.	+	0	ID=cds-NP_632021.2;Parent=gene-EEEVgp2;Dbxref=UniProtKB/TrEMBL:Q66581,GenBank:NP_632021.2,GeneID:944523;Name=NP_632021.2;Note=Readthrough product of p123;gbkey=CDS;locus_tag=EEEVgp2;product=nonstructural polyprotein p1234;protein_id=NP_632021.2;transl_except=(pos:5681..5683%2Caa:Other)
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	47	5680	.	+	.	ID=id-NP_632021.2:1..1878;Parent=cds-NP_632021.2;gbkey=Prot;product=p123 protein;protein_id=YP_913810.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	47	1642	.	+	.	ID=id-NP_632021.2:1..532;Parent=cds-NP_632021.2;gbkey=Prot;product=nsP1 protein;protein_id=YP_913811.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	1643	4024	.	+	.	ID=id-NP_632021.2:533..1326;Parent=cds-NP_632021.2;gbkey=Prot;product=nsP2 protein;protein_id=YP_913812.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	4025	5680	.	+	.	ID=id-NP_632021.2:1327..1878;Parent=cds-NP_632021.2;gbkey=Prot;product=nsP3 protein;protein_id=YP_913813.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	5684	7525	.	+	.	ID=id-NP_632021.2:1880..2493;Parent=cds-NP_632021.2;gbkey=Prot;product=nsP4 protein;protein_id=NP_740652.1
+NC_003899.1	RefSeq	sequence_feature	7526	7528	.	+	.	ID=id-EEEVgp2;Dbxref=GeneID:944523;Note=stop codon between nonstructural and structural genes;gbkey=misc_feature;locus_tag=EEEVgp2
+NC_003899.1	RefSeq	gene	47	5683	.	+	.	ID=gene-EEEVgp1;Dbxref=GeneID:944521;Name=EEEVgp1;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp1
+NC_003899.1	RefSeq	CDS	47	5683	.	+	0	ID=cds-NP_632020.1;Parent=gene-EEEVgp1;Dbxref=UniProtKB/TrEMBL:Q66580,GenBank:NP_632020.1,GeneID:944521;Name=NP_632020.1;gbkey=CDS;locus_tag=EEEVgp1;product=nonstructural polyprotein p123;protein_id=NP_632020.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	47	1642	.	+	.	ID=id-NP_632020.1:1..532;Parent=cds-NP_632020.1;gbkey=Prot;product=nsP1 protein;protein_id=NP_740649.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	1643	4024	.	+	.	ID=id-NP_632020.1:533..1326;Parent=cds-NP_632020.1;gbkey=Prot;product=nsP2 protein;protein_id=NP_740650.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	4025	5680	.	+	.	ID=id-NP_632020.1:1327..1878;Parent=cds-NP_632020.1;gbkey=Prot;product=nsP3 protein;protein_id=NP_740651.1
+NC_003899.1	RefSeq	sequence_feature	5681	5683	.	+	.	ID=id-EEEVgp1;Dbxref=GeneID:944521;Note=stop codon between NS3 and NS4 genes;gbkey=misc_feature;locus_tag=EEEVgp1
+NC_003899.1	RefSeq	sequence_feature	7534	7534	.	+	.	ID=id-NC_003899.1:7534..7534;Note=start for 26S sub-RNA;gbkey=misc_feature
+NC_003899.1	RefSeq	gene	7592	11317	.	+	.	ID=gene-EEEVgp3;Dbxref=GeneID:944522;Name=EEEVgp3;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp3
+NC_003899.1	RefSeq	CDS	7592	11317	.	+	0	ID=cds-NP_632022.1;Parent=gene-EEEVgp3;Dbxref=UniProtKB/TrEMBL:Q66579,GenBank:NP_632022.1,GeneID:944522;Name=NP_632022.1;gbkey=CDS;locus_tag=EEEVgp3;product=precursor of structural proteins;protein_id=NP_632022.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	7592	8371	.	+	.	ID=id-NP_632022.1:1..260;Note=the capsid protein is a serine proteinase that releases itself from the precursor;Parent=cds-NP_632022.1;gbkey=Prot;product=C protein;protein_id=NP_740644.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	8372	9820	.	+	.	ID=id-NP_632022.1:261..743;Parent=cds-NP_632022.1;gbkey=Prot;product=PE2 protein;protein_id=YP_913809.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	8372	8560	.	+	.	ID=id-NP_632022.1:261..323;Note=In some alphaviruses%2C E3 was not detected;Parent=cds-NP_632022.1;gbkey=Prot;product=E3 protein;protein_id=NP_740645.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	8561	9820	.	+	.	ID=id-NP_632022.1:324..743;Parent=cds-NP_632022.1;gbkey=Prot;product=E2 protein;protein_id=NP_740646.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	9821	9991	.	+	.	ID=id-NP_632022.1:744..800;Parent=cds-NP_632022.1;gbkey=Prot;product=6K protein;protein_id=NP_740647.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	9992	11314	.	+	.	ID=id-NP_632022.1:801..1241;Parent=cds-NP_632022.1;gbkey=Prot;product=E1 protein;protein_id=NP_740648.1
+NC_003899.1	RefSeq	gene	7592	10095	.	+	.	ID=gene-EEEVgp4;Dbxref=GeneID:13165421;Name=EEEVgp4;gbkey=Gene;gene_biotype=protein_coding;locus_tag=EEEVgp4
+NC_003899.1	RefSeq	CDS	7592	9961	.	+	0	ID=cds-YP_006491233.1;Parent=gene-EEEVgp4;Dbxref=GenBank:YP_006491233.1,GeneID:13165421;Name=YP_006491233.1;Note=Truncated version of structural polyprotein and transframe fusion protein have been added by NCBI Staff with the kind help of Dr. David Karlin (Department of Zoology%2C University of Oxford%2C UK) and Dr. Andrew Firth (Department of Pathology%2C University of Cambridge%2C UK).;gbkey=CDS;locus_tag=EEEVgp4;product=truncated polyprotein;protein_id=YP_006491233.1
+NC_003899.1	RefSeq	CDS	9961	10095	.	+	0	ID=cds-YP_006491233.1;Parent=gene-EEEVgp4;Dbxref=GenBank:YP_006491233.1,GeneID:13165421;Name=YP_006491233.1;Note=Truncated version of structural polyprotein and transframe fusion protein have been added by NCBI Staff with the kind help of Dr. David Karlin (Department of Zoology%2C University of Oxford%2C UK) and Dr. Andrew Firth (Department of Pathology%2C University of Cambridge%2C UK).;gbkey=CDS;locus_tag=EEEVgp4;product=truncated polyprotein;protein_id=YP_006491233.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	9821	9961	.	+	.	ID=id-YP_006491233.1:744..834;Parent=cds-YP_006491233.1;gbkey=Prot;product=transframe fusion protein;protein_id=YP_006491234.1
+NC_003899.1	RefSeq	mature_protein_region_of_CDS	9961	10092	.	+	.	ID=id-YP_006491233.1:744..834;Parent=cds-YP_006491233.1;gbkey=Prot;product=transframe fusion protein;protein_id=YP_006491234.1
+

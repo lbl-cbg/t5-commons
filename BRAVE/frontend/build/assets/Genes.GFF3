@@ -1,0 +1,13 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region MK028842.1 1 11414
+MK028842.1	Genbank	five_prime_UTR	1	68	.	+	.	ID=id-MK028842.1:1..68;gbkey=5'UTR
+MK028842.1	Genbank	gene	69	7496	.	+	.	ID=gene-NSP;Name=NSP;gbkey=Gene;gene=NSP;gene_biotype=protein_coding
+MK028842.1	Genbank	CDS	69	7496	.	+	0	ID=cds-AYI50340.1;Parent=gene-NSP;Dbxref=NCBI_GP:AYI50340.1;Name=AYI50340.1;Note=can be translated as p123 or p1234%3B p1234 depends on read-through of an opal termination codon at the end of nsP3;gbkey=CDS;gene=NSP;product=nonstructural polyprotein;protein_id=AYI50340.1;transl_except=(pos:5649..5651%2Caa:Other)
+MK028842.1	Genbank	gene	7568	11296	.	+	.	ID=gene-SP;Name=SP;gbkey=Gene;gene=SP;gene_biotype=protein_coding
+MK028842.1	Genbank	CDS	7568	11296	.	+	0	ID=cds-AYI50341.1;Parent=gene-SP;Dbxref=NCBI_GP:AYI50341.1;Name=AYI50341.1;gbkey=CDS;gene=SP;product=structural polyprotein;protein_id=AYI50341.1
+MK028842.1	Genbank	CDS	7568	9940	.	+	0	ID=cds-AYI50342.1;Parent=gene-SP;Dbxref=NCBI_GP:AYI50342.1;Name=AYI50342.1;exception=ribosomal slippage;gbkey=CDS;gene=SP;product=truncated structural polyprotein;protein_id=AYI50342.1
+MK028842.1	Genbank	CDS	9940	10029	.	+	0	ID=cds-AYI50342.1;Parent=gene-SP;Dbxref=NCBI_GP:AYI50342.1;Name=AYI50342.1;exception=ribosomal slippage;gbkey=CDS;gene=SP;product=truncated structural polyprotein;protein_id=AYI50342.1
+MK028842.1	Genbank	three_prime_UTR	11297	11414	.	+	.	ID=id-MK028842.1:11297..11414;gbkey=3'UTR
+###

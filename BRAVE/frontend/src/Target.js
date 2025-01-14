@@ -30,14 +30,9 @@ import * as util from "./util";
 export default function Target() {
    
   const { taxonId, braveId } = useParams();
-  const [data, setData] = useState({});
-  /*const taxonidMap = {"11021":"EEEV",
-                      "11036":"VEEV",
-                      "37124":"CHIKV"
-              };*/
+  const [data, setData] = useState({}); 
 
   useEffect(() => {
-
     const fetchData = async () => {
       
       const req = await fetch('/api/species/'+taxonId+"/target/"+braveId);

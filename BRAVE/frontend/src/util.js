@@ -9,5 +9,8 @@ export const taxonidMap = {"11021":{abbr:"EEEV",
                               },
                       "37124":{abbr:"CHIKV",
                                 fullname:"Chikungunya virus"
-                              }
+                              },
+                      "2697049":{abbr:"COVID2",
+                              fullname:"Wuhan seafood market pneumonia virus"
+                            }
               }; 

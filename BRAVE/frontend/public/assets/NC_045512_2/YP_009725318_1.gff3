@@ -1,0 +1,12 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+
+NC_045512.2	RefSeq	gene	27756	27887	.	+	.	ID=gene-GU280_gp08;Dbxref=GeneID:43740574;Name=ORF7b;gbkey=Gene;gene=ORF7b;gene_biotype=protein_coding;locus_tag=GU280_gp08
+NC_045512.2	RefSeq	CDS	27756	27887	.	+	0	ID=cds-YP_009725318.1;_Parent=gene-GU280_gp08;Dbxref=GenBank:YP_009725318.1,GeneID:43740574;Name=YP_009725318.1;gbkey=CDS;gene=ORF7b;locus_tag=GU280_gp08;product=ORF7b;protein_id=YP_009725318.1

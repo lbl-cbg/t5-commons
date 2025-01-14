@@ -13,25 +13,45 @@ export const tracks = [
             gffLocation: {
             uri: '/assets/NC_003899_1/EEEVgp2.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "EEEVgp2-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
         trackId: 'YP_913810_1',
         name: 'YP_913810.1',
         assemblyNames: ['NC_003899.1'],
-        category: ['Genes'],
+        category: ['Proteins'],
         adapter: {
             type: 'Gff3Adapter',
             gffLocation: {
             uri: '/assets/NC_003899_1/YP_913810_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "YP_913810_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
         trackId: 'YP_913811_1',
-        name: 'EEEV_MT',
+        name: 'YP_913811_1',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -41,7 +61,7 @@ export const tracks = [
             }
         },
         "formatDetails": {
-            "feature": "jexl:{Extra_links:'link to somewhere: '+'<a href=https://google.com/?q='+feature.name+' target=_blank>'+feature.name+'</a>',type:undefined }"
+            //"feature": "jexl:{Extra_links:'link to somewhere: '+'<a href=https://google.com/?q='+feature.name+' target=_blank>'+feature.name+'</a>',type:undefined }"
         },
         "displays": [
             {
@@ -54,6 +74,33 @@ export const tracks = [
             }
         ]
     },
+
+
+
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_913812_1',
+      name: 'YP_913812_1',
+      assemblyNames: ['NC_003899.1'],
+      category: ['Genes'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_003899_1/YP_913812_1.gff3',
+          }
+      },
+      "displays": [
+          {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_913812_1-LinearBasicDisplay",
+          "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" //TARGETS
+          }
+          }
+      ]
+    },
+    /*
     {
       type: 'FeatureTrack',
       trackId: 'YP_913812_1_EEEV_HEL',
@@ -123,10 +170,11 @@ export const tracks = [
           }
       ]
     },
+    */
     {
         type: 'FeatureTrack',
         trackId: 'YP_913813_1',
-        name: 'EEEV_MACRO',
+        name: 'YP_913813_1',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -150,7 +198,7 @@ export const tracks = [
     {
         type: 'FeatureTrack',
         trackId: 'NP_740652_1',
-        name: 'EEEV_RDRP',
+        name: 'NP_740652_1',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -181,7 +229,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/EEEVgp1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "EEEVgp1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -194,7 +252,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740649_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740649_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -207,7 +275,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740650_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740650_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -220,7 +298,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740651_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740651_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -233,7 +321,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/EEEVgp3.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "EEEVgp3-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -246,7 +344,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740644_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740644_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -259,7 +367,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/YP_913809_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "YP_913809_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -272,7 +390,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740645_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740645_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -285,7 +413,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740646_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740646_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -298,7 +436,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740647_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740647_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
     {
         type: 'FeatureTrack',
@@ -311,7 +459,17 @@ export const tracks = [
             gffLocation: {
                 uri: '/assets/NC_003899_1/NP_740648_1.gff3',
             }
-        }
+        },
+        "displays": [
+          {
+            "type": "LinearBasicDisplay",
+            "displayId": "NP_740648_1-LinearBasicDisplay",
+            "renderer": {
+              "type": "SvgFeatureRenderer",
+              "color1": "jexl:colorFeature(feature)" 
+            }
+          }
+        ]
     },
   
 ];
