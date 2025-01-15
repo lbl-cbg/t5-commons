@@ -49,6 +49,7 @@ services:
     volumes:
       - static:/srv/app/static
       - media:/srv/app/media
+      - ./frontend/:/srv/app/f
     depends_on:
       - django
       - react

@@ -23,6 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
+import { DataGrid, GridRowsProp, GridColDef, useGridApiRef } from '@mui/x-data-grid';
 import * as d3 from "d3";
 import GenomeBrowser from "./jbrowse/components/GenomeBrowser";
 import * as util from "./util";
@@ -30,20 +31,12 @@ import * as util from "./util";
 
 export default function Species() {
   const { taxonId } = useParams();
-  const [data, setData] = useState([]);
-  /*const taxonidMap = {"11021":{abbr:"EEEV",
-                                fullname:"Eastern equine encephalitis virus"
-                              },
-                      "11036":{abbr:"VEEV",
-                                fullname:"Venezuelan equine encephalitis virus"
-                              },
-                      "37124":{abbr:"CHIKV",
-                                fullname:"Chikungunya virus"
-                              }
-              }; */
+  const [data, setData] = useState([]); 
   const [selectedMenuItem, setSelectedMenuItem] = useState("GenomeBrowser");
-  const gbRef = useRef(null)
-  const targetTableRef = useRef(null)
+  const [targetsTableRows, setTargetsTableRows] = useState([]);
+  const gbRef = useRef(null);
+  const targetTableRef = useRef(null);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
   
   const width = 500;
   const root = d3.hierarchy({
@@ -137,17 +130,57 @@ export default function Species() {
     .lower()
     .attr('stroke', 'white');
 
+  const apiRef = useGridApiRef();
+  let targetsTableColumns = [
+    { field: 'originaltargetid', headerName: 'Org. Target ID', flex: 1,},
+    { field: 'targetannotation', headerName: 'Target Annotation', flex: 1.5,},
+    { field: 'vector', headerName: 'Vector', flex: 1,},
+    { field: 'expressionlevel', headerName: 'Expression Level (%)', flex: 1,},
+    { field: 'proteinconcentration', headerName: 'Protein Concentration (mg/mL)', flex: 1.2,},
+    { field: 'proteinvolume', headerName: 'Protein Volume (µL)', flex: 1,},
+    { field: 'buffercontent', headerName: 'Buffer Content', flex: 1,}, 
+    { field: 'targetid', headerName: 'Target ID', flex: 1,}, 
+  ];
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       const req = await fetch('/api/species/' + taxonId);
       let data = await req.json();
-      console.log('sr:', data);
       setData(data);
-    };
+
+
+      console.log("D:",data);
+
+      if(data && data.length>0)
+      {
+        let na = data.map((item) => {
+          item.id=item.targetid;
+          return item;
+
+        });
+        console.log("na:",na);
+        setTargetsTableRows(data); 
+      }
+
+      console.log("this.targetsTableRows:",targetsTableRows);
+
+    }
 
     fetchData();
   }, []);
  
+  const getRowId = (row) =>{
+    return row.targetid;
+  }
+
+  const autosizeOptions = {
+    columns: ['originaltargetid','targetannotation','vector','expressionlevel','proteinconcentration','proteinvolume','buffercontent'],
+    includeHeaders: true,
+    includeOutliers: true,
+    expand:true
+  };
 
   const listItemClickHandler = (section) =>{
     console.log(".....",section);
@@ -160,6 +193,11 @@ export default function Species() {
     {
       targetTableRef.current.scrollIntoView({behavior: 'smooth'});
     }
+  };
+
+  window.speciesSetTargetRow = (targetID) => { 
+    setRowSelectionModel(targetID);
+    targetTableRef.current.scrollIntoView({behavior: 'smooth'});
   };
 
 
@@ -243,7 +281,7 @@ export default function Species() {
       mainContent={
         <div>
           <span ref={gbRef}></span>
-          <GenomeBrowser></GenomeBrowser>
+          <GenomeBrowser taxonId={taxonId}></GenomeBrowser>
           <br/>
           <a href="https://www.ncbi.nlm.nih.gov/nuccore/NC_003899.1?report=graph" target="_blank">https://www.ncbi.nlm.nih.gov/nuccore/NC_003899.1?report=graph</a>
           <br/>
@@ -251,7 +289,38 @@ export default function Species() {
           <br/>
 
           <Paper elevation={1} sx={{ p:1, mb:1 }} ref={targetTableRef}>
-            <h3>Targets</h3>
+            <h3>Tagets</h3>
+
+            <div style={{ width: '100%' }}>
+              {(!data || data.length==0) && 
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+              }
+              {data && data.length>0 && 
+              <DataGrid 
+                        apiRef={apiRef}
+                        rows={targetsTableRows} 
+                        columns={targetsTableColumns} 
+                        getRowId={getRowId}
+                        getRowHeight={() => 'auto'}
+                        autosizeOptions={autosizeOptions}
+                        initialState={{
+                          sorting: {
+                            sortModel: [{ field: 'originaltargetid', sort: 'asc' }],
+                          },
+                          columns: {
+                            columnVisibilityModel: { 
+                              targetid: false
+                            },
+                          },
+                        }}
+                        rowSelectionModel={rowSelectionModel}
+              />
+              }
+            </div>
+
+            {/*
             <TableContainer >
               {(!data || data.length==0) && 
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -286,6 +355,7 @@ export default function Species() {
                       <TableCell>{row.proteinconcentration}</TableCell>
                       <TableCell>{row.proteinvolume}</TableCell>
                       <TableCell>{row.buffercontent}</TableCell>
+                      <TableCell style={{display:"none"}}>{row.targetid}</TableCell>
                     </TableRow>
                   ))}
 
@@ -293,6 +363,7 @@ export default function Species() {
               </Table>
               }
             </TableContainer>
+            */}
           </Paper>
           {/*
           <Paper elevation={1} sx={{ p:1, mb:1 }}>

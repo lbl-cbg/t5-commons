@@ -18,28 +18,22 @@ export default function PageContainer(props) {
   const [paths, setPaths] = useState([]);
 
   useEffect(() => {
-
+    /*
     const fetchData = async () => {
-      /*
       const req = await fetch('http://localhost:8080/api/species-list');
       let data = await req.json();
-      setSpeciesList(data);*/
+      setSpeciesList(data);
     }
-
-    //fetchData();
+    fetchData();
+    */
 
     let pathArray = window.location.pathname.split('/');
-    pathArray.shift();
-    console.log("pa:", pathArray);
+    pathArray.shift(); 
     setPaths(pathArray);
-
-
 
   }, []);
 
 
-  
-   
 
   return (
     <Grid container rowSpacing={2}>

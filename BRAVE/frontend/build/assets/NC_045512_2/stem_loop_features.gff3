@@ -1,0 +1,15 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+
+NC_045512.2	RefSeq	stem_loop	13476	13503	.	+	.	ID=id-GU280_gp01;Dbxref=GeneID:43740578;function=Coronavirus frameshifting stimulation element stem-loop 1;gbkey=stem_loop;gene=ORF1ab;inference=COORDINATES: profile:Rfam-release-14.1:RF00507%2CInfernal:1.1.2;locus_tag=GU280_gp01
+NC_045512.2	RefSeq	stem_loop	13488	13542	.	+	.	ID=id-GU280_gp01-2;Dbxref=GeneID:43740578;function=Coronavirus frameshifting stimulation element stem-loop 2;gbkey=stem_loop;gene=ORF1ab;inference=COORDINATES: profile:Rfam-release-14.1:RF00507%2CInfernal:1.1.2;locus_tag=GU280_gp01
+NC_045512.2	RefSeq	stem_loop	29609	29644	.	+	.	ID=id-GU280_gp11;Dbxref=GeneID:43740576;function=Coronavirus 3' UTR pseudoknot stem-loop 1;gbkey=stem_loop;gene=ORF10;inference=COORDINATES: profile::Rfam-release-14.1:RF00165%2CInfernal:1.1.2;locus_tag=GU280_gp11
+NC_045512.2	RefSeq	stem_loop	29629	29657	.	+	.	ID=id-GU280_gp11-2;Dbxref=GeneID:43740576;function=Coronavirus 3' UTR pseudoknot stem-loop 2;gbkey=stem_loop;gene=ORF10;inference=COORDINATES: profile::Rfam-release-14.1:RF00165%2CInfernal:1.1.2;locus_tag=GU280_gp11
+NC_045512.2	RefSeq	stem_loop	29728	29768	.	+	.	ID=id-NC_045512.2:29728..29768;Note=basepair exception: alignment to the Rfam model implies coordinates 29740:29758 form a noncanonical C:T basepair%2C but the homologous positions form a highly conserved C:G basepair in other viruses%2C including SARS (NC_004718.3);function=Coronavirus 3' stem-loop II-like motif (s2m);gbkey=stem_loop;inference=COORDINATES: profile:Rfam-release-14.1:RF00164%2CInfernal:1.1.2

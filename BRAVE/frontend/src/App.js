@@ -41,10 +41,10 @@ function App() {
       </header>
 
       <TableContainer component={Paper} sx={{ width:600 }} style={{alignSelf: "center"}}>
-        <Table sx={{  minWidth: 500 }} aria-label="simple table">
+        <Table sx={{ minWidth: 500 }} aria-label="simple table">
           <TableHead>
             <TableRow> 
-              <TableCell>Species</TableCell> 
+              <TableCell>Virus</TableCell> 
             </TableRow>
           </TableHead>
           <TableBody>

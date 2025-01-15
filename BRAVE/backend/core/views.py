@@ -50,6 +50,7 @@ def get_species(request,taxonid):
     print("Get Targets...")
     json_to_get_targets = '{"data" : [{"apiaction" : "targetsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
     response = requests.post(braveapi_endpoint, data = json_to_get_targets) 
+    #print("rt:",response.text)
     targets_json = response.json()
     target_list = get_target_list_from_json(taxonid, targets_json["targets"])
 

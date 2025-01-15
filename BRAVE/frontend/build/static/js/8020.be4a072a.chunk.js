@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[8020],{58020:(e,a,s)=>{s.r(a),s.d(a,{assembly:()=>n});const n={name:"NC_045512.2",aliases:["NC_045512.2"],sequence:{type:"ReferenceSequenceTrack",trackId:"NC_045512_2-ReferenceSequenceTrack",adapter:{type:"IndexedFastaAdapter",fastaLocation:{uri:"/assets/NC_045512_2/nc_045512_2_sequence.fasta"},faiLocation:{uri:"/assets/NC_045512_2/nc_045512_2_sequence.fasta.fai"}}}}}}]);
+//# sourceMappingURL=8020.be4a072a.chunk.js.map

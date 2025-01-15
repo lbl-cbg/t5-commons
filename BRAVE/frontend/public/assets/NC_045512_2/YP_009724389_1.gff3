@@ -1,0 +1,7 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+NC_045512.2	RefSeq	CDS	266	21555	.	+	0	ID=cds-YP_009724389.1;_Parent=gene-GU280_gp01;Dbxref=GenBank:YP_009724389.1,GeneID:43740578;Name=YP_009724389.1;_Note=pp1ab%3B translated by -1 ribosomal frameshift;exception=ribosomal slippage;gbkey=CDS;gene=ORF1ab;locus_tag=GU280_gp01;product=ORF1ab polyprotein;protein_id=YP_009724389.1

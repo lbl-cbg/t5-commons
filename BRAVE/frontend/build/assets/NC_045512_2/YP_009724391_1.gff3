@@ -1,0 +1,12 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+
+NC_045512.2	RefSeq	gene	25393	26220	.	+	.	ID=gene-GU280_gp03;Dbxref=GeneID:43740569;Name=ORF3a;gbkey=Gene;gene=ORF3a;gene_biotype=protein_coding;locus_tag=GU280_gp03
+NC_045512.2	RefSeq	CDS	25393	26220	.	+	0	ID=cds-YP_009724391.1;_Parent=gene-GU280_gp03;Dbxref=GenBank:YP_009724391.1,GeneID:43740569;Name=YP_009724391.1;gbkey=CDS;gene=ORF3a;locus_tag=GU280_gp03;product=ORF3a protein;protein_id=YP_009724391.1

@@ -1,0 +1,12 @@
+
+
+
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_045512.2 1 29903
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+
+
+NC_045512.2	RefSeq	gene	28274	29533	.	+	.	ID=gene-GU280_gp10;Dbxref=GeneID:43740575;Name=N;gbkey=Gene;gene=N;gene_biotype=protein_coding;locus_tag=GU280_gp10
+NC_045512.2	RefSeq	CDS	28274	29533	.	+	0	ID=cds-YP_009724397.2;_Parent=gene-GU280_gp10;Dbxref=GenBank:YP_009724397.2,GeneID:43740575;Name=YP_009724397.2;Note=ORF9%3B structural protein;gbkey=CDS;gene=N;locus_tag=GU280_gp10;product=nucleocapsid phosphoprotein;protein_id=YP_009724397.2

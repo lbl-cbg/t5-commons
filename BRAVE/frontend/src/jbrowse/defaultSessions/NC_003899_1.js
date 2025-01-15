@@ -16,8 +16,10 @@ export const defaultSession = {
                 end: 11675, 
                 reversed: false,
                 assemblyName: 'NC_003899.1',
-            },
+            }
         ],
+        offsetPx:-150,
+        bpPerPx:10,
         tracks: [
             {
                 type: 'FeatureTrack',
@@ -62,6 +64,21 @@ export const defaultSession = {
             },
             {
                 type: 'FeatureTrack',
+                id: 'YP_913812_1-LinearBasicDisplay',
+                configuration: 'YP_913812_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:50,
+                        configuration:
+                        'YP_913812_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            /*
+            {
+                type: 'FeatureTrack',
                 id: 'YP_913812_1_EEEV_HEL-LinearBasicDisplay',
                 configuration: 'YP_913812_1_EEEV_HEL',
                 minimized: false,
@@ -102,6 +119,7 @@ export const defaultSession = {
                     },
                 ],
             },
+            */
             {
                 type: 'FeatureTrack',
                 id: 'YP_913813_1-LinearBasicDisplay',

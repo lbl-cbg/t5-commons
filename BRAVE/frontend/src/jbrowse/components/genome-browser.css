@@ -4,3 +4,23 @@
 [class*="trackRenderingContainer"]{
     overflow-y: hidden !important;
 }
+
+
+[class$="tracksContainer"]{
+    /*max-height: 500px !important;*/
+    /*overflow-y: auto !important;*/
+}
+
+[class$="fieldValue"]{
+    width: 60em;
+}
+
+.table-row-highlight
+{
+    background: #6fbfdc !important;
+}
+
+.track-label-highlight
+{
+    background: #6fbfdc40 !important;
+}
