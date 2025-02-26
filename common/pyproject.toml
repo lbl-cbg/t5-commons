@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "t5common"
+version = "0.1.0"
+description = "A library for common routines needed for Taskforce5 code"
+readme = "README.md"  # Path to your README file
+requires-python = ">=3.7"
+license = { text = "Modified BSD" }  # Specify your license here
+authors = [
+    { name = "Andrew Tritt", email = "ajtritt@lbl.gov" }
+]
+keywords = ["t5", "common", "library"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests",
+    "jsonschema",
+    "sqlalchemy",
+]
+
+[project.scripts]
+init-db = "t5common.jira.database:init_db"
+check-jira = "t5common.jira.check_jira:main"
+mark-job = "t5common.jira.mark_job:main"
+
+[tool.setuptools.package-data]
+"t5common.jira" = ["schema/*.json"] 
