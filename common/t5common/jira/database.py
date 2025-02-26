@@ -7,10 +7,14 @@ from sqlalchemy import event
 from .utils import load_config
 from ..utils import get_logger
 
-# Create a base class for declarative class definitions
+
 Base = declarative_base()
 
-# Define the JobStates table
+WORKFLOW_STARTED = 'WORKFLOW_STARTED'
+WORKFLOW_FINISHED = 'WORKFLOW_FINISHED'
+PUBLISH_STARTED = 'PUBLISH_STARTED'
+PUBLISHED = 'PUBLISHED'
+
 class JobStates(Base):
     __tablename__ = 'job_states'
 
@@ -18,22 +22,30 @@ class JobStates(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
 
-    # Relationship to Job
-    job = relationship("Job", back_populates="job_state")
+    jobs = relationship("Job", back_populates="job_state")
 
-# Define the Job table
 class Job(Base):
     __tablename__ = 'job'
 
     id = Column(Integer, primary_key=True)
     issue = Column(String, nullable=False)
     job_directory = Column(String, nullable=False)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
     job_state_id = Column(Integer, ForeignKey('job_states.id'), nullable=False)
 
-    # Relationship to JobStates
-    job_state = relationship("JobStates", back_populates="job")
+    project = relationship("Project", back_populates="jobs")
+    job_state = relationship("JobStates", back_populates="jobs")
 
-# Define the JobStateHistory table
+
+class Project(Base):
+    __tablename__ = 'project'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+
+    jobs = relationship("Job", back_populates="project")
+
+
 class JobStateHistory(Base):
     __tablename__ = 'job_state_history'
 
@@ -41,11 +53,6 @@ class JobStateHistory(Base):
     job_id = Column(Integer, ForeignKey('job.id'), nullable=False)
     job_state_id = Column(Integer, ForeignKey('job_states.id'), nullable=False)
     timestamp = Column(String, nullable=False)
-
-
-def get_session(conn_str):
-
-    return session
 
 
 def initialize_database(database):
@@ -79,9 +86,10 @@ def initialize_database(database):
 
     else:
         states = [
-            JobStates(name='STARTED', description='Job has been started'),
-            JobStates(name='FINISHED', description='Job executing has been finished'),
-            JobStates(name='PUBLISHED', description='Job resulst have been published')
+            JobStates(name=WORKFLOW_STARTED, description='Job has been started'),
+            JobStates(name=WORKFLOW_FINISHED, description='Job executing has been finished'),
+            JobStates(name=PUBLISH_STARTED, description='Job executing has been finished'),
+            JobStates(name=PUBLISHED, description='Job resulst have been published')
         ]
 
         session.add_all(states)
@@ -98,6 +106,7 @@ def init_db():
     config = load_config(args.config)
     initialize_database(config['database'])
 
+
 class DBConnector:
 
     def __init__(self, conn_str):
@@ -112,10 +121,24 @@ class DBConnector:
             return job.job_state.name
         return None
 
-    def start_job(self, issue, job_directory):
-        self.logger.info(f"Creating new job for {issue}")
-        start_state = self.session.query(JobStates).filter_by(name='STARTED').first()
-        job = Job(issue=issue, job_directory=job_directory, job_state=start_state)
+    def _check_project(self, project_name):
+        # Query to get the Project by name
+        project = self.session.query(Project).filter_by(name=project_name).first()
+
+        # Check if the Project was found
+        if project:
+            return project
+        else:
+            # If the Project does not exist, create a new one
+            project = Project(name=project_name)
+            self.session.add(project)
+            self.session.commit()  # Commit the new project to the database
+            return project
+
+    def start_job(self, issue, job_directory, project):
+        start_state = self.session.query(JobStates).filter_by(id=1).first()
+        project = self._check_project(project)
+        job = Job(issue=issue, job_directory=job_directory, job_state=start_state, project=project)
         self.session.add(job)
         self.session.commit()
         return job
@@ -123,39 +146,29 @@ class DBConnector:
     def transition_job(self, issue, state):
         job = self.session.query(Job).filter_by(issue=issue).first()
         if job:
-            finish_state = self.session.query(JobStates).filter_by(name=state).first()
-            job.job_state = finish_state
+            requested_state = self.session.query(JobStates).filter_by(name=state).first()
+            if requested_state.id > 1:
+                previous_state = self.session.query(JobStates).filter_by(id=requested_state.id-1).first()
+                if job.job_state is not previous_state:
+                    self.logger.error(f"Transition for {issue} ignored. Cannot transition from {job.job_state.name} to {state}")
+                    breakpoint()
+                    return False
+            else:
+                self.logger.error(f"Transition for {issue} ignored. Cannot transition state to {state}")
+                return False
+            job.job_state = requested_state
             self.session.commit()
             return True
+        self.logger.error(f"Cannot transition {issue} to {state} -- no job found")
         return False
 
-    def finish_job(self, issue):
-        job = self.session.query(Job).filter_by(issue=issue).first()
-        if job.job_state.name != 'STARTED':
-            self.logger.error(f"{issue} not started, so cannot finish - job_state = {job.job_state.name}")
-            return False
-
-        result = self.transition_job(issue, 'FINISHED')
-        if result:
-            self.logger.info(f"Finishing job for {issue}")
-            return True
-        else:
-            self.logger.error(f"Could not find a job for {issue}")
-            return False
-
-    def publish_job(self, issue):
-        job = self.session.query(Job).filter_by(issue=issue).first()
-        if job.job_state.name != 'FINISHED':
-            self.logger.error(f"{issue} not finishe, so cannot publish - job_state = {job.job_state.name}")
-            return False
-
-        result = self.transition_job(issue, 'PUBLISHED')
-        if result:
-            self.logger.info(f"Publishing job for {issue}")
-            return True
-        else:
-            self.logger.error(f"Could not find a job for {issue}")
-            return False
+    def get_jobs(self, state, project=None):
+        query = self.session.query(Job).join(JobStates)
+        if project is not None:
+            query = query.join(Project).filter(Project.name == project)
+        query = query.filter(JobStates.name == state)
+        jobs = query.all()
+        return jobs
 
     def close(self):
         self.session.close()

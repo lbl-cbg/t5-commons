@@ -8,7 +8,7 @@ import yaml
 from jsonschema import validate, ValidationError
 
 from .connector import JiraConnector
-from .database import DBConnector
+from .database import DBConnector, WORKFLOW_FINISHED, PUBLISHED
 from .utils import load_config, WF_FILENAME
 
 
@@ -38,32 +38,34 @@ def load_info(directory):
     return wf_info['issue'], database
 
 
-STEPS = {
-        'finished': 'finish_job',
-        'published': 'publish_job'
+STATES = {
+        'finished': WORKFLOW_FINISHED,
+        'published': PUBLISHED
         }
 
+
 def mark_job(step, directory):
+    """Mark a job as finished or published.
 
+    This command will be invoked by wokflow and publishing scripts
+    to indicate that they are finished.
+    """
     issue, database = load_info(directory)
-
     dbc = DBConnector(f"sqlite:///{database}")
-
-    method = getattr(dbc, STEPS[step])
-
-    method(issue)
-
+    ret = dbc.transition_job(issue, STATES[step])
     dbc.close()
+    return ret
 
 
 def main():
     parser = argparse.ArgumentParser(description="Mark new status on a job")
-    parser.add_argument('step', type=str, choices=list(STEPS.keys()), help='The job state to mark')
+    parser.add_argument('step', type=str, choices=list(STATES.keys()), help='The job state to mark')
     parser.add_argument('dir', type=str, help='The directory the job was run from', default='./', nargs='?')
     args = parser.parse_args()
 
-
-    mark_job(args.step, args.dir)
+    ret = mark_job(args.step, args.dir)
+    if not ret:
+        exit(1)
 
 
 if __name__ == "__main__":

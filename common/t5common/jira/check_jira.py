@@ -12,7 +12,7 @@ import yaml
 
 from .connector import JiraConnector
 from .database import DBConnector
-from .utils import load_config, WF_FILENAME
+from .utils import load_config, get_job_env, open_wf_file
 from ..utils import get_logger, read_token
 
 
@@ -23,34 +23,31 @@ def format_query(config):
     return 'project = {project} AND status = "{new_status}"'.format(**config)
 
 
-async def process_issue(issue, project_config, config):
-    # Set up environment to run subprocess in
-    env = os.environ.copy()
-    env['JIRA_HOST'] = config['host']
-    env['JIRA_USER'] = config['user']
-    env['JIRA_TOKEN'] = read_token(config['token_file'])
+async def intiate_job(issue, project_config, config):
+    logger.info(f"Initiating job for {issue}")
+    env, wd = get_job_env(issue, config)
 
-    # Set up the command to run in the subprocess
-    command = re.split(r'\s+', project_config['command'])
-    command.append(issue)
-
-    # Set up the working directory to run the job in
-    wd = os.path.join(config.get('job_directory', '.'), issue)
+    # Make working directory for job
     if os.path.exists(wd):
-        raise RuntimeError(f"workflow already started for {issue} - {wd} already exists")
+        logger.error(f"Job already initiated for {issue} - {wd} exists")
+        return -1, None
     else:
         os.mkdir(wd)
 
-    # Add workflow info to the working directory for subsequence steps
+    # Add workflow info to the working directory for subsequent steps
     wf_info = {
             'issue': issue,
             'database': relpath(abspath(config['database']), abspath(wd)),
             }
-    with open(os.path.join(wd, WF_FILENAME), 'w') as f:
+    with open_wf_file(wd, 'w') as f:
         json.dump(wf_info, f)
 
+    # Set up the command to run in the subprocess
+    command = re.split(r'\s+', project_config['workflow_command'])
+    command.append(issue)
+
     # Call the job command in a subprocess
-    logger.info(f"Processing {issue}: {' '.join(command)}")
+    logger.info(f"Executing workflow command for {issue}: {' '.join(command)}")
     process = await asyncio.create_subprocess_exec(
         command[0], *command[1:],
         stdout=asyncio.subprocess.PIPE,
@@ -62,9 +59,9 @@ async def process_issue(issue, project_config, config):
     stdout, _ = await process.communicate()
 
     if process.returncode != 0:
-        logger.error(f"Processing {issue} failed:\n{stdout.decode()}")
+        logger.error(f"Workflow command for {issue} failed:\n{stdout.decode()}")
     else:
-        msg = f"Processing {issue} succeeded:"
+        msg = f"Workflow command for {issue} succeeded"
         if len(stdout) > 0:
             msg += f"\n{stdout.decode()}"
         logger.info(msg)
@@ -91,19 +88,17 @@ async def check_jira(config):
             key = issue['key']
             state = dbc.job_state(key)
             if state is not None:
-                if state != 'STARTED':
-                    logger.error(f"Issue {key} still has new_status, but is not in STARTED state: state = {state}")
                 continue
-            issues.append(key)
-            tasks.append(process_issue(key, project_config, config))
+            issues.append((project_config['project'], key))
+            tasks.append(intiate_job(key, project_config, config))
 
     results = await asyncio.gather(*tasks)
-    for issue, (retcode, wd) in zip(issues, results):
+    for (project, issue), (retcode, wd) in zip(issues, results):
         if retcode == 0:
-            logger.info(f"Issue {issue} marked as started")
-            dbc.start_job(issue, wd)
+            logger.info(f"Issue {issue} marked as workflow started")
+            dbc.start_job(issue, wd, project)
         else:
-            logger.info(f"Issue {issue} failed -- not marking as started")
+            logger.error(f"Issue {issue} failed -- not marking as workflow started")
 
     dbc.close()
 

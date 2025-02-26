@@ -38,12 +38,16 @@
             "type": "string",
             "description": "The status that indicates an issue is new"
           },
-          "command": {
+          "workflow_command": {
             "type": "string",
-            "description": "The command to run to start a workflow. The command sholuld take the issues as its only command line argument"
+            "description": "The command to run to start a workflow. The command should take the issues as its only command line argument"
+          },
+          "publish_command": {
+            "type": "string",
+            "description": "The command to run to publish the results of a workflow. The command should take the job working directory as its only command line argument"
           }
         },
-        "required": ["project", "new_status", "command"]
+        "required": ["project", "new_status", "wf_command", "publish_command"]
       }
     }
   },

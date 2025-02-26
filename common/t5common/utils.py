@@ -3,25 +3,16 @@ import os
 import sys
 
 
-def parse_logger(string, stream=sys.stderr, level='info'):
-    if not string:
-        ret = logging.getLogger()
-        hdlr = logging.StreamHandler(stream)
-    else:
-        ret = logging.getLogger(string)
-        hdlr = logging.FileHandler(string)
-
-    ret.setLevel(getattr(logging, level.upper()))
-    ret.addHandler(hdlr)
-    hdlr.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-
-    return ret
-
-
 _logger = None
 def get_logger(level='info'):
     global _logger
-    _logger = _logger or parse_logger(None, level=level)
+    if _logger is None:
+        _logger = logging.getLogger(sys.argv[0])
+        hdlr = logging.StreamHandler(sys.stderr)
+
+        _logger.setLevel(getattr(logging, level.upper()))
+        _logger.addHandler(hdlr)
+        hdlr.setFormatter(logging.Formatter('%(asctime)s | %(name)s - %(levelname)s | %(message)s'))
     return _logger
 
 
