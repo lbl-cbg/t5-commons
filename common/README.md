@@ -36,6 +36,13 @@ Once you have defined your configuration file, you will need to initialize the S
 init-db config.yaml
 ```
 
+This database maintain jobs in three states:
+
+- `STARTED` - Job has been picked up from Jira and started
+- `FINISHED` - Job execution has finished
+- `PUBLISHED` - Job results have been published
+
+
 ### Starting jobs
 
 **This section documents the command that must run as a cron job to automate workflow execution**
@@ -61,3 +68,5 @@ command also takes a second optional argument, specifying the job directory. Thi
 ```bash
 mark-job finished
 ```
+
+Workflows must ensure that the `t5common` package is installed in their environments, and that they call `mark-job` when steps are complete.
