@@ -1,6 +1,5 @@
 import os
 
-from hdmf.utils import docval, getargs
 from .job import AbstractJob
 
 class SlurmJob(AbstractJob):
