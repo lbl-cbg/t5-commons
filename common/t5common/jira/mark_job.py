@@ -38,30 +38,29 @@ def load_info(directory):
     return wf_info['issue'], database
 
 
-STEPS = {
-        'finished': 'finish_job',
-        'published': 'publish_job'
+STATES = {
+        'finished': 'WORKFLOW_FINISHED',
+        'published': 'PUBLISHED'
         }
 
+
 def mark_job(step, directory):
+    """Mark a job as finished or published.
 
+    This command will be invoked by wokflow and publishing scripts
+    to indicate that they are finished.
+    """
     issue, database = load_info(directory)
-
     dbc = DBConnector(f"sqlite:///{database}")
-
-    method = getattr(dbc, STEPS[step])
-
-    method(issue)
-
+    dbc.transition_job(issue, STATES[step])
     dbc.close()
 
 
 def main():
     parser = argparse.ArgumentParser(description="Mark new status on a job")
-    parser.add_argument('step', type=str, choices=list(STEPS.keys()), help='The job state to mark')
+    parser.add_argument('step', type=str, choices=list(STATES.keys()), help='The job state to mark')
     parser.add_argument('dir', type=str, help='The directory the job was run from', default='./', nargs='?')
     args = parser.parse_args()
-
 
     mark_job(args.step, args.dir)
 

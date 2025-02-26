@@ -79,8 +79,9 @@ def initialize_database(database):
 
     else:
         states = [
-            JobStates(name='STARTED', description='Job has been started'),
-            JobStates(name='FINISHED', description='Job executing has been finished'),
+            JobStates(name='WORKFLOW_STARTED', description='Job has been started'),
+            JobStates(name='WORKFLOW_FINISHED', description='Job executing has been finished'),
+            JobStates(name='PUBLISH_STARTED', description='Job executing has been finished'),
             JobStates(name='PUBLISHED', description='Job resulst have been published')
         ]
 
@@ -97,6 +98,7 @@ def init_db():
 
     config = load_config(args.config)
     initialize_database(config['database'])
+
 
 class DBConnector:
 
@@ -123,39 +125,20 @@ class DBConnector:
     def transition_job(self, issue, state):
         job = self.session.query(Job).filter_by(issue=issue).first()
         if job:
-            finish_state = self.session.query(JobStates).filter_by(name=state).first()
-            job.job_state = finish_state
+            requested_state = self.session.query(JobStates).filter_by(name=state).first()
+            if requested_state.id > 0:
+                previous_state = self.session.query(JobStates).filter_by(id=requested_state.id-1).first()
+                if job.job_state is not previous_state:
+                    self.logger.error(f"Transition for {issue} ignored. Cannot transition {job.job_state.name} to {state}")
+                    return False
+            else:
+                self.logger.error(f"Transition for {issue} ignored. Cannot transition state to {state}")
+                return False
+            job.job_state = requested_state
             self.session.commit()
             return True
+        self.logger.error(f"Cannot transition {issue} to {state} -- no job found")
         return False
-
-    def finish_job(self, issue):
-        job = self.session.query(Job).filter_by(issue=issue).first()
-        if job.job_state.name != 'STARTED':
-            self.logger.error(f"{issue} not started, so cannot finish - job_state = {job.job_state.name}")
-            return False
-
-        result = self.transition_job(issue, 'FINISHED')
-        if result:
-            self.logger.info(f"Finishing job for {issue}")
-            return True
-        else:
-            self.logger.error(f"Could not find a job for {issue}")
-            return False
-
-    def publish_job(self, issue):
-        job = self.session.query(Job).filter_by(issue=issue).first()
-        if job.job_state.name != 'FINISHED':
-            self.logger.error(f"{issue} not finishe, so cannot publish - job_state = {job.job_state.name}")
-            return False
-
-        result = self.transition_job(issue, 'PUBLISHED')
-        if result:
-            self.logger.info(f"Publishing job for {issue}")
-            return True
-        else:
-            self.logger.error(f"Could not find a job for {issue}")
-            return False
 
     def close(self):
         self.session.close()
