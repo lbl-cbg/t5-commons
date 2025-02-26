@@ -78,6 +78,9 @@ async def check_jira(config):
                        jira_user=config['user'],
                        jira_token=read_token(config['token_file']))
 
+    database = config['database']
+    dbc = DBConnector(f"sqlite:///{database}")
+
     # Check each project queue, and create a new job for each new issue
     tasks = list()
     issues = list()
@@ -85,11 +88,14 @@ async def check_jira(config):
         query = format_query(project_config)
         proj_issues = jc.query(query)['issues']
         for issue in proj_issues:
-            issues.append(issue['key'])
-            tasks.append(process_issue(issue['key'], project_config, config))
-
-    database = config['database']
-    dbc = DBConnector(f"sqlite:///{database}")
+            key = issue['key']
+            state = dbc.job_state(key)
+            if state is not None:
+                if state != 'STARTED':
+                    logger.error(f"Issue {key} still has new_status, but is not in STARTED state: state = {state}")
+                continue
+            issues.append(key)
+            tasks.append(process_issue(key, project_config, config))
 
     results = await asyncio.gather(*tasks)
     for issue, (retcode, wd) in zip(issues, results):

@@ -106,6 +106,12 @@ class DBConnector:
         Session = sessionmaker(bind=engine)
         self.session = Session()
 
+    def job_state(self, issue):
+        job = self.session.query(Job).filter_by(issue=issue).first()
+        if job:
+            return job.job_state.name
+        return None
+
     def start_job(self, issue, job_directory):
         self.logger.info(f"Creating new job for {issue}")
         start_state = self.session.query(JobStates).filter_by(name='STARTED').first()
