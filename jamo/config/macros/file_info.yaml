@@ -1,0 +1,30 @@
+name: file_info
+description: pre-defined metadata for files
+required_metadata_keys:
+- description: Data Format/Container Type
+  key: file_format
+  type: string
+- description: compression of the file
+  required: false
+  key: compression
+  type: string
+- description: Data Type
+  required: false
+  key: type
+  type: string
+- description: Data Subtype
+  required: false
+  key: subtype
+  type: string
+- description: Data Content
+  required: false
+  key: content
+  type: list:string
+- description: Data Source
+  required: false
+  key: source
+  type: string
+- description: Data Collection
+  required: false
+  key: collection
+  type: string

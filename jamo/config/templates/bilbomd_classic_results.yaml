@@ -1,0 +1,71 @@
+name: bilbomd_classic_results
+description: The output of a classic BilboMD run
+tags:
+  - saxs
+required_metadata_keys:
+  - description: The JIRA issue requesting this BilboMD run
+    key: jira_issue
+    type: string
+    required: false
+  - macro: viral_protein
+
+outputs:
+- description: A readme report summarizing the released data
+  label: readme
+  tags:
+    - report
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The CHARM rigid body definition file
+  label: const_inp
+  tags:
+    - charm_const
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: A PDB file of the protein model
+  label: protein_model
+  tags:
+    - pdb
+  required: true
+  required_metadata_keys:
+    - description: The number of states in this ensemble
+      key: ensemble_size
+      type: number
+      required: true
+    - macro: file_info
+
+- description: A text file with information about the ensembles
+  label: ensembles_info
+  tags:
+    - bilbo_ensembles
+  required: true
+  required_metadata_keys:
+    - description: The number of states in this ensemble
+      key: ensemble_size
+      type: number
+      required: true
+    - macro: file_info
+
+- description: The theoretical SAXS curve from MultiFoXS for an ensemble
+  label: theoretical_saxs_curve
+  tags:
+    - saxs
+  required: true
+  required_metadata_keys:
+    - description: The number of states in this ensemble
+      key: ensemble_size
+      type: number
+      required: true
+    - macro: file_info
+
+email:
+  to:
+    - ajtritt@lbl.gov
+  reply_to: sclassen@lbl.gov
+  subject: '[bilbomd] {metadata.protein_id} (Request: {metadata.jira_issue})'
+  content:
+    - file: readme

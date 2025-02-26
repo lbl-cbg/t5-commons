@@ -1,0 +1,7 @@
+name: saxs_data
+description: small angle X-ray scattering information
+required_metadata_keys:
+- description: the URL at SimpleScattering for this data
+  key: ss_url
+  required: true
+  type: string
