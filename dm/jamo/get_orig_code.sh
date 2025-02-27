@@ -1,3 +1,4 @@
+# This script was formerly used for building the Docker image used to run Jamo
 git clone https://$USER:$PAT@code.jgi.doe.gov/advanced-analysis/jgi-sdm-common.git sdm-common.git
 cd sdm-common.git
 git checkout enh/entry_points
