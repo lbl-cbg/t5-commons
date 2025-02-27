@@ -1,0 +1,17 @@
+<h2>JAT</h2>
+JAT is a tool designed for archiving analysis results using our tape archiver JAMO. Using JAT also allows validation of submitted files and folders through a user defined template (in <a href="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf">JSON</a> or <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> format).</br> </br>
+
+A template must be created for each type of analysis to be archived. The analysis template describes the entire collection of files and data required for a valid, completed analysis.  Use of JAT and analysis templates also makes subsequent querying and retrieval of analysis results and metadata possible and efficient, and using properly designed templates will allow querying across different types of analysis (see <a href="https://docs.google.com/document/d/1xIzRiG5fOmTV0SP7xVoBNBmCJNE5S4ItAzGKfWhENDA/edit?usp=sharing&invite=COzFt50K">query list</a> for some typical queries). </br></br>
+
+When an analysis task is complete, you can use the jat command line tool to submit the analysis by placing a metadata.json file in the root directory of your analysis folder. The metadata.json file contains the collection of files and data produced by a particular analysis for an analysis type described by the template.</br></br>
+
+Examples of existing analysis templates can be found <a href="/doc/JAT/overview/template.html">here</a></br>
+
+An outline of the process of using 'jat' is:
+<ul>
+<li> Describe your analysis by creating an analysis template in YAML.</li>
+<li> Submit your template to a new jat branch (see bitbucket for an explanation)</li>
+<li> Work with SDM to get your template reviewed and approved</li>
+<li> Write a script to collect your analysis files and results and package into a 'metadata.json' file</li>
+<li> Submit the analysis using 'jat' (example command line)</li>
+</ul>

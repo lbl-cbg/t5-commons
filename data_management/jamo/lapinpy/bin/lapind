@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+from lapinpy import sdmlogger
+from lapinpy.lapinpy_core import RestServer
+import daemon.runner as runner
+import os
+import platform
+import sys
+
+rootdir = os.path.dirname(os.path.realpath(__file__ + '/..'))
+configurations = {}
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    action = 'start'
+    if len(args) < 1:
+        sys.stderr.write('You must provide a config file to load from\n')
+        sys.exit(1)
+
+    pidfile = os.path.realpath('./' + args[0] + '.%s.pid' % platform.node())
+    app = lambda x: None
+    app.pidfile_path = os.path.realpath('./' + args[0] + '.%s.pid' % platform.node())
+    app.pidfile_timeout = 10
+    app.stdin_path = '/dev/stdin'
+    app.stdout_path = os.path.realpath('./stdout')
+    app.stderr_path = os.path.realpath('./stderr')
+    daemonize = False
+
+    if args[0].lower() in ('start', 'stop', 'restart'):
+        action = args[0].lower()
+        daemonize = True
+        app.stdin_path = '/dev/null'
+        args = args[1:]
+        if len(args) < 1:
+            sys.stderr.write('You must provide a config file to load from\n')
+            sys.exit(1)
+        app.pidfile_path = os.path.realpath(f'{args[0]}.{platform.node()}.pid')
+        if action == 'stop':
+            runny = runner.DaemonRunner(app)
+            runny._stop()
+            sys.exit(1)
+
+    working_dir = os.getcwd()
+    config_file = args[0]
+    apps = args[1:]
+
+    def run():
+        sdmlogger.config(os.path.join(working_dir, os.path.basename(config_file) + ".log"), verbose=not daemonize)
+        sdmlogger.configQueryLog(os.path.join(working_dir, "query.log"), verbose=not daemonize)
+        server = RestServer.Instance()
+        server.start(config_file, apps)
+
+    if not daemonize:
+        run()
+    else:
+        app.run = run
+        runny = runner.DaemonRunner(app)
+        runny.daemon_context.working_directory = './'
+        runny._start()

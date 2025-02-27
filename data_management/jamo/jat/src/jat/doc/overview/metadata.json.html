@@ -1,0 +1,93 @@
+<h2>metadata.json</h2>
+To submit  analysis results to JAMO (i.e. archive and index the results), you must first create a template as described <a href="/doc/JAT/overview/template.yml.html">here</a> then create a file called 'metadata.json' which contains the actual data from the analysis you wish to save.</br></br>
+
+<h3>Format</h3>
+<pre class="brush: javascript">
+{
+    "outputs": [ { 
+                    "file": //the path relative to the root of the analysis directory
+                    "label": //the type this file is that matches in the template
+                    "metadata": {"key":value,... }//a dictonary that contains the metadata for this file
+                 },...
+               ],
+    "metadata": { "key": value,...},//a dictonary that contains the metadata for this analysis
+    "inputs": [ // the path to all the inputs to this analysis
+                 "/global/dna/dm_archive/sdm/1234.fastq.gz",...
+              ],
+}
+</pre>
+
+<h3>Example</h3>
+Below is an example metadata.json file based on the template described in <a href="/doc/JAT/overview/template.yml.html">link</a>
+<pre class="brush: javascript">
+{
+    "metadata":{
+            "curator":"Andrew Tritt",
+            "curator_email":"ajtritt@lbl.gov",
+            "sequencing_project_id":1001546,
+            "sequencing_project_name":"Saanich Inlet Metatranscriptome Pilot 042_02/10/10_135m",
+            "proposal_id":342,
+            "proposal_title":"Microbial Systems Ecology of Expanding Oxygen Minimum Zones in the Eastern Subtropical North Pacific Ocean",
+            "pi_name":"Steven Hallam",
+            "pi_email":"shallam@interchange.ubc.ca",
+            "library":"NBWN",
+            "seq_unit":"6805.4.54655.GTAGAG.srf",
+           }
+    "outputs":[
+           {
+            "label":"readme",
+            "file":"NBWN/6805.4.54655.GTAGAG.README"
+            "metadata":{
+                "portal:{
+                    display_location":["metagenome","outputs"] //lets put this file in portal under /metagenome/outputs
+                }
+           },
+           {
+            "label":"rrna_cleaned_fastq",
+            "file":"6805.4.54655.GTAGAG.qtrim.artifact.rRNA.removed.fastq.gz",
+            "metadata":{
+                "perc_artifact":0.113585022888,
+                "perc_low_quality":0.979145174268,
+                "num_input_reads":56266018,
+                "perc_rrna":94.9068357312,
+                "num_reads":2834438
+            }
+           },
+           {
+            "label":"metatranscriptome_assembly",
+            "file":"6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.rnnotator/final_contigs.fa",
+            "metadata":{
+                "scaffolds":9007,
+                "scaf_bp":2844990
+            }
+           },
+           {
+            "label":"metatranscriptome_alignment_bam",
+            "file":"6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.mt.bam",
+            "metadata":{
+                "num_input_reads":2834438,
+                "aligner":"bowtie2",
+                "num_aligned_reads":2097876
+            }
+           },
+           {
+            "label":"metagenome_alignment_bam",
+            "file":"6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.v.3300000255.bam",
+            "metadata":{
+                "taxon_oid":3300000255,
+                "num_input_reads":2834438,
+                "aligner":"bowtie2",
+                "num_aligned_reads":1391940
+            }
+           }
+          ],
+      "inputs":[
+          "/global/dna/dm_archive/sdm/illumina/00/70/00/7000.2.59496.ACAGTG.fastq.gz"
+          ],
+      "send_email":true,
+      "email":{
+          "to":["me@aol.com"] //lets overwrite the template to and send an email to only me@aol.com
+      }
+}
+</pre>
+

@@ -1,0 +1,121 @@
+<script type="text/javascript">
+google.load('visualization', '1', {packages:['table']});
+var sizeArray = ['B','K','M','G','T','P'];
+var searchTable;
+var resultTable;
+var resultData;
+var searchResults = {};
+var results = {}
+
+var processes = {};
+
+{% for field in data.services %}
+processes["{{field}}"] = "{{data.services[field].callback}}";
+{% endfor %}
+
+function convert(size){
+    var on = 1;
+    for(s in sizeArray){
+        compare = on*1024
+            if(compare>size){
+                return ''+(size/on).toFixed(2)+sizeArray[s];
+            }
+        on = compare
+    }
+    return size+'b';
+}
+function showResults(data){
+    if('url' in data){
+        window.location.href=data['url']
+    }
+}
+function processResults(){
+    var fields = document.getElementById('service_field');
+    var field = fields.options[fields.selectedIndex].value;
+    var temp = new Array();
+    for(s in results){
+        temp.push(s);
+    }
+    sendRequest(processes[field],showResults,{"files":temp});
+}
+function addFile(id){
+    if(id in results)
+        return;
+    file = searchResults[id];
+    results[id]=file
+    resultData.addRow([file['file_path'],file['file_name'],file['user'],{v:file['file_size'],f:convert(file['file_size'])},'<button class="button" onclick="removeFile('+file['_id']+');">remove</button>']);
+    resultTable.draw(resultData, {showRowNumber: true, allowHtml:true});
+
+}
+
+function displayFiles(data){
+    var gData = new google.visualization.DataTable();
+    gData.addColumn('string','File Path');
+    gData.addColumn('string','File Name');
+    gData.addColumn('string','User');
+    gData.addColumn('number','File Size');
+    gData.addColumn('string','Select');
+        for(file in data){
+            file=data[file];
+            searchResults[file['_id']]=file
+            //gData.addRow(['<a href="javascript:void(0)" onclick="popup(\'/metadata/file/'+file['_id']+'\');">'+file['file_name']+'</a>',file['user'],{v:file['file_size'],f:convert(file['file_size'])},'<button class="button" onclick="addFile(\''+file['_id']+'\');">select</button>']);
+            gData.addRow([file['file_path'],'<a href="/metadata/file/'+file['_id']+'" target="_blank" >'+file['file_name']+'</a>',file['user'],{v:file['file_size'],f:convert(file['file_size'])},'<button class="button" onclick="addFile(\''+file['_id']+'\');">select</button>']);
+        }
+    searchTable = new google.visualization.Table(document.getElementById('search_table'));
+    searchTable.draw(gData, {showRowNumber: true, allowHtml:true});
+    if(!resultTable){
+        resultData = new google.visualization.DataTable();
+        resultData.addColumn('string','File Path');
+        resultData.addColumn('string','File Name');
+        resultData.addColumn('string','User');
+        resultData.addColumn('number','File Size');
+        resultData.addColumn('string','Remove');
+        resultTable = new google.visualization.Table(document.getElementById('result_table'));
+        resultTable.draw(resultData, {showRowNumber: true, allowHtml:true});
+    }
+
+}
+function fetchfiles(){
+    var fields = document.getElementById('search_field');
+    var field = fields.options[fields.selectedIndex].value;
+    var value = document.getElementById('search_value').value;
+    var reqData = {'return':['file_path','file_name','user','file_size','_id'],'query':{}};
+    reqData['query'][field]=value;
+    sendRequest('/api/metadata/search2',displayFiles,reqData);
+
+}
+</script>
+
+
+<style>
+.file_table{
+    float:left;
+}
+td{
+    vertical-align: top;
+}
+</style>
+<div id="topform">
+    <select id="search_field" class="select">
+        {% for field in data.fields %}
+        <option value={{field}}>{{field}}</option>
+        {% endfor %}
+    </select>
+    <input name="value" id="search_value" class="s"></input>
+    <button style="margin-right:50px" name="search" class="button" onclick="fetchfiles();">Search</button>
+
+    Process selection:
+    <select id="service_field" class="select">
+        {% for field in data.services %}
+        <option value="{{field}}">{{field}}</option>
+        {% endfor %}
+    </select>
+    <button name="process" class="button" onclick="processResults();">Process</button>
+    
+</div>
+<table>
+<tr><td>
+<div id="search_table" class="file_table"></div></td><td>
+<div id="result_table" style="margin-left:20px" class="file_table"></div></td>
+</tr>
+</table>

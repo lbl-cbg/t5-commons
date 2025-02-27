@@ -1,0 +1,110 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+<script src="/scripts/angular-animate.js"></script>
+<style>
+li,ul{
+    list-style-type: none;
+}
+#jsonviewer{
+    font-family: Oswald, arial, serif;
+    font-size: 16px;
+    margin-left: 10px;
+}
+.jsonitem{
+    margin-top:4px;    
+}
+.string{
+    color: #0B7500;
+}
+.number{
+    color: #1A01CC;
+}
+.darrow{
+    cursor:pointer;
+    width: 20px;
+    height: 10px;
+    display: block;
+    z-index: 5;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAD1JREFUeNpiYGBgOADE%2F3Hgw0DM4IRHgSsDFOzFInmMAQnY49ONzZRjDFiADT7dMLALiE8y4AGW6LoBAgwAuIkf%2F%2FB7O9sAAAAASUVORK5CYII%3D");
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: block;
+}
+.collapsed.darrow{
+    -webkit-transform: rotate(-90deg);
+}
+</style>
+<script type='text/javascript'>
+var jsonviewer = angular.module('jsonviewer', ['ngAnimate', 'ngSanitize']);
+var compare = function(a,b){
+    if ( a['type']=='dict' && b['type']!='dict')
+        return 1;
+    if ( b['type']=='dict' && a['type']!='dict')
+        return -1;
+    if (b['name']>a['name'])
+        return -1;
+    return 1;
+}
+function toTree(structure){
+    var re = [];
+    for(key in structure){
+        var value = structure[key];
+        var ret = {'value':value, 'type':typeof value, 'display':true,'name':key};
+        if(value === null){
+            ret['type']='null'; 
+        }else if(typeof value === 'object'){
+            console.log(typeof value);
+            if(Array.isArray(value)){
+                ret['type']='list';
+            }else{
+                ret['type']='dict';
+                ret['value']=toTree(value);
+                //ret['display']=false;
+            }
+        }
+        re.push(ret);
+    }
+    re.sort(compare) 
+    return re;
+}
+jsonviewer.controller('jsonViewerCtrl',['$scope' ,function ($scope){
+    var structure = {{ data | jsonify }};
+    $scope.tree = toTree(structure);
+    for(var i in $scope.tree){
+        $scope.tree[i].display=true;
+    }
+
+}]);
+</script>
+ <div>
+     <button id="download-button">Download File</button>
+ </div>
+
+ <script type='text/javascript'>
+ // Example JSON data embedded in the HTML
+ var jsonData = {{ data | jsonify }};
+ var id = jsonData._id;  // Get the _id from the JSON record
+
+ document.getElementById('download-button').addEventListener('click', function() {
+     if (!id) {
+         console.error('No _id found in the record');
+         return;
+     }
+     var url = '/api/metadata/download/' + encodeURIComponent(id);
+     var a = document.createElement('a');
+     a.href = url;
+     a.download = jsonData.file_name;  // Default filename, can be changed based on response headers
+     document.body.appendChild(a);
+     a.click();
+     a.remove();
+ });
+ </script>
+
+{% raw %}
+<div ng-app="jsonviewer" ng-controller="jsonViewerCtrl" id="jsonviewer">
+
+    <div class="jsonitem" ng-repeat="data in tree" ng-include="'/api/metadata/htmltemplate/field_renderer.html'"></div>
+</div>
+{% endraw %}

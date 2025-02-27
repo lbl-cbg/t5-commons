@@ -1,0 +1,51 @@
+<style>
+.statustable{
+    border-top: 1px solid rgb(209, 209, 209);
+    overflow-x:auto;
+    margin-left:50px;
+    width:auto;
+    font-size:14;
+    border:1px solid black;
+}
+.statustable header: {
+    background: #e0e000;
+    width: 52px;
+}
+
+.statustable tr:nth-of-type(odd) {
+    background: #d6d6d6;
+}
+.statustable tr:nth-of-type(even) {
+    background: #f0f0f0:
+}
+.statustable tr td{
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding:3px 10px ;
+}
+td.right {
+    text-align: right;
+}
+p.shifted {
+    margin-left: 50px;
+}
+</style>
+
+
+<h3>DB States</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Label</th>
+            <th>N</th>
+            <th>ID</th>
+            <th>Status</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{row.label}}</td>
+            <td class='right'>{{ "{:,}".format(row.N) }}</td>
+            <td class='right'>{{row.id}}</td>
+            <td>{{row.status}}</td>
+        </tr>
+        {% endfor %}
+    </table>

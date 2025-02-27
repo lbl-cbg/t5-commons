@@ -1,0 +1,20 @@
+<div class="search_window" ng-app='query_results' ng-controller="QueryResults" ng-keydown="keypressed($event)">
+	[[title]]
+	[[filter]]
+	<div class="results">
+		[[results_info]]	
+		<div class="results_table" cust-scroller>
+		    <table class="qresults" cellspacing="0">
+                <thead>
+                    [[thead]]
+		        </thead>
+		        <tbody>
+                    <tr class="noResults [[noResultsClass]]"><td colspan="[[field_count]]"><p>&nbsp;</p></td></tr>
+			       	[[tbody]]
+		       </tbody>
+		    </table>
+	    </div>
+	</div>
+	[[select_actions]]
+    [[actions]]
+</div>

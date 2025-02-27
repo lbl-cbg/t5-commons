@@ -1,0 +1,239 @@
+<style>
+.statustable{
+    border-top: 1px solid rgb(209, 209, 209);
+    overflow-x:auto;
+    margin-left:50px;
+    width:auto;
+    font-size:14;
+    border:1px solid black;
+}
+.statustable header: {
+    background: #e0e000;
+    width: 52px;
+}
+
+.statustable tr:nth-of-type(odd) {
+    background: #d6d6d6;
+}
+.statustable tr:nth-of-type(even) {
+    background: #f0f0f0:
+}
+.statustable tr td{
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding:3px 10px ;
+}
+td.right {
+    text-align: right;
+}
+p.shifted {
+    margin-left: 50px;
+}
+</style>
+
+<!--
+<h3>HPSS State</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+        <th>ID</th>
+        <th>System</th>
+        <th>Status</th>
+        </tr>
+    {% for row in data.hpss %}
+    <tr>
+        <td class='right'>{{row.id}}</td>
+        <td>{{row.system}}</td>
+        <td>{{"up" if row.status == 1 else "down"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+-->
+
+<h3>Active DB States</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Table</th>
+            <th>Files</th>
+            <th>Status ID</th>
+            <th>Description</th>
+        </tr>
+        {% for row in data.active_db_states %}
+        <tr>
+            <td>{{row.label}}</td>
+            <td class='right'>{{ "{:,}".format(row.N) }}</td>
+            <td class='right'>{{row.id}}</td>
+            <td>{{row.status}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+<h3>Tape Volumes to Restore From</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Tapes</th>
+        </tr>
+        {% for row in data.tape_volumes %}
+        <tr>
+            <td class='right'>{{row.n}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+<h3>Files to lookup Volume and Postion Information</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Files</th>
+        </tr>
+        {% for row in data.prep_count %}
+        <tr>
+            <td class='right'>{{ "{:,}".format(row.n) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+<h3>On-disk Footprint in TB</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Total<br>Used</th>
+            <th>Total<br>Files *</th>
+            <th>Total<br>Footprint</th>
+            <th>Restoring<br>Files</th>
+            <th>Restoring<br>Footprint</th>
+            <th>Other<br>Used</th>
+            <th>DnA<br>Free **</th>
+            <th>DnA Status Date</th>
+            <th>Disk<br>Reserve</th>
+        </tr>
+        <tr>
+            <td>{{ "{:,.3f}".format(data.footprint.dna_used) }}</td>
+            <td>{{ "{:,}".format(data.footprint.files) }}</td>
+            <td>{{ "{:,.3f}".format(data.footprint.disk_usage_files) }}</td>
+            <td>{{ "{:,}".format(data.footprint.files_restoring) }}</td>
+            <td>{{ "{:,.3f}".format(data.footprint.disk_usage_files_restoring) }}</td>
+            <td>{{ "{:,.3f}".format(data.footprint.disk_usage_other)}}</td>
+            <td>{{ "{:,.3f}".format(data.footprint.dna_free) }}</td>
+            <td>{{data.footprint.dna_stats_updated}}</td>
+            <td>{{ "{:,.3f}".format(data.footprint.disk_reserve) }}</td>
+        </tr>
+    </table>
+    <P class="shifted">
+    * Total files include files on disk and files in the restore queue (but not yet restored).
+        <br>
+    ** DnA usage is an estimate based on the size of DnA/dm_archive - the space JAMO has used + the space that Portal and others are using.  This may not be an exact number since the disk quota stats are reported once a day.
+    </P>
+
+<h3>Files Restored in Last Hour</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Files</th>
+            <th>Priority Queue</th>
+            <th>Size (GB)</th>
+        </tr>
+        {% for row in data.restored_in_last_hour %}
+        <tr>
+            <td class='right'>{{ "{:,}".format(row.N) }}</td>
+            <td>{{row.priority_queue}}</td>
+            <td class='right'>{{ "{:,.3f}".format(row.gb) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+<h3>Restore Summary by Priority and Oldest Date</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Priority Queue</th>
+            <th>Status Date</th>
+            <th>Oldest Date*</th>
+            <th>N</th>
+            <th>Size (GB)</th>
+        </tr>
+        {% for row in data.request_age %}
+        <tr>
+            <td>{{row.priority_queue}}</td>
+            <td>{{row.status_date}}</td>
+            <td>{{row.oldest_date}}</td>
+            <td>{{row.n}}</td>
+            <td class='right'>{{ "{:,.3f}".format(row.gb) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <P class="shifted">
+    * Oldest date from the status history table.  This will be older than status date if files were requeued after an error, or if there is a single file that is currently being restored.
+    </P>
+
+<h3>Restore Errors</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>State</th>
+            <th>File ID</th>
+            <th>Requestor</th>
+            <th>Date</th>
+            <th>Volume</th>
+            <th>File Size</th>
+        </tr>
+        {% for row in data.pull_errors %}
+        <tr>
+            <td>{{row.queue_status_id}}</td>
+            <td>{{row.file_id}}</td>
+            <td>{{row.requestor}}</td>
+            <td>{{row.date}}</td>
+            <td>{{row.vol}}</td>
+            <td>{{row.file_size}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+<h3>Restore Queue Summary by User</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Status ID</th>
+            <th>Status</th>
+            <th>Requestor</th>
+            <th>Files</th>
+            <th>Priority Queue</th>
+            <th>Size (GB)</th>
+        </tr>
+        {% for row in data.in_queue %}
+        <tr>
+            <td class='right'>{{row.status_id}}</td>
+            <td>{{row.status}}</td>
+            <td>{{row.requestor}}</td>
+            <td class='right'>{{ "{:,}".format(row.N) }}</td>
+            <td>{{row.priority_queue}}</td>
+            <td class='right'>{{ "{:,.3f}".format(row.gb) }}</td>
+        </tr>
+        {% endfor %}
+   </table>
+
+<h3>Active Restores</h3>
+<div>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Pull Queue ID</th>
+            <th>Time Running</th>
+            <th>Tape Volume</th>
+            <th>Priority Queue</th>
+            <th>Requestor</th>
+            <th>File Size</th>
+            <th>File Name</th>
+        </tr>
+        {% for row in data.active_restores %}
+        <tr>
+            <td class='right'>{{row.pull_queue_id}}</td>
+            <td class='right'>{{row.time_running}}</td>
+            <td>{{row.vol}}</td>
+            <td>{{row.priority_queue}}</td>
+            <td>{{row.requestor}}</td>
+            <td class='right'>{{ "{:,}".format(row.file_size) }}</td>
+            <td>{{row.file_name}}</td>
+        </tr>
+        {% endfor %}
+    </table>

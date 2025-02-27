@@ -1,0 +1,18 @@
+<div class="modal error" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" >
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h3 class="modal-title" >An error has occured</h3>
+      </div>
+      <div class="header-border"> </div>
+      <div class="modal-body" >
+      	<p id="code">Error {{error_code}}</p>
+      	<p>{{error_message}}</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" title="Close" ng-click="$hide()">Close</a>
+      </div>
+    </div>
+  </div>
+</div>

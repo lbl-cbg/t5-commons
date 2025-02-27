@@ -1,0 +1,446 @@
+body{
+   font-family: "Karla", Helvetica, arial, sans-serif;
+   color:#5a5a5a;
+   margin:0;
+}
+
+#content{
+   min-height:100px;
+   padding:10px 7% 25px 7%;
+}
+
+#content ul > li {
+	list-style-type:square;
+}
+
+#top{
+   width:100%;
+   background:white;
+   display:flex;
+   flex-wrap:wrap;
+   margin-bottom:10px;
+}
+
+#top::before {
+	content:"";
+	width:100%;
+	height:5px;
+	background:#99bd3c;
+	margin-bottom:10px
+}
+
+#top #site-name{
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 40px;
+    font-weight: initial;
+    line-height: 44px;
+    text-transform: uppercase;
+    float: left;
+    padding-top: 30px;
+    padding-left: 33px;
+    color: rgb(87, 85, 85);
+    font-style: italic;
+}
+
+#logo{
+   height: 70px;
+   float: left;
+   margin-top: 12px;
+   margin-left:5%;
+}
+
+/*region login and search*/
+#top-right{
+   margin-left:auto;
+   padding:20px 0 20px 20px;
+   margin-right:5%;
+}
+
+#top-right > form{
+    margin-bottom:0;
+}
+/*endregion login and search*/
+
+/*region navigation bar*/
+#menubar2{
+   background-color:rgb(52, 84, 129);
+   display:flex;
+   flex-wrap:wrap;
+}
+
+#menubar2::after{
+	content:"";
+	height:5px;
+	width:100%;
+	background:rgb(116, 139, 166);
+}
+
+nav.main {
+	width:100%;
+}
+
+nav.main ul {
+    background: rgb(52, 84, 129); 
+    list-style: none;
+    position:relative;
+    margin:0 5%;
+    padding:0;
+}
+
+nav.main ul:after {
+    content: ""; 
+    clear: both; 
+    display: block;
+}
+
+nav.main ul li {
+    float: left;
+    text-transform: uppercase;
+    font-size: 17px;
+    font-family: Oswald;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+nav.main ul li:hover > a, nav.main ul li.opened > a{
+    color: #fdba4d;
+}
+
+nav.main ul li a {
+    display: block;
+    padding: 10px 25px;
+    color: white; 
+    text-decoration: none;
+}
+
+nav.main ul ul {
+	z-index:1000;
+    padding: 0;
+    position: absolute; 
+    margin:-1px 0 0 0;
+}
+
+nav.main ul ul li {
+    float: none; 
+    position: relative;
+    border:1px solid rgb(116, 139, 166);
+}
+
+nav.main li:hover > ul, nav.main li.opened > ul {
+    visibility:visible;
+}
+
+nav.main ul ul li a {
+    padding: 10px 25px;
+    color: #fff;
+}
+
+nav.main ul ul ul {
+    position: absolute; 
+    left: 100%; 
+    top:0;
+}
+/*endregion navigation bar*/
+
+/*region header tags*/
+#content h2, #content h3{
+   	margin: 0;
+   	/*padding: 10px 0;*/
+	color:#476a85;
+    text-transform: capitalize;
+}
+
+#content h2 {
+	font-size:1.5em;	
+}
+
+#content h3{
+   padding-bottom:2px;
+   font-size:1.17em;
+}
+/*endregion header tags*/
+
+#content .additional_content > form {
+    margin-top:1em;
+}
+
+div.additional_content.ui_link {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+/*region form*/
+#content .form input{
+    width:200px;
+}
+
+#content .form textarea{
+    width:300px;
+}
+
+.form .form_title{
+    text-align:right;
+}
+/*endregion form*/
+
+/*region a tag*/
+a, a:visited {
+   color: #2e669b;
+   text-decoration: none !important;
+}
+
+a:hover, a:focus {
+	color:#cd6929;
+}
+
+#content table a:hover, #content table a:focus {
+	color:#cd6929 !important;
+}
+/*endregion a tag*/
+
+/*region input, textarea, select*/
+.s, input, textarea{
+   margin: 5px -6px 0 0;
+   padding: 5px;
+   width: 180px;
+   background-color: whiteSmoke;
+   border: 1px solid #DDD;
+}
+
+.s,  input, textarea{
+   background-color:white;
+}
+
+button, input, textarea, select, input.button, input[type="submit"] {
+	font-size: 14px !important;
+}
+
+#content select,.sdm-select{
+    border: 0;
+    background: transparent;
+    height: 27px;
+    border: 1px solid #d8d8d8;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    -webkit-border-radius: 0px;
+    background: transparent url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png") no-repeat right center;
+    background-color: white;
+    padding-right:20px;
+}
+/*endregion input, textarea, select*/
+
+/*region button*/
+.button, button, input[type="submit"], input.button {
+   background-color: #99bd3c;
+   border: 1px solid #99bd3c;
+   color: white;
+   cursor: pointer;
+   font-weight: normal;
+   padding: 5px;
+   text-decoration: none;
+   width:inherit;
+   text-transform:uppercase;
+}
+
+.button:disabled, button:disabled, input[type="submit"]:disabled, input.button:disabled {
+   background-color: rgb(145, 144, 144);
+   border: 1px solid rgb(145, 144, 144);
+}
+
+.button:hover, button:hover, input[type="submit"]:hover, input.button:hover{
+   color:#feebcd;
+}
+
+.button:disabled:hover, button:disabled:hover, input[type="submit"]:disabled:hover, input.button:disabled:hover {
+   background-color: rgb(145, 144, 144);
+   border: 1px solid rgb(145, 144, 144);
+   cursor:default;
+   color:white;
+}
+/*endregion button*/
+
+table td.key, table td.value {
+	font-size:18px;
+}
+
+table td.key {
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+table td.value {
+	word-break: break-word;
+}
+
+.key{
+   color:rgb(100, 140, 171);
+   padding: 0 10px;
+}
+
+.sub-content{
+    padding:10px;
+}
+
+.doc-table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.doc-table td{
+    padding-left: 10px;
+    border-top: 1px solid #aaa;
+    padding-top:4px;
+}
+
+.doc-title{
+    font-weight: bold;
+    font-size: 1.0em;
+    padding-right:10px;
+    width: 20%;
+    border-right: 1px solid #aaa;
+    border-top: 1px solid #aaa;
+}
+
+.tab{
+    width:10px;
+}
+
+.json{
+    background-color:white;
+}
+
+.doc-table .title{
+    float:left;
+}
+
+.method_doc{
+    padding-bottom:45px;
+}
+
+#modalmask{
+    position: absolute;
+    width: 100%;
+    background-color: rgb(60, 60, 60);
+    left: 0;
+    top: 0;
+    opacity: .6;
+    display: none;
+}
+
+/*region Google table override*/
+.google-visualization-table-table {	
+    font-family: "Karla", Helvetica, arial, sans-serif !important;
+    font-size:14px !important;
+}
+.google-visualization-table {
+    border: 1px solid rgb(87, 85, 85);
+}
+
+.google-visualization-table table > thead > tr > th {
+    /*Commented out to match the table on Search2
+    border-bottom: 1px solid rgb(87, 85, 85);*/
+    background: #cddae4 !important;
+}
+
+.google-visualization-table table > thead > tr > th:last-child {
+    border-right:none;
+}
+
+.google-visualization-table > .google-visualization-table-div-page {
+    border-top: 1px solid rgb(87, 85, 85);
+    background: #cddae4 !important;
+}
+
+/*TODO: Do for all tables*/
+.google-visualization-table table > tbody > tr:hover {
+	background-color:#feebcd;
+}
+/*endregion Google table override*/
+
+/*region table*/
+table{
+	color:#5a5a5a;
+}
+
+table > thead > tr > th {
+	color:#404040;
+	font-size:14px;
+}
+/*endregion table*/
+
+/*region arrow icons*/
+.arrow {
+    float:right;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    content: "";
+    margin: -21px 11px 0 0;
+}
+
+.arrow.up, nav.main ul li:not(.opened):hover > .arrow.down{ 
+    border-top: 0;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #fff;
+    border-left: 4px solid transparent;
+}
+
+.arrow.down {
+    border-top: 4px solid #fff;
+    border-right: 4px solid transparent;
+    border-bottom: 0;
+    border-left: 4px solid transparent;
+}
+
+.arrow.right {
+    border-top: 4px solid transparent;
+    border-right: 0;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #fff;
+}
+
+.arrow.left, nav.main ul ul li:not(.opened):hover > .arrow.right {
+    border-top: 4px solid transparent;
+    border-right: 4px solid #fff;
+    border-bottom: 4px solid transparent;
+    border-left: 0;
+}
+
+nav.main ul li.opened > .arrow.up, nav.main ul li:not(.opened):hover > .arrow.down{
+    border-bottom: 4px solid #fdba4d;
+}
+
+nav.main ul li.opened > .arrow.left,  nav.main ul ul li:not(.opened):hover > .arrow.right {
+    border-right: 4px solid #fdba4d;
+}
+
+.google-visualization-table-sortind {
+	color: #404040 !important;
+}
+/*endregion arrow icons*/
+
+/*region special classes*/
+.pointer{
+    cursor:pointer;
+}
+
+.hideElement{
+    visibility:hidden;
+}
+
+.error{
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 70px;
+}
+
+.uppercase{
+	text-transform:uppercase;
+}
+/*endregion special classes*/
+
+ul.colapse {
+	font-size:18px;
+	margin:2px 0;
+}

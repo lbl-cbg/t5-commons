@@ -1,0 +1,50 @@
+@example
+@title Simple folder add
+@description Adds folder /house/pacbio/runs/PB02_01934 to JAMO 
+ using most of the default values. When we make this call JAMO will 
+tar this folder up attempting to remove all links inside this folder.
+@type python
+@code
+from sdm_curl import Curl
+
+curl = Curl('https://jamo.jgi.doe.gov',appToken='324SD2345TDFG13GEG')
+curl.post('api/metadata/folder',folder='/house/pacbio/runs/PB02_01934',
+    file_type='pacbio_run_folder',
+    destination='pacbio/runs/',
+    metadata={'pacbio_physical_run_unit':01934})
+
+@example
+@title Ignore files
+@description Adds folder /house/pacbio/runs/PB02_01934 to JAMO  
+ not backing up folder named sub_dir.
+@type python
+@code
+from sdm_curl import Curl
+
+curl = Curl('https://jamo.jgi.doe.gov',appToken='324SD2345TDFG13GEG')
+curl.post('api/metadata/folder',folder='/house/pacbio/runs/PB02_01934',
+    file_type='pacbio_run_folder',
+    ignore=['subdir'],
+    destination='pacbio/runs/',
+    metadata={'pacbio_physical_run_unit':01934})
+
+@example
+@title export sub files
+@description Adds folder /house/pacbio/runs/PB02_01934 to JAMO 
+ individually adding fasta.fa to JAMO so it becomes its own searchable 
+ entity and associating sequencing_project_id to this file plus all 
+ the metadata the folder gets.
+@type python
+@code
+from sdm_curl import Curl
+
+curl = Curl('https://jamo.jgi.doe.gov',appToken='324SD2345TDFG13GEG')
+curl.post('api/metadata/folder',folder='/house/pacbio/runs/PB02_01934',
+    file_type='pacbio_run_folder',
+    ignore=['subdir'],
+    extract=[{'path':'01234/fasta.fa',
+        'file_type':'fasta',
+        'metadata':{'sequencing_project_id':1023874}}],
+    destination='pacbio/runs/',
+    metadata={'pacbio_physical_run_unit':01934})
+

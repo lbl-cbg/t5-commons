@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "tape_db": {
+      "type": "string",
+      "description": "Name of the tape database"
+    },
+    "tape_temp_dir": {
+      "type": "string",
+      "description": "Temporary directory path for tape operations"
+    },
+    "mysql_user": {
+      "type": "string",
+      "description": "Username for MySQL database"
+    },
+    "mysql_host": {
+      "type": "string",
+      "description": "Host address of the MySQL server"
+    },
+    "mysql_pass": {
+      "type": "string",
+      "description": "Password for MySQL database"
+    },
+    "purge_file_accessed": {
+      "type": "integer",
+      "description": "Number of days after which accessed files are purged"
+    },
+    "purge_file_extend": {
+      "type": "integer",
+      "description": "Number of days to extend the purge for accessed files"
+    },
+    "queue_1_limit": {
+      "type": "integer",
+      "description": "Limit for queue 1"
+    },
+    "queue_2_limit": {
+      "type": "integer",
+      "description": "Limit for queue 2"
+    },
+    "queue_2_match": {
+      "type": "string",
+      "description": "Pattern to match in queue 2"
+    },
+    "disk_size": {
+      "type": "integer",
+      "description": "Total disk size in bytes"
+    },
+    "disk_reserve": {
+      "type": "integer",
+      "description": "Reserved disk space in bytes"
+    },
+    "hpss_server": {
+      "type": "string",
+      "description": "HPSS server address"
+    }
+  },
+  "required": [
+    "tape_db",
+    "tape_temp_dir",
+    "mysql_user",
+    "mysql_host",
+    "mysql_pass",
+    "purge_file_accessed",
+    "purge_file_extend",
+    "queue_1_limit",
+    "queue_2_limit",
+    "queue_2_match",
+    "disk_size",
+    "disk_reserve",
+    "hpss_server"
+  ]
+}
+
+

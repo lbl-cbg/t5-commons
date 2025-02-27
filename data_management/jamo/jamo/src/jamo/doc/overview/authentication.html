@@ -1,0 +1,19 @@
+<h2>Authentication</h2>
+SDM authenticates all calls that can make changes to data. We support 2 types of authentication (both types use a randomly generated token):<ul>
+<li>Users - Used for UI authentication, credentials are checked against lbl.gov Google OAuth. Passwords are never stored. </li>
+<li>Applications - These tokens are meant to be used by pipelines and token are generated on demand.</li></ul>
+
+<h3>Header setting</h3>
+In order to get your Application token correctly working with JAMO, you must set the Authorization header to "Application TOKEN". Example using curl on the command line here:
+<pre class="brush: bash">
+curl -H "Content-Type: application/json; charst=utf-8" -H "Authorization:Application TOKEN" https://sdm-dev.jgi-psf.org/api/file/post -d '{...}'
+</pre>
+If for example, your token was ABCDEF0123456789, then your call would look like"
+<pre class="brush: bash">
+curl -H "Content-Type: application/json; charst=utf-8" -H "Authorization:Application ABCDEF0123456789" https://sdm-dev.jgi-psf.org/api/file/post -d '{...}'
+</pre>
+You can also use your user token to access the system (found in ~/.jamo/token).  This will be passed as a Bearer token rather than an Application token as follows:
+<pre class="brush: bash">
+curl -H "Content-Type: application/json; charst=utf-8" -H "Authorization:Bearer ABCDEF0123456789" https://sdm-dev.jgi-psf.org/api/file/post -d '{...}'
+</pre>
+In general pipelines should rely on Application tokens rather than user (bearer) tokens.

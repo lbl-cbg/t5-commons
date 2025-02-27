@@ -1,0 +1,24 @@
+PREFIX = $(shell pwd)
+
+package_dir  = $(PREFIX)
+package_path = PYTHONPATH=$(package_dir)/lib/python2.7/site-packages
+package_bin  = $(package_dir)/bin
+pip	     = $(package_bin)/pip
+python	     = $(package_bin)/python
+
+all: build install
+
+build:
+	virtualenv --system-site-packages $(package_dir)
+	# Temporary fix to get around the upgrade conflict for pbr
+	$(pip) install --upgrade pbr
+	$(pip) install --upgrade appdirs
+	$(pip) install --upgrade packaging
+	$(pip) install --upgrade setuptools
+	$(pip) install --upgrade -r requirements.txt
+
+install: build
+	$(python) setup.py install
+
+clean:
+	/bin/rm -rf lapinpy.egg-info/ build dist bin/[a-k,m-z]* include lib64 lib

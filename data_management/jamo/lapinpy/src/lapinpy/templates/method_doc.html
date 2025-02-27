@@ -1,0 +1,190 @@
+<style type="text/css">
+.views-table, .block table{
+    border-top: 1px solid #9E9E9E;
+    margin: 0 0 3em 0;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+caption{
+    text-align:left;
+    line-height:1.1;
+}
+caption strong{
+    font-size:20px;
+    text-transform: capitalize;
+}
+caption p{
+    margin-top: 0.5em;
+    font-size: 14px;
+}
+.views-field-title {
+    width: 30%;
+}
+.views-field-title{
+    font-size: 16px;
+    vertical-align: baseline;
+}
+.views-field-body{
+    font-size: 14px;
+}
+td{
+    border-bottom: 1px solid #9E9E9E;
+    padding: 8px 0 8px 5px;
+    vertical-align: top;
+}
+.param {
+    display: block;
+    float: left;
+    color: #333;
+    font-weight: bold;
+}
+.param span {
+    display: block;
+    color: #999;
+    font-weight: normal;
+}
+tr:hover{
+    background-color:#EEE;
+}
+th, thead th {
+    padding: 8px 0;
+    width: 140px;
+    border-bottom: 1px solid #9E9E9E;
+    font-weight: bold;
+    text-align: left;
+}
+.method{
+    text-transform:uppercase;
+    float:left;
+    padding-right:10px;
+}
+.description{
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+#center-content{
+    min-height: 400px;
+    margin-bottom: 6em;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+}
+#content-main {
+    position: relative;
+    z-index: 0;
+    max-width: 700px;
+    margin-right: 20px;
+    float: left;
+}
+#sidebar {
+    width: 240px;
+    float: left;
+}
+.api-doc-block {
+    background-color: #F8F8F8;
+    padding: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+.code-example{
+    float:left;
+}
+.code-example .title{
+    color:#0094D2;
+    font-size:25px;
+    text-transform:capitalize;
+}
+.code-example .description{
+}
+.required{
+    color:#3AB4E9;
+}
+</style>
+<div id="center-content">
+<h2><div class="method">{{data.html_method}}</div>{{data.url}}{{data.args}}</h2>
+<div class="description">{{data.description}}</div>
+<div id="content-main">
+{% if data.parameters is defined %}
+<table class="views-table cols-2">
+    <thead>
+        <tr>
+            <th class="views-field views-field-title">Parameters</th>
+            <th class="views-field views-field-body">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for parameter in data.parameters %}
+        <tr>
+            <td>
+                <span class="param{% if parameter.required %} required {%endif%}">
+                    {{parameter.name}}
+                    <span>{{parameter.type}}</span>
+                    <span>{%if 'required' not in parameter or parameter.required %}required{% else %} optional {% endif %} </span>
+                </span>
+            </td>
+            <td class="views-field views-field-body">{% if 'doc' in parameter %} {{parameter.doc}}
+            {% endif %}
+            <p><strong>Example Values</strong>:
+            {% for example in parameter.examples %}
+            <tt>{{example}}</tt>
+            {%endfor%}</p>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+</table>
+
+{% endif %}
+
+<script type="text/javascript" src="/scripts/shCore.js"></script>
+<script type="text/javascript" src="/scripts/shBrushBash.js"></script>
+<script type="text/javascript" src="/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/scripts/shBrushYaml.js"></script>
+
+<!-- Include *at least* the core style and default theme -->
+<link href="/scripts/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/scripts/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+</script>
+</div>
+<div id="sidebar">
+    <div class="block api-doc-block">
+      <h2>Resource Information</h2>
+      <table>
+        <tbody>
+         <tr class="odd">
+             <td>Authentication</td>
+             <td>{%if data.permissions%}
+                 <a href="/doc/JAMO/overview/authentication.html">Required</a>
+             {% else %}Not Required{% endif %}
+             </td>
+         </tr>
+         {%if data.permissions%}
+         <tr class="even">
+             <td>Needed permissions</td>
+             <td>{% for perm in data.permissions %}{{perm}}<br> {%endfor %}</td>
+         </tr>
+         {% endif %}
+         <tr class="even"><td>Response Formats</td><td>json</td> </tr>
+         <tr class="odd"><td>HTTP Method</td><td>{{data.html_method}}</td> </tr>
+         <tr class="even"><td>Application</td><td>{{data.application}}</td> </tr>
+         <tr class="odd">
+             <td colspan=2>
+                 <a href="/doc/{{data.application}}/{{data.name}}/{{data.html_method}}/response">Response Object</a>
+             </td>
+         </tr>
+        </tbody>
+        </table>
+      </div>
+</div>
+{% for example in data.examples %}
+<div class="code-example">
+    <div class='title'>{{example.title}}</div>
+    <div class='description'> {{example.description}}</div>
+    <pre class="brush: {{example.type}}">{{example.code}}</pre>
+</div>
+{% endfor %}
+</div>

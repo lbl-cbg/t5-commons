@@ -1,0 +1,140 @@
+<h2>Data Stores</h3>
+Data store in JAMO allow the metadata to be enriched by only passing a few keys. A store must be pointed to a restful GET service that returns JSON. They work by scanning the metadata that is passed initially to the post_file resource, if there are any keys in the root of the metadata that match a data stores' key the store will be triggered. Once this happens a GET request will be made to the data store's URL (replacing {{value}} with the value of the key that was passed into the metadata parameter) and storing the results in a sub-document identified by the data store's identifier. 
+<br>
+Data stores can also manipulate the returned data in a few ways:
+<ul>
+    <li>If conform_keys is set to True, all the keys of the data will be set to lowercase and '-'s will be replaced with '_'s.</li>
+    <li>If ignore_null is set to True, all keys that have a value of null will be ignored and not stored.</li>
+    <li>Any key can also be configured to be mapped to a new name or set to ignore.</li>
+    <li>Any key can also be configured to be brought down to the root level.</li>
+</ul>
+Data stores can also trigger other data stores causing a cascading effect. This is done by setting a key to be extracted to the root level. If this key is a data store key that data store will then be triggered. <aside>Circle detection is done in case of recursive calls to itself.</aside>
+
+<h3>Results of Data Stores</h3>
+First lets add a file to JAMO and see what the record looks like without using data stores.
+<br><b>The call:</b>
+<pre class="brush: python">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+response = curl.post('api/metadata/file',
+    file      = '/global/homes/a/aeboyd/file.fasta'
+    file_type = 'fasta',
+    metadata  = {'sequencing_project_id':405307}
+    )
+</pre>
+
+<b>Metadata record:</b>
+<pre class="brush: javascript">
+{
+    "file_owner": "aeboyd",
+    "file_status_id": 2,
+    "file_type": [
+        "fasta"
+    ],
+    "file_name": "file.fasta",
+    "user": "sdm",
+    "added_date": "2013-09-19T11:32:02.914000",
+    "file_date": "2012-06-05T04:22:17",
+    "modified": "2013-09-19T11:32:02.914000",
+    "file_permissions": "0100644",
+    "file_status": "COPY_READY",
+    "file_id": 2907389,
+    "file_size": 357037,
+    "_id": "523b4322067c01393707f704",
+    "file_group": "genome",
+    "file_path": "/global/homes/a/aeboyd",
+    "metadata": {
+        "sequencing_project_id": 405307,
+    }
+</pre>
+<b>Metadata record with a sequencing_project_id data store:</b>
+<pre class="brush: javascript">
+{
+    "file_owner": "aeboyd",
+    "file_status_id": 2,
+    "file_type": [
+        "fasta"
+    ],
+    "file_name": "file.fasta",
+    "user": "sdm",
+    "added_date": "2013-09-19T11:32:02.914000",
+    "file_date": "2012-06-05T04:22:17",
+    "modified": "2013-09-19T11:32:02.914000",
+    "file_permissions": "0100644",
+    "file_status": "COPY_READY",
+    "file_id": 2907389,
+    "file_size": 357037,
+    "_id": "523b4322067c01393707f704",
+    "file_group": "genome",
+    "file_path": "/global/homes/a/aeboyd",
+    "metadata": {
+        "sequencing_project_id": 405307,
+        "gold_data": {
+            "show_in_gold": "Yes",
+            "domain": "BACTERIAL",
+            "pmo_project_id": 405307,
+            "jgi_status": "Production",
+            "scope_of_work": "Standard Draft",
+            "submitters_project_name": "Sulfurovum sp. SCGC AAA036-F05",
+            "gpts_comments": "9-21-2011 substitute for Sulfurovum sp. SCGC AAA036-O23 (human contamination)",
+            "gpts_bioclassification_name": "Sulfurovum sp. SCGC AAA036-F05",
+            "proposal_name": "Shedding Light on the Dark: Single-cell Genomics of Uncultivated Epsilonproteobacteria Inhabiting the Subseafloor Biosphere at Deep-Sea Hydrothermal Vents",
+            "project_oid": 22568,
+            "ncbi_taxon_id": 1218800,
+            "cultured": "No",
+            "project_type": "Whole Genome Sequencing",
+            "ncbi_phylum": "Proteobacteria",
+            "bioproject_accession": "PRJNA169696",
+            "gram_stain": "Gram-",
+            "contact_name": "Sievert, Stefan M",
+            "ncbi_genus": "Sulfurovum",
+            "availability": "Public",
+            "gpts_embargo_days": 180,
+            "ncbi_species": "Sulfurovum sp. SCGC AAA036-F05",
+            "phase_status": "Permanent Draft",
+            "display_name": "Sulfurovum sp. SCGC AAA036-F05",
+            "add_date": "2012-01-27T18:33:58",
+            "jgi_funding_program": "CSP",
+            "ncbi_superkingdom": "Bacteria",
+            "jgi_proposal_id": 300645,
+            "species": "sp.",
+            "scientific_program": "Microbial",
+            "gpts_last_mod_date": "2012-01-10T00:00:00",
+            "jgi_project_type": "Single Cell",
+            "jgi_sequencing_goal": "Library",
+            "assembly_method": "Velvet v. 1.1.04, ALLPATHS v. R41043",
+            "project_status": "incomplete",
+            "locus_tag": "B024",
+            "ncbi_project_id": 169696,
+            "bioproject_description": "Shedding Light on the Dark: Single-cell Genomics of Uncultivated Epsilonproteobacteria Inhabiting the Subseafloor Biosphere at Deep-Sea Hydrothermal Vents",
+            "contact_email": "ssievert@whoi.edu",
+            "seq_country": "USA",
+            "mod_date": "2012-07-10T13:26:30",
+            "phase": "Complete",
+            "modified_by": 102079,
+            "jgi_visibility": "Public",
+            "proj_desc": "Shedding Light on the Dark: Single-cell Genomics of Uncultivated Epsilonproteobacteria Inhabiting the Subseafloor Biosphere at Deep-Sea Hydrothermal Vents",
+            "web_page_code": 1,
+            "jgi_funding_year": 2011,
+            "gold_stamp_id": "Gi14107",
+            "jgi_dir_number": 4095773,
+            "organism_type": "Natural",
+            "show_in_dacc": "No",
+            "nucleic_acid_type": "DNA",
+            "jgi_product_name": "Standard Draft",
+            "seq_center_proj_id": 4095773,
+            "uncultured_type": "Single Cell",
+            "its_proposal_id": 275,
+            "strain": "SCGC AAA036-F05",
+            "ncbi_project_name": "Sulfurovum sp. SCGC AAA036-F05",
+            "ncbi_class": "Epsilonproteobacteria",
+            "funding_program": "DOE-CSP 2011",
+            "phylogeny": "PROTEOBACTERIA-EPSILON",
+            "genus": "Sulfurovum",
+            "seq_status": "Complete",
+            "contact_oid": 101072
+    }
+
+</pre>
+Notice that there is not a ton of data stored in the "gold_data" sub document and there are no keys that have the value of NULL. You should take advantage of the data stores whenever you can!

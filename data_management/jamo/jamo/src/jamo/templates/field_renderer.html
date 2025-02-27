@@ -1,0 +1,18 @@
+<div class="jsonitem" ng-switch on="data.type">
+
+    <div ng-switch-when="dict">
+        <div style="display:inline-block" ng-click="data.display=!data.display" class="darrow" ng-class="{'collapsed' : !data.display}"></div>
+        <div style="display:inline-block"> {{data.name}} : </div>
+        <ul ng-show="data.display" >
+            <li ng-repeat="data in data.value" ng-include="'/api/metadata/htmltemplate/field_renderer.html'"></li>
+        </ul>
+    </div>
+    <div ng-switch-when="null">
+        <div style="display:inline-block"> {{data.name}} : </div>
+        <div style="display:inline-block" class="number" >null</div>
+    </div>
+    <div ng-switch-default>
+        <div style="display:inline-block"> {{data.name}} : </div>
+        <div style="display:inline-block" ng-class="data.type" >{{data.value}}</div>
+    </div>
+</div>

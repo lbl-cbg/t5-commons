@@ -1,0 +1,87 @@
+<h2>Adding a file to JAMO</h2>
+When a file gets added to JAMO it will get copied to tape automatically and copied over to /global/dna where the life cycle be managed by JAMO. You should only ever put final products in. We define a "final product" to be any file that gets shared to an other group or collaborator. It is also a user sourced system, you can associate any type of metadata you would like to a file that you are putting in. If you would like to put complex data in you could take advantage of our <a href="/doc/JAMO/overview/data_store.html">"data store"</a>. The data store can make it much easier to collect a nice set of metadata even if you only pass in a few keys.
+<br>
+The metadata that you put in is very important, you want to put items in that can make it easy to find the file years from now and even for groups to find minutes from now. A good goal for metadata is for some other person to be able to look at the metadata for a file and know exactly what it is. 
+
+<h3>Making the call</h3>
+Adding file to JAMO you will be using the POST resource /api/metadata/file. You can find all the parameters for this resource <a href="/doc/JAMO/api_reference/file/post">here</a>.
+<br>We will assume that you are using the <a href="/doc/JAMO/tutorials/python/sdm_curl.html">sdm_curl</a> library for these calls.
+<br>JAMO will access the files you ask to put in with the user jgi_dna which is part of the genome so you will need to make sure that this user can read the file you are wanting to add. 
+<h4>Basic add</h4>
+Here we add a file into JAMO with the minimum set of criteria, while this call is valid you probably won't want to make a call like this in real life. Ideally you want to put more metadata than just one key. Additionally what type of fasta is this? How did this file get created? Is this fasta DNA or RNA? Would someone know what this file was just by looking at the metadata? No they most likely wouldn't, so try to make the set of metadata rich and actually useful!
+<pre class="brush: python">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+response = curl.post('api/metadata/file', 
+    file      = '/global/homes/a/aeboyd/file.fasta'
+    file_type = 'fasta',
+    metadata  = {'sequencing_project_id':1}
+    )
+</pre> 
+<h4>Response</h4>
+The file resource file will return JAMO's unique id in a dictionary assigned to the value "metadata_id". You should always make sure that you get this back and also check to make
+sure the return is valid. Although we don't expect outages it is always good to be prepared for the case that our service is down and try again later. If you use the sdm_curl 
+object it will auto try the call a few times with delays between failures.
+If you have passed incorrect data JAMO will complain and let you know what is wrong. If you are using sdm_curl a sdm_curl.HttpException will be raised.
+<br>
+<b>Example return:</b>
+<pre class="brush: javascript">
+{
+    "metadata_id":"523b5dc4067c01393708225c"
+}
+</pre>
+
+<h4>Richer metadata</h4>
+Here lets add a more metadata for the same file.
+Now if we were to look at the metadata we can get a better idea on what this file is.
+<pre class="brush: python">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+response = curl.post('api/metadata/file', 
+    file      = '/global/homes/a/aeboyd/file.fasta'
+    file_type = 'fasta',
+    metadata  = {
+        'sequencing_project_id' : 1,
+        'fasta_type' : 'assembly',
+        'analysis_task_id' : 42,
+        'assembly_type' : 'metagenomics',
+        'assembly_info' : {
+            'contigs' : 1242,
+            'analyist' : 'John Dow'
+        }
+    )
+</pre> 
+
+<h4>Copy to DNA file system</h4>
+Here we will add the same file telling JAMO to copy the file over to DNA.<br>
+The destination argument is used to tell JAMO where you would like this file to end up relative to your predefined place in DNA, for most groups this will be /global/dna/md_archive/group. It is important not to use the full path to dna, but to use a relative place where / isn't the first character in the string. If you want this file to be created inside the folder specified by destination, you must put a / at the end of the path. 
+<pre class="brush: python">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+response = curl.post('api/metadata/file', 
+    file        = '/global/homes/a/aeboyd/file.fasta'
+    file_type   = 'fasta',
+    metadata    = {'sequencing_project_id':1},
+    destination = 'assemblies/test/1/'
+    )
+</pre> 
+
+<h4>Copy and purge</h4>
+By default and file copied over to dna will be purged in 1 year. However if you really don't need the file to stay around that long it is suggested that you shorten this.<br>
+This can be done by using the local_purge_days parameter. The value of this is the number of days as an integer. If you would like this file to be purged as soon as the file is sent off to tape, then you can set this value to 0.
+<aside>Files will not be purged until the file has been sent off to tape even if the local_purge_days is set to 0.</aside>
+<pre class="brush: python">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+response = curl.post('api/metadata/file', 
+    file             = '/global/homes/a/aeboyd/file.fasta'
+    file_type        = 'fasta',
+    metadata         = {'sequencing_project_id':1},
+    destination      = 'assemblies/test/1/',
+    local_purge_days = 60
+    )
+</pre> 

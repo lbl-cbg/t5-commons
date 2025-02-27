@@ -1,0 +1,215 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+
+
+<script src="/scripts/angular-animate.js"></script>
+<script type='text/javascript'>
+var filtertable = angular.module('filtertable', ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']);
+filtertable.config(function($modalProvider) {
+      angular.extend($modalProvider.defaults, {
+              html: true
+     });
+});
+
+
+filtertable.controller('FilterCtrl',['$scope','$http','$location','$modal','$datepicker' ,function ($scope,$http,$location,$modal,$datepicker){
+    $scope.stored_amount=0;
+    var self = this;
+    $scope.rec_count = {{data.end}};
+    $scope.prev_enabled = false;
+    $scope.cursor_id= '{{data.cursor_id}}';
+    $scope.fields = {{ func_props.headers|jsonify }};
+    $scope.headers = {};
+    for(var i=0;i<$scope.fields.length;i++){
+        var row = $scope.fields[i];
+        $scope.headers[row[0]]={label:row[1], key:row[0], 'type':row[2]};
+    }
+    $scope.current_filter = {'operator':'='};
+    $scope.current_results = {{data.records|jsonify}};
+    $scope.prev_records = $scope.current_results;
+    $scope.result_desc = { start:{{data.start}}, end:{{data.end}}, record_count:{{data.record_count}}};
+    $scope.next_enabled = $scope.result_desc.end<$scope.result_desc.record_count;
+    $scope.operators = ['=', '<', '<=', '>', '>=', 'like', 'in'];
+    $scope.conditions = [];
+    address = '/api{{func_props.address}}'.split('/');
+    address2 = '/api{{func_props.address}}'.split('/');
+    $scope.query=($location.search()).query;
+    $scope.download_link = '/api/file/download/csv/'+address2[2]+'/'+address2[3]+'?__ui=true';
+    if($scope.query){
+        $scope.download_link+='?query='+encodeURIComponent($scope.query);
+    }
+    address.pop();
+    address.push('nextpage');
+    address = address.join('/');
+    $scope.show_options=false;
+    update_filter = function(){
+        var st ="";
+        for(var i=0;i<$scope.conditions.length;i++){
+            if (i>0)
+                st += " and ";   
+            condition = $scope.conditions[i];
+            st+= condition.key+" "+condition.operator+" "+condition.value;
+        }
+        $scope.query=st;
+    };
+    $scope.add_filter = function(){
+        var type = $scope.current_filter.type;
+         
+        if(type=='date'){
+            $scope.current_filter.value = '"'+$scope.current_filter.d_value.toISOString()+'"';
+        }else if(type=='number'){
+            $scope.current_filter.value = $scope.current_filter.n_value;    
+        }else if(type=='string'){
+            $scope.current_filter.value = $scope.current_filter.s_value;    
+        }
+        if($scope.current_filter.value && $scope.current_filter.key){
+            $scope.conditions.push($scope.current_filter);
+            $scope.current_filter = {'operator':'='};
+        }
+        update_filter();
+    };
+    $scope.remove_filter = function(idx){
+        $scope.conditions.splice(idx,1);
+        update_filter();
+    };
+    $scope.check_type = function(){
+        var type = $scope.headers[$scope.current_filter.key]['type'];
+        if(type=='html')
+            type='string';
+        $scope.current_filter.type = type;
+    };
+    $scope.search = function(){
+        $http.get('/api{{func_props.address}}',{params:{query:$scope.query,'__ui':true}}).success(
+            function(data, status, headers, config) {
+                $scope.current_results=data.records;
+                $scope.prev_records =  [];
+                $scope.cursor_id = data.cursor_id;
+                $scope.rec_count = data.end;
+                $location.search('query',$scope.query);
+                $scope.download_link = '/api/file/download/csv/'+address2[2]+'/'+address2[3]+'?__ui=true&query='+encodeURIComponent($scope.query);
+                $scope.result_desc = { start:data.start, end:data.end, record_count:data.record_count};
+                $scope.prev_records = $scope.prev_records.concat($scope.current_results);
+                $scope.stored_amount = data.end;
+                $scope.next_enabled = data.end<data.record_count;
+            }).error(function(data, status, headers, config) {
+                var myModal = $modal({title: 'Error with query', content: data.errors[0], show: true});
+                myModal.show()
+            });
+    };
+    $scope.next = function(){
+        if(!$scope.next_enabled){
+            return;
+        }
+        if($scope.prev_records.length == $scope.result_desc.record_count){
+           $scope.result_desc.start +=$scope.rec_count;
+           $scope.result_desc.end += $scope.rec_count;
+           if($scope.result_desc.end>$scope.result_desc.record_count){
+                $scope.result_desc.end=$scope.result_desc.record_count;
+           }
+           $scope.current_results=[] ;
+           for(var i=$scope.result_desc.start-1;i<$scope.result_desc.end;i++){
+                $scope.current_results.push($scope.prev_records[i]);
+           }
+           $scope.next_enabled = $scope.result_desc.end<$scope.result_desc.record_count;
+           $scope.prev_enabled = $scope.result_desc.start>1;
+        }else if($scope.result_desc.end<$scope.result_desc.record_count){
+            $http.get(address+'/'+$scope.cursor_id,{query:$scope.query}).success(
+                function(data, status, headers, config) {
+                    $scope.current_results=data.records;
+                    $scope.result_desc = { start:data.start, end:data.end, record_count:data.record_count}
+                    $scope.prev_records = $scope.prev_records.concat($scope.current_results);
+                    $scope.stored_amount+=$scope.rec_count;
+                    $scope.next_enabled = data.end<data.record_count;
+                    $scope.prev_enabled = true;
+                });
+        }
+    };
+    $scope.prev = function(){
+        if($scope.result_desc.start>1 && $scope.prev_enabled){
+            $scope.result_desc.start -=$scope.rec_count;
+            $scope.result_desc.end = $scope.result_desc.start + $scope.rec_count-1;
+            $scope.current_results=[] ;
+            for(var i=$scope.result_desc.start-1;i<$scope.result_desc.end;i++){
+                $scope.current_results.push($scope.prev_records[i]);
+            }
+            $scope.next_enabled = $scope.result_desc.end<$scope.result_desc.record_count;
+        }
+        $scope.prev_enabled = $scope.result_desc.start>1;
+
+    };
+    if($scope.query){
+        $scope.search();
+    }
+
+}]);
+
+filtertable.config(function ($locationProvider) {
+    //$locationProvider.html5Mode(true);
+    //$locationProvider.hashPrefix("?");
+});
+filtertable.config(function($datepickerProvider) {
+      angular.extend($datepickerProvider.defaults, {
+          dateFormat: 'yyyy-MM-dd',
+          weekStart: 1,
+          autoclose: true
+      });
+});
+</script>
+
+<link rel="stylesheet" href="/scripts/table.css">
+<div id="search_window" ng-app='filtertable'><div id="FilterCtrl" ng-controller="FilterCtrl">
+    <table style="width:100%"><tr><td>
+    <form ng-submit="search()" style="float:left;width:100%;"> 
+        <table width="100%" cellspacing="0" cellpadding="0"><tr>
+        <td  style="position:relative" ><input type="text"  id="msearch" name="query" ng-model="query" spellcheck="false"  placeholder="Enter a filter here"/>
+            <div id="s_option_p" ng-show="show_options">
+                <form name="filter_cond" ng-submit="add_filter()">
+                    <select name="key"  ng-model="current_filter.key" ng-change="check_type()" class="minput" ng-options="value.key as value.label for (key, value) in headers" ></select> 
+                    <select  name="op" ng-model="current_filter.operator" class="minput" ng-options="operator for operator in operators" ></select> 
+                    <input  ng-show="current_filter.type=='date'" name="d_value" id="d_filter_value" ng-model="current_filter.d_value"  class="minput" spellcheck="false" bs-datepicker/>
+                    <input  ng-show="current_filter.type=='string'" name="s_value" id="s_filter_value" ng-model="current_filter.s_value" placeholder="filter" class="minput" spellcheck="false" />
+                    <input  ng-show="current_filter.type=='number'" ng-pattern="\d*" name="n_value" id="n_filter_value" ng-model="current_filter.n_value" placeholder="filter" class="minput" spellcheck="false" />
+                    <input  ng-hide="current_filter.type" class="minput" disabled/>
+                    <button type="submit" class="button" ng-disabled="!(current_filter.key)" ng-click="add_filter()">Add</button>
+                </form>
+{% raw %}
+                <div ng-repeat="condition in conditions" class="condition">
+                    {{condition.key}} {{condition.operator}} {{condition.value}}<button class="button" ng-click="remove_filter($index)">X</button>
+                </div>
+                <br><button class="button" style="float:right;margin:10px;" ng-click="show_options=false">Done</button>
+            </div>
+        </td>
+        <td width="10px" ><div id="s_option_a" ng-click="show_options=!show_options">▾</div></td>
+        <td width="85px"><button type="submit" class="button" value="Filter">Filter</button></td>
+        </tr></table>
+    </form>
+    </td>
+    <td><a ng-href="{{download_link}}">Download results</a></td>
+    <td style="text-align: -webkit-right; padding-right: 40px;">
+    <div id="result_info">
+        <div class="result_desc"><span>{{result_desc.start}}-{{result_desc.end}} of {{result_desc.record_count}}</span></div>
+{% endraw %}
+        <div id="prev_func" ng-class="prev_enabled ? '': 'disabled'" ng-click="prev()" class="page_func"><div class="left_arrow"></div></div>
+        <div id="next_func" ng-class="next_enabled ? '': 'disabled'" class="page_func" ng-click="next()"><div class="right_arrow"></div></div>
+    </div>
+    </td></tr></table>
+    <table class="qresults" cellspacing="0">
+        <tr class="header">
+        {% for key in func_props.headers %}
+       <th >{{key[1]}}</td>
+        {% endfor %}
+        </tr>
+       <tr ng-repeat="result in current_results">
+            {% if func_props.actions%}
+           <td align="left" class="q_select"><label><input type="checkbox" ng-model="result.selected"><div class="custom-checkbox"></div></label></td> 
+            {% endif %}
+            {% for key in func_props.headers %}
+           <td class="q_name" ng-bind-html="result.{{key[0]}}"></td>
+            {% endfor %}
+       <tr> 
+    </table>
+</div></div>
