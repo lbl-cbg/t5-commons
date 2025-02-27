@@ -5,27 +5,24 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install git
-RUN apt-get update && apt-get install -y git
-
 # Create and set the working directory
 WORKDIR /usr/src/app
 
 # Copy local repositories into the Docker image and install them
-COPY lapinpy.git /usr/src/app/jgi-lapinpy
-RUN cd jgi-lapinpy \
+COPY lapinpy /usr/src/app/lapinpy
+RUN cd lapinpy \
     && pip install .
 
-COPY sdm-common.git /usr/src/app/jgi-sdm-common
-RUN cd jgi-sdm-common \
+COPY sdm-common /usr/src/app/sdm-common
+RUN cd sdm-common \
     && pip install .
 
-COPY jat.git /usr/src/app/jgi-jat-ui
-RUN cd jgi-jat-ui \
+COPY jat /usr/src/app/jat-ui
+RUN cd jat-ui \
     && pip install .
 
-COPY jamo.git /usr/src/app/jgi-jamo
-RUN cd jgi-jamo \
+COPY jamo /usr/src/app/jamo
+RUN cd jamo \
     && pip install .
 
 # Copy the initialization script
