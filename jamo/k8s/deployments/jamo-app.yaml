@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jamo-app
+  namespace: t5-dm
+spec:
+  template:
+    metadata:
+      name: jamo-app
+      namespace: t5-dm
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: America/Los_Angeles
+          image: registry.nersc.gov/m4521/jamo-service:11
+          imagePullPolicy: Always
+          name: lapin-app
+          ports:
+            - containerPort: 8080
+              name: lapinpy
+              protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsGroup: 103887
+            runAsNonRoot: false
+            runAsUser: 104942
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /config
+              name: vol-jamo-config
+            - mountPath: /var/log
+              name: vol-jamo-wd
+            - mountPath: /mongo-secrets
+              name: vol-mongo-pass
+            - mountPath: /mysql-secrets
+              name: vol-mysql-pass
+            - mountPath: /sf-api
+              name: vol-sfapi-key
+            - mountPath: /google-oauth
+              name: vol-google-oauth-secrets
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: registry-nersc
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 103887
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - hostPath:
+            path: /global/cfs/cdirs/m4521/jamo/config
+            type: Directory
+          name: vol-jamo-config
+        - hostPath:
+            path: /global/cfs/cdirs/m4521/jamo
+            type: Directory
+          name: vol-jamo-wd
+        - name: vol-mongo-pass
+          secret:
+            defaultMode: 420
+            secretName: jamo-mongo-pass
+        - name: vol-mysql-pass
+          secret:
+            defaultMode: 420
+            secretName: jamo-mysql-pass
+        - name: vol-sfapi-key
+          secret:
+            defaultMode: 420
+            secretName: sf-api-key
+        - name: vol-google-oauth-secrets
+          secret:
+            defaultMode: 420
+            secretName: google-oauth-secrets

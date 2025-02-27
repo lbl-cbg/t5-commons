@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jamo
+  namespace: t5-dm
+  annotations:
+    {}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: jamo.t5-dm.development.svc.spin.nersc.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: jamo-app
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+    - host: data-dev.taskforce5.lbl.gov
+      http:
+        paths:
+          - backend:
+              service:
+                name: jamo-app
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - data-dev.taskforce5.lbl.gov
+      secretName: jamo-dev

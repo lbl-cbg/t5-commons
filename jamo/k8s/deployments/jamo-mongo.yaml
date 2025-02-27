@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jamo-mongo
+  namespace: t5-dm
+spec:
+  template:
+    metadata:
+      name: jamo-mongo
+      namespace: t5-dm
+    spec:
+      containers:
+        - env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: t5_metadata_dev_admin
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+              value: /secrets/password
+          image: mongo:7
+          imagePullPolicy: Always
+          name: mongo
+          ports:
+            - containerPort: 27017
+              name: mongo
+              protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - CHOWN
+                - FOWNER
+                - DAC_OVERRIDE
+                - SETGID
+                - SETUID
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /data/db
+              name: vol-db-data
+            - mountPath: /secrets
+              name: vol-db-pass
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: vol-db-data
+          persistentVolumeClaim:
+            claimName: jamo-mongo
+        - name: vol-db-pass
+          secret:
+            defaultMode: 420
+            secretName: jamo-mongo-pass
