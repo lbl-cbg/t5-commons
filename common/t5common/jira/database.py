@@ -151,7 +151,6 @@ class DBConnector:
                 previous_state = self.session.query(JobStates).filter_by(id=requested_state.id-1).first()
                 if job.job_state is not previous_state:
                     self.logger.error(f"Transition for {issue} ignored. Cannot transition from {job.job_state.name} to {state}")
-                    breakpoint()
                     return False
             else:
                 self.logger.error(f"Transition for {issue} ignored. Cannot transition state to {state}")
