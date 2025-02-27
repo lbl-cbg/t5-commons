@@ -1,6 +1,6 @@
 import argparse
 
-from t5_common.jira import JiraConnector, find_asset_attribute
+from t5common.jira import JiraConnector, find_asset_attribute
 
 def write_fasta(sequence, description, filename):
     """
