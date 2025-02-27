@@ -1,0 +1,31 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<script src="/scripts/angular-animate.js"></script>
+<script src="/scripts/text_formatting.js"></script>
+<script src="/scripts/query_results.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/scripts/table.css"> -->
+
+<div class="queryresults">
+    <script type='text/javascript'>
+        var query_results = angular.module('query_results', ['ngAnimate', 'ngSanitize', 'mgcrea.ngStrap']),
+            data = {{data|jsonify}},
+            functions = data['functions'],
+            $queryresults = $('.queryresults');
+
+        query_results.config(function ($modalProvider) {
+            angular.extend($modalProvider.defaults, {html: true});
+        }).controller('QueryResults', ['$scope', '$http', '$location', '$modal', function ($scope, $http, $location, $modal) {
+            query_results_initialize($scope, $http, $location, $modal);
+        }]);
+    </script>
+
+    {% for function in data.functions %}
+        <script type="text/javascript" src="/scripts/query_results_{{ function }}.js"></script>
+    {% endfor %}
+{{data['html']}}
+</div>

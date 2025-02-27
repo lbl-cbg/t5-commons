@@ -1,0 +1,78 @@
+<h2>Analysis Template</h2>
+Analysis templates are a way to enforce the proper metdata and files get submitted for each analysis. This is an example of a template stored in yaml format. 
+
+<h3>Format</h3>
+<pre class="brush: yaml">
+description: string that describes the analysis
+name: #string that is used for the key of this analysis
+tags: # tags describe what this analysis is used for
+- tag1 #such as assembly
+- tag2 #metagenome
+
+required_metadata_keys: # a list of the metadata that you would like to enforce and validate
+- description: #string of what this metadata is
+  key: #sting key this piece of metadata will be stored in
+  type:  #string type this metadata value should be. can be number, string, or boolean, or list:'type'
+- macro: name #if you want to use a macro simply specify by replacing name with the name of the macro
+
+outputs: # a list of all the outputs that should get sent to jamo and its required metadata
+- description: #string describing the file
+  label: #string the unique label to describe this output
+  required_metadata_keys: #a list of the metadata that you would like to force/validate
+  - description: ''
+    key: ''
+    type: ''
+  tags: #string/list of strings that describes this file, shouldn't contain any spaces
+
+-email: #this is used if you would like an email to be sent if this analysis is done
+  attachments:# if you would like to send an attachment you can pass in the label of an output
+  - label #the label key used in the outputs list, if the generated file is more than 4Mb the file will be skipped
+  content: # the body of the email, is represented in a list of strings or a dict of a file label
+  - string: text one
+  - file: #label
+  - string: text...
+  reply_to: # string email address for the user to reply to
+  subject: #string for the email subject, you can access metadata values by going {metadata.key}
+  to: #email address
+</pre>
+
+<h3>Example</h3>
+<pre class="brush: yaml">
+description: a pacbio secondary analysis filter run 
+name: pacbio_filter 
+tags: 
+- pacbio 
+- filter 
+required_metadata_keys: 
+- description: The sequence project identifier is a number in the millions 
+  key: sequence_project_id
+  type: list:number 
+  required: false # if we want to validate, but not force this key to be in do this
+- macro: project_info #Lets load all the project_info metadata keys in
+ 
+outputs:
+- description: a fastq file that has gone though smrt analysis
+  label: fastq
+  required_metadata_keys:
+  - description: the number of reads in this fastq
+    key: read_count
+    type: number
+  default_metadata_values:
+    portal:
+      display_location: #making it so every file with this tag goes to portal under the location pacbio/raw
+      - pacbio
+      - raw
+  tags:
+  - fastq
+- description: a report with some images
+  label: report
+-email: 
+  attachments:
+  - report
+  content:
+  - string: '{metadata.sequencing_project_id} has finished'
+  - file: report
+  reply_to: aeboyd@lbl.gov
+  subject: '{metadata.sequencing_project_id} pacbio run'
+  to: pacbio-list@lbl.gov
+</pre>

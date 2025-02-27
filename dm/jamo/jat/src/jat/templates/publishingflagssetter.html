@@ -1,0 +1,176 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+
+
+<script src="/scripts/angular-animate.js"></script>
+<script type='text/javascript'>
+var filtertable = angular.module('filtertable', ['ngAnimate', 'ngSanitize']);
+filtertable.controller('FilterCtrl',['$scope','$http' ,function ($scope,$http){
+    $scope.pubFlags = ['img', 'mycocosm', 'phytozome', 'sp_portal', 'ap_portal', 'sra', 'genbank' ] ;
+    $scope.outputs = {{data|jsonify}};
+    $scope.template = "{{args[0]}}";
+    var originalFlags = {};
+    
+    // keeping this as a place holder in case we want to merge 
+    // portal display location and publishing flags page
+    var updatePortalLocation = function(template, path){
+        if(path=="" || path=="Remove"){
+            //remoave the path
+        $http.delete('/api/analysis/portallocation/'+template).success(
+            function(data, status, headers, config) {
+            });
+            return "";
+        }
+        path = path.replace(/^\/+/g,"").replace(/\/+/g,"/");
+        var newPath = path.split("/");
+        $http.put('/api/analysis/portallocation/'+template,{"path":newPath }).success(
+            function(data, status, headers, config) {
+            });
+    }
+    var updatePublishingFlags = function(outputs){
+        // output should be a dict with the key-val structure <template_name>: <list_of_flags>
+        if(outputs.length == 0){
+            $http.delete('/api/analysis/publishingflags/'+$scope.template).success(
+            function(data, status, headers, config) {
+            });
+            return "";
+        } else {
+            $http.put('/api/analysis/publishingflags/'+$scope.template,outputs).success(
+                function(data, status, headers, config) {
+                });
+        }
+    }
+    $scope.setraw = function(){
+        for(var i=0;i<$scope.outputs.length;i++){
+            var file = $scope.outputs[i]; 
+            if(file['group']=='sdm' && (file['file_name'].search('fastq.gz')>0 || file['file_name'].toLowerCase().search('ztr')>0) && file['file_name'].search('FAIL')<0 && file['file_name'].search('UNKNOWN')<0){
+                updatePortalLocation(file['_id'],'/Raw Data');
+            }
+        }
+        alert('done updating files, you will have to refesh to see the changes');
+    };
+    var flagsChanged = function(dict1, dict2) {
+        for (var key in dict1) {
+            if (dict1[key] != dict2[key]) {
+                return true;
+            }
+        }
+        return false;
+    };
+    var flagDictToSet = function(dict) {
+        var ret = [];
+        for (var key in dict) {
+            if (dict[key]) {
+                ret.push(key);
+            }
+        }
+        return ret;
+    };
+    $scope.save = function(){
+        alert("You clicked the SAVE button. Bye!");
+        var outputsUpdated = 0;
+        for(var i=0;i<$scope.outputs.length;i++){
+            var file = $scope.outputs[i]; 
+            var file_updated = false;
+                if ("display_location" in originalFlags[file["_id"]]) { // this file had display_location to begin with
+                    if(originalFlags[file["_id"]]["display_location"]!=file.metadata.portal.display_location){
+                        updatePortalLocation(file["_id"],file.metadata.portal.display_location);
+                        file_updated = true;
+                    } 
+                } else if("portal" in file.metadata && "display_location" in file.metadata.portal){
+                    updatePortalLocation(file["_id"],file.metadata.portal.display_location);
+                    file_updated = true;
+                } 
+            if(flagsChanged(originalFlags[file["_id"]]["publish_to"],$scope.pubFlagValues[file._id])){
+                file.metadata["publish_to"] = flagDictToSet($scope.pubFlagValues[file._id]);
+                updatePublishingFlags(file["_id"],file.metadata.publish_to);
+                file_updated = true;
+            }
+            if (file_updated) {
+                outputsUpdated = outputsUpdated + 1;
+            }
+        }
+        var numNames = [ "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven" ,
+                         "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty" ];
+        if (outputsUpdated == 0) {
+            alert("No files were updated.");
+        } else if (outputsUpdated == 1) {
+            alert("One file was updated. Please refresh if making further modifications.");
+        } else {
+            alert( numNames[outputsUpdated] + " files were updated. Please refresh if making further modifications.");
+        }
+        //document.location.reload(true)
+    };
+    $scope.helloWorld = function() {
+
+        alert("Hello Worldddd!!!");
+    }
+
+    $scope.pubFlagValues = {};
+    for(var output in $scope.outputs){
+        originalFlags[output] = {}; 
+        $scope.pubFlagValues[output] = {};
+        originalFlags[output]["publish_to"] = {};
+        for (var j=0; j < $scope.pubFlags.length; j++) {
+            var flag = $scope.pubFlags[j];
+            $scope.pubFlagValues[output][flag] = false;
+            originalFlags[output]["publish_to"][flag] = false;
+            
+        }
+        var flags = $scope.outputs[output];
+        for (var j = 0; j < flags.length; j++) {
+            var flag = flags[j];
+            $scope.pubFlagValues[output][flag] = true;
+            originalFlags[output]["publish_to"][flag] = true;
+        }
+    }
+}]);
+
+</script>
+
+<style>
+.qresults tr td.c_name{
+    max-width:100px;
+    white-space: nowrap;
+    width:100px;
+    padding-right:10px;
+    padding-left:10px;
+}
+
+</style>
+
+<h2> Publishing flags for template: {{args[0]}}</h2>
+{% raw %}
+<link rel="stylesheet" href="/scripts/table.css">
+<div id="search_window" ng-app='filtertable'>
+    <button class="button" width="200px" ng-click="setraw()">Set all raw</button>
+    <div id="FilterCtrl" ng-controller="FilterCtrl">
+    <div style="overflow-x:auto;">
+    <table class="qresults" cellspacing="0" width=50%>
+        <tr class="header">
+           <th>File type</th> 
+            <th>IMG</th>
+            <th>Mycocosm</th>
+            <th>Phytozome</th>
+            <th>SP Portal</th>
+            <th>AP Portal</th>
+            <th>SRA</th>
+            <th>Genbank</th>
+        </tr>
+       <tr ng-repeat="(output,flags) in outputs">
+           <td class="q_name" ng-bind-html="output"></td>
+           <td class="c_name" ng-repeat="loc in pubFlags">
+                <input type="checkbox" ng-model="pubFlagValues[output][loc]">
+           </td>
+       </tr> 
+    </table>
+
+    </div>
+    <button class="button" ng-click="helloWorld()">Save</button>
+    </div>
+</div>
+{% endraw %}

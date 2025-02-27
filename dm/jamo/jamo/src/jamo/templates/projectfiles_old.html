@@ -1,0 +1,102 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+
+
+<script src="/scripts/angular-animate.js"></script>
+<script type='text/javascript'>
+var filtertable = angular.module('filtertable', ['ngAnimate', 'ngSanitize']);
+filtertable.controller('FilterCtrl',['$scope','$http' ,function ($scope,$http){
+    $scope.files = {{data|jsonify}};
+    var original_files = {};
+    var updatePortalLocation = function(id, path){
+        if(path=="" || path=="Remove"){
+            //remoave the path
+        $http.delete('/api/metadata/portallocation/'+id).success(
+            function(data, status, headers, config) {
+            });
+            return "";
+        }
+        path = path.replace(/^\/+/g,"").replace(/\/+/g,"/");
+        var newPath = path.split("/");
+        $http.put('/api/metadata/portallocation/'+id,{"path":newPath }).success(
+            function(data, status, headers, config) {
+            });
+    }
+    $scope.setraw = function(){
+        for(var i=0;i<$scope.files.length;i++){
+            var file = $scope.files[i];
+            if(file['group']=='sdm' && (file['file_name'].search('fastq.gz')>0 || file['file_name'].toLowerCase().search('ztr')>0) && file['file_name'].search('FAIL')<0 && file['file_name'].search('UNKNOWN')<0){
+                updatePortalLocation(file['_id'],'/Raw Data');
+            }
+        }
+        alert('done updating files, you will have to refesh to see the changes');
+    };
+    $scope.save = function(){
+        for(var i=0;i<$scope.files.length;i++){
+            var file = $scope.files[i];
+            if(file["_id"] in original_files){
+                if(original_files[file["_id"]]!=file.metadata.portal.display_location){
+                    updatePortalLocation(file["_id"],file.metadata.portal.display_location);
+                }
+            }else if ("portal" in file.metadata && "display_location" in file.metadata.portal){
+                    updatePortalLocation(file["_id"],file.metadata.portal.display_location);
+            }
+        }
+        alert('done updating files, you will have to refesh to see the changes');
+    };
+
+    for(var i=0;i<$scope.files.length;i++){
+        var file = $scope.files[i];
+        <!-- ng-bind-html does not seem to like integers, perhaps we have to set the santize option? -->
+        $scope.files[i].file_id = file.file_id.toString()
+        $scope.files[i].metadata.sequencing_project_id = file.metadata.sequencing_project_id.toString()
+        if("portal" in file.metadata && "display_location" in file.metadata.portal){
+            if (file.metadata.portal.display_location instanceof Array){
+                file.metadata.portal.display_location = "/"+file.metadata.portal.display_location.join('/');
+            }
+            original_files[file["_id"]]=file.metadata.portal.display_location;
+        }
+    }
+}]);
+
+</script>
+{% raw %}
+<link rel="stylesheet" href="/scripts/table.css">
+<div id="search_window" ng-app='filtertable'><div id="FilterCtrl" ng-controller="FilterCtrl">
+    <button class="button" width="200px" ng-click="setraw()">Set all raw</button>
+    <table class="qresults" cellspacing="0">
+        <tr class="header">
+           <th>Group</th>
+           <th>File ID</th>
+           <th>SPID</th>
+           <th>Library</th>
+           <th>File Name</th>
+           <th>Portal Location</th>
+        </tr>
+       <tr ng-repeat="result in files">
+           <td ng-bind-html="result.group"></td>
+           <td ng-bind-html="result.file_id"></td>
+           <td ng-bind-html="result.metadata.sequencing_project_id"></td>
+           <td ng-bind-html="result.metadata.library_name"></td>
+           <td ng-bind-html="result.file_name"></td>
+           <td class="q_name">
+           <select ng-model="result.metadata.portal.display_location">
+               <option value="{{result.metadata.portal.display_location}}">{{result.metadata.portal.display_location}}</option>
+               <option value="/Raw Data">/Raw Data</option>
+               <option value="/Transcriptome Analysis">/Transcriptome Analysis</option>
+               <option value="/Genome Assembly">/Genome Assembly</option>
+               <option value="/QC and Genome Assembly">/QC and Genome Assembly</option>
+               <option value="/Sequencing QC Reports">/Sequencing QC Reports</option>
+               <option value="/QC Filtered Raw Data">/QC Filtered Raw Data</option>
+               <option value="Remove" >Remove</option>
+           </select>
+           </td>
+       <tr>
+    </table>
+<button class="button" ng-click="save()">Save</button>
+</div></div>
+{% endraw %}

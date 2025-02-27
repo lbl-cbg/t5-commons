@@ -1,0 +1,100 @@
+<h2>Querying JAT for analyses</h2>
+If you are wanting to find analyses and its metadata given some search terms than this is the place to do it. If however you just want to find files then you should query jamo.<br>
+A typical analysis will look like :
+
+<pre class="brush: javascript">
+{
+    "status": "Released",
+    "group": "qaqc",
+    "template": "metatranscriptome",
+    "outputs": [
+    {
+        "file_type": "metagenome_alignment_bam",
+        "metadata_id": "526989c5f28749086095a15e",
+        "description": "BAM file of alignment of metatranscriptome reads against a metagenome reference",
+        "file": "6804.7.54666.GTTTCG.qtrim.artifact.rRNA.clean.v.3300000137/6804.7.54666.GTTTCG.qtrim.artifact.rRNA.clean.v.3300000137.bam",
+        "metadata": {
+            "aligner_parameters": "-L 25 --local -p 30 --phred33",
+            "aligner": "bowtie2",
+            "aligner_version": "2.0.0-beta7",
+            "num_input_reads": 16402962,
+            "taxon_oid": 3300000137,
+            "num_aligned_reads": 4678000
+        }
+    },
+    {
+        "file_type": "rrna_fastq",
+        "metadata_id": "526989c9f28749086095a162",
+        "description": "Fastq containing rRNA reads",
+        "file": "6804.7.54666.GTTTCG.rRNA.filter/6804.7.54666.GTTTCG.qtrim.artifact.rRNA.removed.fastq.gz",
+        "metadata": {
+            "num_final_reads": 169259396,
+            "artifact_filtered": true,
+            "quality_trimmed": 20,
+            "remove_n": 3,
+            "quality_filtered": 20
+        }
+    },...
+    ],
+    "metadata": {
+        "gold_data": {
+            "sample_display_name": "Saanich Inlet Metatranscriptome Pilot 042_02/10/10_10m",
+            "its_spid": 1001537,
+            "modified_by": 101072,
+            "gold_id": "Gs0003200",
+            "project_info": 1785,
+            "add_date": "2012-10-31T00:00:00",
+            "ecosystem": "Environmental",
+            "mod_date": "2013-07-02T00:00:00",
+            "proposal_name": "Microbial Systems Ecology of Expanding Oxygen Minimum Zones in the Eastern Subtropical North Pacific Ocean",
+            "sample_type": "Metatranscriptome",
+            "sample_oid": 12623,
+            "ecosystem_category": "Aquatic",
+            "contact": 101072,
+            "ecosystem_type": "Marine",
+            "seq_country": "USA",
+            "ecosystem_subtype": "Intertidal zone",
+            "seq_center_url": "http://jgi.doe.gov",
+            "specific_ecosystem": "Unclassified",
+            "seq_center_name": "DOE Joint Genome Institute",
+            "seq_status": "Complete",
+            "submitters_name": "Saanich Inlet Metatranscriptome Pilot 042_02/10/10_10m"
+        },
+        "library_name": "NBWT",
+        "sequencing_project_id": 1001537,
+        "seq_unit_name": "6804.7.54666.GTTTCG.srf"
+    },
+    "user": "AJTritt",
+    "key": "AUTO-4135",
+    "metadata_id": "5269c618f287497248ed493a",
+    "_id": "5269c647f287497248ed493b",
+    "location": "/global/cscratch1/ajtritt/metatranscriptome/Saanich_Inlet/NBWT"
+}
+</pre>
+<br>
+You can search against any one of these keys, for example if you would like to find all analyses that are template of metatranscriptome you would do the following:
+<pre class="brush: python">
+from sdm_curl import Curl
+ 
+curl = Curl('https://sdm-dev.jgi-psf.org:8034')
+response = curl.post('api/analysis/query', template='metatranscriptome')
+print response
+</pre>
+This will return a list of analyses that will contain all the files and the metatadata for each analysis.
+You can get where each of the output files are located by joining the location key with the file output key, or you can get a list of all the files by making a call to /api/analysis/analysis/KEY/files where KEY is the key of the analysis in the returned list. Example:
+
+<pre class="brush: python">
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034')
+response = curl.post('api/analysis/analysis/AUTO-4126/files')
+print response
+</pre>
+
+You can also add your own metadata to an anaylsis by calling /api/analysis/metadata/KEY with a PUT request. Example
+<pre class="brush: python">
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034')
+curl.put('api/analysis/metadata/AYTO-4126', submission_id=1234,oid=141)
+</pre>

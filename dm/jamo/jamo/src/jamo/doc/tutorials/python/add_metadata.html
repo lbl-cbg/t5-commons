@@ -1,0 +1,42 @@
+<h2>Adding more metadata to a file</h2>
+It is possible for users, with the correct permissions, to add more metadata to any record. For example if some post processing process occurs on a file that generates some stats for said file, then it would be nice to add those stats to the metadata for that file.
+
+<h3>Make the call</h3>
+To make the call you need to know the metadata id of the file you wish to update, and the metadata you wish to add.
+<pre class="brush: javascript">
+from sdm_curl import Curl
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+
+curl.put('api/metadata/update/%s'%metadata_id,metadata={
+        'number_of_reads':100
+    })
+</pre>
+<br>
+This call will put the metadata you passed in into a subdocument identified by your username
+<br>
+<pre class="brush: javascript">
+{
+    "file_owner": "sdm",
+    "md5sum": "3b991d34a506b31a425dd4f8157d1a2a",
+    "file_type": [
+        "fastq.gz",
+        "fastq"
+    ],
+    "file_name": "7324.1.65986.TCGCATGAAGT.fastq.gz",
+    "user": "sdm",
+    "added_date": "2013-09-01T06:41:20.973000",
+    "file_date": "2013-09-01T06:41:19",
+    "modified": "2013-09-01T06:41:20.973000",
+    "file_permissions": "0100644",
+    "file_id": 2873667,
+    "file_size": 30866,
+    "_id": "52234400067c010dcd50e2d7",
+    "file_group": "genome",
+    "file_path": "/global/dna/dm_archive/sdm/illumina/00/73/24",
+    "metadata":{
+        "sdm":{
+            "number_of_reads":100
+        }
+    }
+}
+</pre>

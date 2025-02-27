@@ -1,0 +1,53 @@
+<style type="text/css">
+.outer_table{
+    background-color:white;
+    border-collapse:collapse;
+}
+.odd{
+    background-color: #fafafa;
+}
+.table2 td{
+    border-top: 2px solid #eee;
+    border-bottom: 2px solid #eee;
+    padding: 2px 12px;
+}
+.table2 tr.folder:hover{
+    background-color:#d6e9f8;
+    cursor:pointer;
+}
+thead{
+    display: table-header-group;
+    vertical-align: middle;
+    font-size:18px;
+    background-color:#00A7ED;
+    color:white;
+    border:1px solid #0094D2;
+}
+th{
+    text-align:left;
+}
+.table2 img{
+    height:20px;
+}
+</style>
+<table class="outer_table">
+    <thead style="">
+        <th style="padding-left:10px;">Filename</th><th style="text-align: right;padding-right: 32px;">Size</th>
+    </thead>
+    <tbody><tr><td colspan=2><div class="inner_table" style="height:400px;overflow:auto;">
+        <table class="table2" style="border-collapse:collapse;min-width:300px">
+            {%for file in data%}
+                {% if file.is_dir %}
+                <tr class="folder"><td>
+                 <a href="/file/files{{file.file_path}}/{{file.file_name}}">
+                    <img src="/images/folder.png"/>
+                {{file.file_name}}</td><td>{{file.file_size}}</td></a></tr>
+                {% else %}
+                <tr><td>
+                    <img src="/images/file.png"/>
+                {{file.file_name}}</td><td>{{file.file_size}}</td></tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div></td></tr></tbody>
+</table>

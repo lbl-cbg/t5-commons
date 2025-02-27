@@ -1,0 +1,32 @@
+@example
+@title purge file in 30 days
+@description Adds file /house/home/u/user/assembly.fa to JAMO, telling JAMO to put the file in the folder {user folder}/assemblies/species
+and only live there for 30 days
+@type python
+@code
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='324SD2345TDFG13GEG')
+curl.post('api/metadata/file',
+     file        = '/house/home/u/user/assembly.fa',
+     file_type   = 'assembly',
+     destination = 'assemblies/species/',
+     metadata    = {'assembler':'velvet',
+                    'assembler_version':'1.1.3',
+                    'sequencing_project_id':10003}, 
+     local_purge_days = 30)
+
+@example
+@title simple add
+@description adds a file to JAMO with the minimun set of information
+@type python
+@code
+
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='324SD2345TDFG13GEG')
+curl.post('api/metadata/file',
+     file        = '/house/home/u/user/assembly.fa',
+     file_type   = 'assembly',
+     destination = 'assemblies/species/',
+     metadata    = {'sequencing_project_id':10003})

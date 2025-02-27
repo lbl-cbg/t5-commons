@@ -1,0 +1,11 @@
+SHELL=/bin/bash
+PREFIX = $(shell pwd)
+
+package_dir  = $(PREFIX)
+all: install
+
+install:
+	./condainstall.sh $(package_dir)
+
+clean:
+	/bin/rm -rf lapinpy.egg-info/ build dist bin/[a-k,m-z]* include lib64 lib

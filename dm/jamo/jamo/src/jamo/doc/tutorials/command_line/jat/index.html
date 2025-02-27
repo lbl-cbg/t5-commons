@@ -1,0 +1,17 @@
+<h2>JAT: Jamo Analysis Tracker</h2>
+The jat tool has been designed to make putting analysis files into jamo and tracking those analyses easy. It also by default will manage these analysis folder, meaning your analysis files won't be purged on accident.
+
+
+<h3>Create a new analysis</h3>
+<pre class="brush: bash">
+module load jamo
+jat init [&lt;analysis source> key] name
+</pre>
+<ul>
+<li><b>analysis source:</b> By using an analysis source jat will attempt to collect some metadata about this analysis automatically and associate it to this folder.</li>
+<li><b>name:</b> if you pass a value that contains any / then this analysis folder will be created relative to where you currently are on the file system. Other wise it will be created in the jat managed reporistory</li>
+</ul>
+<h4>Example</h4>
+<pre class="brush:bash">
+jat init jira SDM-12435
+</pre>

@@ -1,0 +1,104 @@
+<h2>Analysis Template</h2>
+Analysis templates are a way to enforce the proper metdata and files get submitted for each analysis. This is a template in json format
+
+<h3>Format</h3>
+<pre class="brush: javascript">
+{
+    "description" : //string that describes the analysis
+    "name" :  //string that is used for the key of this analysis
+    "tags" : [ "tags",... ] // an array of strings that describe in short what this analysis is used for
+    "required_metadata": [ {  // an array of dictionaries describing the metadata
+                             "key" : //sting key this piece of metadata will be stored in
+                             "type" : //string type this metadata value should be. can be number, string, or boolean, or list:'type'
+                             "description" :  // string of what this metadata is
+                           },
+                           {"macro": name },...// If you wish to use a macro that represents many metadata keys you can specify one like this
+                         ],
+    "outputs" : [ { //an array of dictionaries one per output file
+                    "required_metadata": [ {"key": , "type": , "description": },...]//the same format as above
+                    "description" : //string describing the file
+                    "tags" : //string/list of strings that describes this file, shouldn't contain any spaces
+                    "label" : //string the unique label to describe this output
+                  },...
+                ],
+    "email" : { //with this you can have jat send an email to someone anytime an analysis is finished
+        "to" : ,//the email address to send to, if multiple this can be a list of strings
+        "reply_to" : ,// string email address for the user to reply to
+        "subject" : ,//string for the email subject, you can access metadata values by going {metadata.key}
+        "content":[
+            "text",..
+            {"file":"file_type"},
+            "text",..
+        ],
+        "attachments": [
+            "file_type",.. //the file_type key used in the outputs list, if the generated file is more than 4Mb the file will be skipped
+        ]
+
+    }
+
+}
+</pre>
+
+<h3>Example</h3>
+<pre class="brush: javascript">
+{
+    "metadata": {
+        "curator": "Andrew Tritt",
+        "curator_email": "ajtritt@lbl.gov",
+        "sequencing_project_id": 1001546,
+        "sequencing_project_name": "Saanich Inlet Metatranscriptome Pilot 042_02/10/10_135m",
+        "proposal_id": 342,
+        "proposal_title": "Microbial Systems Ecology of Expanding Oxygen Minimum Zones in the Eastern Subtropical North Pacific Ocean",
+        "pi_name": "Steven Hallam",
+        "pi_email": "shallam@interchange.ubc.ca",
+        "library": "NBWN",
+        "seq_unit": "6805.4.54655.GTAGAG.srf"
+    },
+    "outputs": [
+        {
+            "file_type": "readme",
+            "file": "NBWN/6805.4.54655.GTAGAG.README"
+        },
+        {
+            "name": "rrna_cleaned_fastq",
+            "file": "6805.4.54655.GTAGAG.qtrim.artifact.rRNA.removed.fastq.gz",
+            "metadata": {
+                "perc_artifact": 0.113585022888,
+                "perc_low_quality": 0.979145174268,
+                "num_input_reads": 56266018,
+                "perc_rrna": 94.9068357312,
+                "num_reads": 2834438
+            }
+        },
+        {
+            "name": "metatranscriptome_assembly",
+            "file": "6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.rnnotator/final_contigs.fa",
+            "metadata": {
+                "scaffolds": 9007,
+                "scaf_bp": 2844990
+            }
+        },
+        {
+            "name": "metatranscriptome_alignment_bam",
+            "file": "6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.mt.bam",
+            "metadata": {
+                "num_input_reads": 2834438,
+                "aligner": "bowtie2",
+                "num_aligned_reads": 2097876
+            }
+        },
+        {
+            "name": "metagenome_alignment_bam",
+            "file": "6805.4.54655.GTAGAG.qtrim.artifact.rRNA.clean.v.3300000255.bam",
+            "metadata": {
+                "taxon_oid": 3300000255,
+                "num_input_reads": 2834438,
+                "aligner": "bowtie2",
+                "num_aligned_reads": 1391940
+            }
+        }
+    ]
+}
+</pre>
+
+
