@@ -23,7 +23,8 @@ Workflow automation with Jira is configured using a YAML file. The YAML file mus
 - `projects` - A list of objects containing the information needed to automate workflows from a Jira project. These objects must contain the following keys:
    - `project` - The project to query new issues for
    - `new_status` - The issue status indicating an issue is new and should have a workflow run for it.
-   - `command` - The command to run to start a new workflow. This command should take the issue key as the first and only positional argument.
+   - `workflow_command` - The command to run to start a new workflow. This command should take the issue key as the first and only positional argument.
+   - `publish_command` - The command to run to publish results. This command should take working directory the workflow was started from as the first and only positional argument.
 
 For more details, refer to the JSON schema in`t5common/jira/schema/config.json`.
 
@@ -38,14 +39,15 @@ init-db config.yaml
 
 This database maintain jobs in three states:
 
-- `STARTED` - Job has been picked up from Jira and started
-- `FINISHED` - Job execution has finished
+- `WORKFLOW_STARTED` - Job has been picked up from Jira and workflow has been started
+- `WORKFLOW_FINISHED` - Job execution has finished
+- `PUBLISH_STARTED` - Result publishing script has been started
 - `PUBLISHED` - Job results have been published
 
 
-### Starting jobs
+### Starting and checking on jobs
 
-**This section documents the command that must run as a cron job to automate workflow execution**
+**This section documents the commands that must run as a cron job to automate workflow execution**
 
 Jobs can be started using the `check-jira` command.
 
@@ -54,8 +56,20 @@ check-jira config.yaml
 ```
 
 This will check each project specified in with the `projects` key the configuration file, and start job for each new issue. This
-job will be started from a subdirectory named after the issue key and created in the directory specified by the `job_directory`
-key of the configuration file.
+job will be started by invoking the command specified with `workflow_command` with the issue provided as the first and only argument.
+The `workflow_command` command will be invoked from a subdirectory named after the issue key and created in the directory specified 
+by the `job_directory` key of the configuration file. 
+
+Job status can be checked using the `check-job` command.
+
+```bash
+check-jobs config.yaml
+```
+
+This will check the database for jobs that have been marked as finished (See below for `mark-job` command). The `check-jobs` command
+will run the command specified with the `publish_command` in the config file, passing in the path to subdirectory that the workflow 
+was executed from as the first and only argument.
+
 
 ### Updating jobs
 
