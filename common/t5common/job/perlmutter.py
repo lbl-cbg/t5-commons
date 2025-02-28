@@ -20,8 +20,8 @@ class SlurmJob(AbstractJob):
 
     debug_queue = 'debug'
 
-    def __init__(self, queue='regular', project=None, time='1:00:00', nodes=1, gpus=0, jobname=None, output=None, error=None):
-        super().__init__(**kwargs)
+    def __init__(self, queue='regular', project=None, time='1:00:00', nodes=1, gpus=0, jobname=None, output=None, error=None, wait=None):
+        super().__init__(queue, project, time, nodes, gpus, jobname, output, error, wait=wait)
         self.queue = queue
         self.project = project
         self.time = time
@@ -31,17 +31,12 @@ class SlurmJob(AbstractJob):
             self.output = f'{self.jobname}.%J'
             self.error = f'{self.jobname}.%J'
 
-        arch = 'gpu'
-        if self.gpus == 0:
-            arch = 'cpu'
-        self.add_addl_jobflag('C', arch)
-        #self.add_addl_jobflag('G', self.gpus)
-        self.add_addl_jobflag('-cpus-per-task', 2 * int(64 / self.gpus))
-        self.add_addl_jobflag('-ntasks-per-node', self.gpus)
-        self.add_addl_jobflag('-gpus-per-node', 4)
-
-        n_gpus = self.gpus
-        self.use_bb = False
+        if self.gpus > 0:
+            self.add_addl_jobflag('C', 'gpu')
+            self.add_addl_jobflag('-ntasks-per-node', self.gpus)
+            self.add_addl_jobflag('-gpus-per-node', 4)
+        else:
+            self.add_addl_jobflag('C', 'cpu')
 
     def write_run(self, f, command, command_options, options):
         print(f'srun -u {command}', file=f)
