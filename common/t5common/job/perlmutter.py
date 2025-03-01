@@ -25,17 +25,18 @@ class SlurmJob(AbstractJob):
         self.queue = queue
         self.project = project
         self.time = time
-        self.nodes = self.gpus * nodes # nodes will actually be the flag for Total number of tasks
         self.jobname = jobname
         if self.jobname is not None:
             self.output = f'{self.jobname}.%J'
             self.error = f'{self.jobname}.%J'
 
         if self.gpus > 0:
+            self.nodes = self.gpus * nodes # nodes will actually be the flag for Total number of tasks
             self.add_addl_jobflag('C', 'gpu')
             self.add_addl_jobflag('-ntasks-per-node', self.gpus)
-            self.add_addl_jobflag('-gpus-per-node', 4)
+            self.add_addl_jobflag('-gpus-per-node', self.gpus)
         else:
+            self.nodes = nodes # nodes will actually be the flag for Total number of tasks
             self.add_addl_jobflag('C', 'cpu')
 
     def write_run(self, f, command, command_options, options):

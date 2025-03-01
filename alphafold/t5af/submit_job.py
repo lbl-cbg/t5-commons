@@ -38,7 +38,7 @@ def main():
     write_fasta(sequence, name, "input.fasta")
 
     # Set up job for MSA
-    msa_job = SlurmJob(project='m4521', jobname=f"t5af_msa__{key}", output="msa.%J.log", error="msa.%J.log")
+    msa_job = SlurmJob(project='m4521', jobname=f"t5af_msa__{key}", output="msa.%J.log", error="msa.%J.log", time="02:00:00")
     msa_job.set_env_var('MMSEQS_PATH', "mmseqs")
     msa_job.set_env_var('MSA_DB_DIR', "$CFS/m4521/resources/colabfold/msa_db")
     msa_job.set_env_var('MSA_OUTPUT_DIR', "msa")
@@ -49,12 +49,12 @@ def main():
     msa_sh = "msa.sh"
     with open(msa_sh, 'w') as f:
         msa_job.write(f)
-    msa_job_id = msa_job.submit(msa_sh) if args.submit else '0000000'
+    msa_job_id = msa_job.submit_job(msa_sh) if args.submit else '0000000'
 
     # jc.add_comment(args.issue, f"ColabFold MSA job submitted to Perlmutter. Job ID {msa_job_id}")
 
     # Set up job for AlphaFold
-    fold_job = SlurmJob(project='m4521', jobname=f"t5af_fold__{key}", output="fold.%J.log", error="fold.%J.log")
+    fold_job = SlurmJob(project='m4521', jobname=f"t5af_fold__{key}", output="fold.%J.log", error="fold.%J.log", gpus=1, queue='shared', time="02:00:00")
     fold_job.add_addl_jobflag(fold_job.wait_flag, msa_job_id)
 
     fold_job.set_env_var('MSA_FILE', os.path.join("msa", f"{name}.a3m"))
@@ -67,7 +67,7 @@ def main():
     fold_sh = "fold.sh"
     with open(fold_sh, 'w') as f:
         fold_job.write(f)
-    fold_job_id = fold_job.submit(fold_sh) if args.submit else '1111111'
+    fold_job_id = fold_job.submit_job(fold_sh) if args.submit else '1111111'
 
     # jc.add_comment(args.issue, f"ColabFold prediction job submitted to Perlmutter. Job ID {fold_job_id}")
 
