@@ -1,0 +1,45 @@
+name: Run tests for common library
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run-tests:
+    name: common-${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.name }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-python3.10-minimum   , requirements: minimum,  python-ver: "3.10", os: ubuntu-latest }
+          - { name: linux-python3.13           , requirements: pinned ,  python-ver: "3.13", os: ubuntu-latest }
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-ver }}
+
+      - name: Install dependencies
+        run: |
+          cd common
+          pip install -e .
+          pip install -r tests/requirements.txt
+
+      - name: Run tests
+        run: |
+          cd common
+          pytest tests
+
