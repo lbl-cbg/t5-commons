@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "issue": {
+      "type": "string",
+      "description": "The Jira issue key"
+    },
+    "database": {
+      "type": "string",
+      "description": "The database used for tracking workflows"
+    }
+  },
+  "required": ["database", "issue"]
+}
