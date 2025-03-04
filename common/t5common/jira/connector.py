@@ -102,7 +102,24 @@ class JiraConnector:
         return self.post(f"api/3/issue/{issue}/transitions", transition_data)
 
     def add_comment(self, issue, comment):
-        return self.post(f"api/3/issue/{issue}/comment", {'body': comment})
+        payload = {
+                "body": {
+                  "content": [
+                    {
+                      "content": [
+                        {
+                          "text": comment,
+                          "type": "text"
+                        }
+                      ],
+                      "type": "paragraph"
+                    }
+                  ],
+                  "type": "doc",
+                  "version": 1
+                }
+            }
+        return self.post(f"api/3/issue/{issue}/comment", payload)
 
     def close_issue(self, issue):
         return self.transition_issue(issue, self.DONE_STATE)
