@@ -11,39 +11,15 @@ logger = logging.getLogger("Logger")
 
 class MailinSAXSTask(JIRAImportUtil):    
 
-    API_TOKEN = os.environ.get("SIMPLESCATTERING_API_TOKEN")
-    ROTKEY = os.environ.get("SIMPLESCATTERING_API_ROTKEY") 
-    username = 'Yeongshnn-Ong-T5'
-    credentials = f'{username}:{API_TOKEN}'
-    credentials = credentials.encode("ascii")
-    base64_bytes = base64.b64encode(credentials)
-    encoded_credentials = base64_bytes.decode("ascii")
-    #encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8') 
-
-    JIRA_API_TOKEN_YONG = os.environ.get("JIRA_API_TOKEN_YONG")
-    username = "yong@lbl.gov"
-    jira_credentials = f'{username}:{JIRA_API_TOKEN_YONG}'
-    jira_encoded_credentials = base64.b64encode(jira_credentials.encode('utf-8')).decode('utf-8')  
-    jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace'
+    ROTKEY = os.environ.get("MAILIN_SAXS_API_ROTKEY")
     shift_id_map = {}
+
 
     def __init__(self):
         logger.debug("Start Mailin SAXS task...")
-        self.workspace_id = self.get_workspace_id()
-        self.base_url = self.get_base_url(self.workspace_id)
+        self.workspace_id = super().get_workspace_id() 
+        self.base_url =  super().get_base_url(self.workspace_id) 
 
-
-    def get_workspace_id(self):
-        response = requests.get(self.jira_servicedeskapi_url, 
-                                headers={'Content-Type': 'application/json', 
-                                        'authorization': 'Basic ' + self.jira_encoded_credentials})
-        workspaces_response_json = response.json() 
-        print("JIRA workspaces:", workspaces_response_json)
-        return workspaces_response_json["values"][0]["workspaceId"]
- 
-
-    def get_base_url(self, workspace_id):
-        return f'https://api.atlassian.com/jsm/assets/workspace/{workspace_id}/v1'
 
 
     def run(self):
@@ -75,7 +51,6 @@ class MailinSAXSTask(JIRAImportUtil):
                                     "Slots with Samples",
                                     "Sample Id", 
                                     "id") 
-        
         return json_data
     
 
@@ -84,7 +59,7 @@ class MailinSAXSTask(JIRAImportUtil):
 
         mailin_saxs_url = "https://sibyls.als.lbl.gov/htsaxs/api/v1"
         mailin_saxs_header = {'Content-Type': 'application/json',  
-                            'X-ROTKEY': '3f59d82ec81fc9ea1447f077377ba3aa1235b9f9bdb89c86816a71f104a69b4e'}
+                            'X-ROTKEY': self.ROTKEY}
 
         response = requests.get(mailin_saxs_url + "/shifts", 
                                 headers=mailin_saxs_header)
@@ -326,31 +301,3 @@ class MailinSAXSTask(JIRAImportUtil):
 
 
 
-
-
-
-    '''
-    print("simplescattering =======>")
-    simplescattering_url = 'https://simplescattering.com' # 'https://simple-saxs-staging.herokuapp.com'
-    username = 'Yeongshnn-Ong-T5'
-    s = f'{username}:{self.API_TOKEN}'
-    s = s.encode("ascii")
-    base64_bytes = base64.b64encode(s)
-    ttt_token = base64_bytes.decode("ascii")
-    
-    response = requests.post(simplescattering_url+"/api-keys", 
-                            headers={'Content-Type': 'application/json', 
-                                     'authorization': 'Basic '+ttt_token,
-                                     'ROTKEY': self.ROTKEY})
-    print(response.text) 
-
-    d_tokens = response.text.split() 
-    print(d_tokens)
-    data_response = requests.get(simplescattering_url+"/api/v1/t5_datasets", 
-                            headers={'Content-Type': 'application/json', 
-                                     'Authorization': 'Bearer '+d_tokens[0],
-                                     'ROTKEY': self.ROTKEY})
-    print(data_response.text)
-
-    print("simplescattering <=======")
-    '''

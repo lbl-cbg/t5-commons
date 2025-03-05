@@ -13,36 +13,16 @@ class SimpleScatteringTask(JIRAImportUtil):
 
     API_TOKEN = os.environ.get("SIMPLESCATTERING_API_TOKEN")
     ROTKEY = os.environ.get("SIMPLESCATTERING_API_ROTKEY") 
-    username = 'Yeongshnn-Ong-T5'
+    username = os.environ.get("SIMPLESCATTERING_API_USERNAME")
     credentials = f'{username}:{API_TOKEN}'
     credentials = credentials.encode("ascii")
     base64_bytes = base64.b64encode(credentials)
     encoded_credentials = base64_bytes.decode("ascii")
 
-    JIRA_API_TOKEN_YONG = os.environ.get("JIRA_API_TOKEN_YONG")
-    username = "yong@lbl.gov"
-    jira_credentials = f'{username}:{JIRA_API_TOKEN_YONG}'
-    jira_encoded_credentials = base64.b64encode(jira_credentials.encode('utf-8')).decode('utf-8')  
-    jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace'
-
-
     def __init__(self):
         logger.debug("Start Simple scattering task...")
-        self.workspace_id = self.get_workspace_id()
-        self.base_url = self.get_base_url(self.workspace_id)
-
-
-    def get_workspace_id(self):
-        response = requests.get(self.jira_servicedeskapi_url, 
-                                headers={'Content-Type': 'application/json', 
-                                        'authorization': 'Basic ' + self.jira_encoded_credentials})
-        workspaces_response_json = response.json() 
-        print("JIRA workspaces:", workspaces_response_json)
-        return workspaces_response_json["values"][0]["workspaceId"]
- 
-
-    def get_base_url(self, workspace_id):
-        return f'https://api.atlassian.com/jsm/assets/workspace/{workspace_id}/v1'
+        self.workspace_id = super().get_workspace_id() 
+        self.base_url = super().get_base_url(self.workspace_id) 
 
 
     def run(self):
@@ -68,14 +48,8 @@ class SimpleScatteringTask(JIRAImportUtil):
     def get_data(self):
         print('Get simple scattering data...')  
 
-        #print("API_TOKEN:", self.API_TOKEN)
-        #print("ROTKEY:", self.ROTKEY) 
-        #print("credentials:", self.credentials)
-        #print("encoded_credentials:", self.encoded_credentials)
-
         simplescattering_url = 'https://simplescattering.com' #prod  #'https://simple-saxs-staging.herokuapp.com' #staging
 
-        
         response = requests.post(simplescattering_url+"/api-keys", 
                                 headers={'Content-Type': 'application/json', 
                                         'authorization': 'Basic ' + self.encoded_credentials,

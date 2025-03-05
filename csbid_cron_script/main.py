@@ -19,8 +19,6 @@ console_handler.setFormatter(formatter)
 logger.setLevel("DEBUG")
 
 
-
-
 try:
     logger.info("JIRA Cronjob started...") 
     CSBID_task = CSBIDTask()

@@ -23,7 +23,7 @@ class JIRAObjectID(Enum):
 class JIRAImportUtil(ABC):
 
     JIRA_API_TOKEN_YONG = os.environ.get("JIRA_API_TOKEN_YONG")
-    username = "yong@lbl.gov"
+    username = os.environ.get("JIRA_USERNAME")
     jira_credentials = f'{username}:{JIRA_API_TOKEN_YONG}'
     jira_encoded_credentials = base64.b64encode(jira_credentials.encode('utf-8')).decode('utf-8')  
     jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace'
