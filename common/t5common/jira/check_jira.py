@@ -76,6 +76,10 @@ async def check_jira(config):
                        jira_token=read_token(config['token_file']))
 
     database = config['database']
+
+    if not os.path.isdir(config['job_directory']):
+        os.mkdir(config['job_directory'])
+
     dbc = DBConnector(f"sqlite:///{database}")
 
     # Check each project queue, and create a new job for each new issue
