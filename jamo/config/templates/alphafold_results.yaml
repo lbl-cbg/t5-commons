@@ -20,6 +20,22 @@ outputs:
   required_metadata_keys:
     - macro: file_info
 
+- description: The log file for the AlphaFold run
+  label: log
+  tags:
+    - log
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The multisequence alignment file
+  label: colabfold_msa
+  tags:
+    - msa
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
 - description: The coverage figure produced by AlphaFold
   label: coverage_figure
   tags:
@@ -40,14 +56,6 @@ outputs:
   label: plddt_figure
   tags:
     - figure
-  required: true
-  required_metadata_keys:
-    - macro: file_info
-
-- description: The log file for the AlphaFold run
-  label: log
-  tags:
-    - log
   required: true
   required_metadata_keys:
     - macro: file_info
@@ -76,11 +84,7 @@ outputs:
       type: float
     - description: The recycling iteration of this model
       key: recycle_iteration
-      required: true
-      type: int
-    - description: The model number of this model. (See --num-models in colabfold_batch for more details)
-      key: model_number
-      required: true
+      required: false
       type: int
     - macro: file_info
 
@@ -88,7 +92,7 @@ outputs:
   label: raw_model_outputs
   tags:
     - intermediate_results
-  required: true
+  required: false
   required_metadata_keys:
     - description: The model number of this model. (See --num-models in colabfold_batch for more details)
       key: model_number
@@ -96,7 +100,7 @@ outputs:
       type: int
     - description: The recycling iteration of this model
       key: recycle_iteration
-      required: true
+      required: false
       type: int
     - macro: file_info
 
@@ -114,14 +118,6 @@ outputs:
       key: rank
       required: true
       type: int
-    - macro: file_info
-
-- description: The multisequence alignment file
-  label: colabfold_msa
-  tags:
-    - msa
-  required: true
-  required_metadata_keys:
     - macro: file_info
 
 email:
