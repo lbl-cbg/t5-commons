@@ -4,10 +4,11 @@ import sys
 
 
 _logger = None
-def get_logger(level='info'):
+def get_logger(name=None, level='info'):
     global _logger
+    name = name or sys.argv[0]
     if _logger is None:
-        _logger = logging.getLogger(sys.argv[0])
+        _logger = logging.getLogger(name)
         hdlr = logging.StreamHandler(sys.stderr)
 
         _logger.setLevel(getattr(logging, level.upper()))
