@@ -14,20 +14,20 @@
  value: saxs
  description: ""
 -
- value: intermediate_results
+ value: config
  description: ""
 -
  value: log
  description: ""
 -
+ value: msa
+ description: ""
+-
  value: figure
  description: ""
 -
- value: saxs
+ value: intermediate_results
  description: ""
 -
  value: confidence
- description: ""
--
- value: config
  description: ""

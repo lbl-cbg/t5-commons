@@ -1,5 +1,7 @@
 name: alphafold_results
 description: The output of an AlphaFold run done with ColabFold
+tags:
+  - alphafold
 required_metadata_keys:
   - description: The JIRA issue requesting this AlphaFold run
     key: jira_issue
@@ -8,7 +10,7 @@ required_metadata_keys:
   - macro: viral_protein
   - description: Number of recyling iterations used
     key: num_recycle
-    type: int
+    type: number
     required: true
 
 outputs:
@@ -69,23 +71,23 @@ outputs:
     - description: The model number of this model. (See --num-models in colabfold_batch for more details)
       key: model_number
       required: true
-      type: int
+      type: number
     - description: The ranking given by the AlphaFold program
       key: rank
       required: true
-      type: int
+      type: number
     - description: The pLDDT score of the model.
       key: plddt
       required: true
-      type: float
+      type: number
     - description: The pTM score of the model
       key: ptm
       required: true
-      type: float
+      type: number
     - description: The recycling iteration of this model
       key: recycle_iteration
       required: false
-      type: int
+      type: number
     - macro: file_info
 
 - description: The raw outputs from AlphaFold
@@ -97,11 +99,11 @@ outputs:
     - description: The model number of this model. (See --num-models in colabfold_batch for more details)
       key: model_number
       required: true
-      type: int
+      type: number
     - description: The recycling iteration of this model
       key: recycle_iteration
       required: false
-      type: int
+      type: number
     - macro: file_info
 
 - description: The scores for a protein model
@@ -113,11 +115,11 @@ outputs:
     - description: The model number of this model. (See --num-models in colabfold_batch for more details)
       key: model_number
       required: true
-      type: int
+      type: number
     - description: The ranking given by the AlphaFold program
       key: rank
       required: true
-      type: int
+      type: number
     - macro: file_info
 
 email:
