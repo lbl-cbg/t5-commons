@@ -1,4 +1,4 @@
-def AssetBuilder:
+class AssetBuilder:
     """A class to simplify building an asset record
 
     The most notable feature of this class is the the id_map argument

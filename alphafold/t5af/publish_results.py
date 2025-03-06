@@ -3,11 +3,11 @@ import os
 from os.path import join
 
 from t5common.jira.connector import JiraConnector, find_asset_attribute, get_protein_metadata
-from t5common.jira.asset import AssetBuilder
+from t5common.jira.assets import AssetBuilder
 from t5common.jamo import JATSubmitter, MetadataBuilder
 from t5common.utils import get_logger
 
-from . import ISSUE_FILE
+from .utils import ISSUE_FILE
 
 
 def AFJATSubmitter(JATSubmitter):
@@ -50,7 +50,9 @@ def AFJATSubmitter(JATSubmitter):
 
         model_re = re.compile(r'(\d+)_seed')
 
-        for pdb in glob(join(directory, f"{base}*.pdb")) if not re.search(r'\.r\d+\.pdb$', file):
+        for pdb in glob(join(directory, f"{base}*.pdb")):
+            if re.search(r'\.r\d+\.pdb$', pdb):
+                continue
             model_num = int(model_re.search(pdb).group(0))
             mb.add_output('protein_model', pdb, file_format='pdb', module_number=model_num, **stats[model_num])
 
@@ -59,7 +61,9 @@ def AFJATSubmitter(JATSubmitter):
             mb.add_output('scores', scores, file_format='json', model_number=model_num, rank=stats[model_num])
 
         if save_int:
-            for pkl in glob(join(directory, f"{base}*.pickle")) if not re.search(r'\.r[0-9]+\.pickle$', file):
+            for pkl in glob(join(directory, f"{base}*.pickle")):
+                if re.search(r'\.r[0-9]+\.pickle$', pkl):
+                    continue
                 model_num = int(model_re.search(pkl).group(0))
                 mb.add_output('raw_model_outputs', pkl, file_format='pkl', module_number=model_num)
 
