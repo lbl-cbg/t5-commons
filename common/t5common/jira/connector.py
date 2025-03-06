@@ -137,6 +137,29 @@ class JiraConnector:
         return self.post("api/3/search", payload)
 
 
+def get_protein_metadata(jc, issue):
+    if isinstance(issue, str):
+        issue = jc.get_issue(key)
+    key = issue['key']
+
+    target_asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
+
+    target_id = None
+    virus_id = None
+    for attr in target_asset['attributes']:
+        if attr['objectTypeAttribute']['id'] == TARGET_ID_ID:
+            target_id = attr['objectAttributeValues'][0]['value']
+        elif attr['objectTypeAttribute']['id'] == PARENT_NAME_ID:
+            virus_id = attr['objectAttributeValues'][0]['referencedObject']['name']
+
+    if virus_id is None:
+        raise ValueError(f"Unable to get virus name from issue {key}")
+    if target_id is None:
+        raise ValueError(f"Unable to get protein target from issue {key}")
+
+    return virus_id, target_id
+
+
 def find_asset_attribute(asset, value, key='id'):
     """Find an asset attribute by id or name"""
     if key not in ('id', 'name'):
