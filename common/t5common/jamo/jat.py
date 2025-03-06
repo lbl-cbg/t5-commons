@@ -42,10 +42,10 @@ class JATSubmitter(metaclass=abc.ABCMeta):
 
         """
 
-
+        td = self.get_template_data(directory, *args, **kwargs)
         payload = {
                 'template_name': self.template_name,
-                'template_data': self.get_template_data(directory, *args, **kwargs),
+                'template_data': td,
                 'source': source,
                 'location': os.path.abspath(directory)
         }
@@ -56,7 +56,7 @@ class JATSubmitter(metaclass=abc.ABCMeta):
         response = requests.post(f"{self.host}/api/analysis/analysisimport",
                                  headers=headers,
                                  json=payload)
-        return response
+        return td, response
 
     def get_url(self, resp):
         """Get the URL for the at JAT record
