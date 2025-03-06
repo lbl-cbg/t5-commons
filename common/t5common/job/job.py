@@ -142,7 +142,6 @@ class AbstractJob(metaclass=ABCMeta):
         cmd = f'{self.submit_cmd} {path}'
         if conda_env is not None:
             cmd = f'conda run -n {conda_env} {cmd}'
-        print(cmd)
         output = subprocess.check_output(
                     cmd,
                     stderr=subprocess.STDOUT,
