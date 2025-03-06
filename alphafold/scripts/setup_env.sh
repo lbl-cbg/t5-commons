@@ -23,11 +23,12 @@ EDITABLE_FLAG=""
 
 # Function to display usage information
 usage() {
-  echo "Usage: $0 [-e] [-h <msa_dir>] <user> <token>"
+  echo "Usage: $0 [-e] [-h <msa_dir>] <jira_user> <jira_token> <jamo_token> "
   echo "  -e              Install the common and alphafold code in editable mode"
   echo "  -m <msa_dir>    The path to the MSA database directory"
-  echo "  <user>          The user account to connect to Jira with"
-  echo "  <token>         The token to use to connect to Jira with"
+  echo "  <jira_user>     The user account to connect to Jira with"
+  echo "  <jira_token>    The token to use to connect to Jira with"
+  echo "  <jamo_token>    The token to use to connect to JAMO with"
   exit 1
 }
 
@@ -50,13 +51,14 @@ done
 shift $((OPTIND -1))
 
 # Check if the required positional arguments are provided
-if [ -z "$1" ] || [ -z "$2" ]; then
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
   echo "Error: Two required positional arguments must be provided."
   usage
 fi
 
 JIRA_USER=${1}
 JIRA_TOKEN=${2}
+JAMO_TOKEN=${3}
 
 module load python
 
@@ -107,6 +109,8 @@ pip install $EDITABLE_FLAG $script_dir/../../common
 pip install $EDITABLE_FLAG $script_dir/../
 conda env config vars set JIRA_USER=$JIRA_USER
 conda env config vars set JIRA_TOKEN=$JIRA_TOKEN
-conda env config vars set JIRA_HOST=https://taskforce5.atlassian.net
+conda env config vars set JIRA_HOST="https://taskforce5.atlassian.net"
+conda env config vars set JAMO_HOST="https://data-dev.taskforce5.lbl.gov"
+conda env config vars set JAMO_TOKEN=$JAMO_TOKEN
 conda env config vars set MSA_DB_DIR=$MSA_DB_DIR
 conda env config vars set AF2_WEIGHTS_DIR=$PWD/af2_weights
