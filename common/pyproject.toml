@@ -27,6 +27,7 @@ dependencies = [
 
 [project.scripts]
 init-db = "t5common.jira.database:init_db"
+dump-db = "t5common.jira.database:dump_db"
 check-jira = "t5common.jira.check_jira:main"
 check-jobs = "t5common.jira.check_jobs:main"
 mark-job = "t5common.jira.mark_job:main"
