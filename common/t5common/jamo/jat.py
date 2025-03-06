@@ -1,4 +1,6 @@
 import abc
+import os
+
 import requests
 
 
@@ -58,12 +60,12 @@ class JATSubmitter(metaclass=abc.ABCMeta):
                                  json=payload)
         return td, response
 
-    def get_url(self, resp):
+    def get_url(self, jat_key):
         """Get the URL for the at JAT record
 
         Args:
             jat_key:    The key of the JAT record
         """
-        if isinstance(resp, dict):
-            resp = resp['jat_key']
+        if isinstance(jat_key, dict):
+            jat_key = jat_key['jat_key']
         return os.path.join(self.host, 'analysis/analysis', jat_key)

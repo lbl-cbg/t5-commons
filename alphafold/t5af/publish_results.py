@@ -1,6 +1,11 @@
 import argparse
+from glob import glob
+import json
 import os
 from os.path import join
+import re
+
+import yaml
 
 from t5common.jira.connector import JiraConnector, find_asset_attribute, get_protein_metadata
 from t5common.jira.assets import AssetBuilder
@@ -10,15 +15,16 @@ from t5common.utils import get_logger
 from .utils import ISSUE_FILE
 
 
-def AFJATSubmitter(JATSubmitter):
+class AFJATSubmitter(JATSubmitter):
 
     @classmethod
     def get_outputs_and_metadata(cls, mb, directory, save_int=False):
         """Populate a MetadataBuilder with outputs and metadata from a ColabFold directory"""
+        directory = os.path.abspath(directory)
         log_path = join(directory, 'log.txt')
         mb.add_output('config', join(directory, 'config.json'), file_format='json')
         mb.add_output('log', log_path, file_format='txt')
-        msa = glob.glob(join(directory, '*.a3m'))[0]
+        msa = glob(join(directory, '*.a3m'))[0]
         mb.add_output('colabfold_msa', msa, file_format='a3m')
 
         base = os.path.basename(msa)[:-4]
@@ -46,28 +52,29 @@ def AFJATSubmitter(JATSubmitter):
                         'plddt': float(m.group('plddt')),
                         'ptm': float(m.group('ptm')),
                     }
-        mb.add_metadata('num_recycle', max_rec)
+        mb.add_metadata(num_recycle=max_rec)
 
         model_re = re.compile(r'(\d+)_seed')
 
         for pdb in glob(join(directory, f"{base}*.pdb")):
             if re.search(r'\.r\d+\.pdb$', pdb):
                 continue
-            model_num = int(model_re.search(pdb).group(0))
-            mb.add_output('protein_model', pdb, file_format='pdb', module_number=model_num, **stats[model_num])
+            model_num = int(model_re.search(pdb).group(1))
+            mb.add_output('protein_model', pdb, file_format='pdb', model_number=model_num, **stats[model_num])
 
         for scores in glob(join(directory, f"{base}_scores*.json")):
-            model_num = int(model_re.search(scores).group(0))
-            mb.add_output('scores', scores, file_format='json', model_number=model_num, rank=stats[model_num])
+            model_num = int(model_re.search(scores).group(1))
+            mb.add_output('scores', scores, file_format='json', model_number=model_num, rank=stats[model_num]['rank'])
 
         if save_int:
             for pkl in glob(join(directory, f"{base}*.pickle")):
                 if re.search(r'\.r[0-9]+\.pickle$', pkl):
                     continue
-                model_num = int(model_re.search(pkl).group(0))
+                model_num = int(model_re.search(pkl).group(1))
                 mb.add_output('raw_model_outputs', pkl, file_format='pkl', module_number=model_num)
 
     def __init__(self, jc):
+        super().__init__()
         self.jc = jc
 
     @property
@@ -84,7 +91,7 @@ def AFJATSubmitter(JATSubmitter):
         mb = MetadataBuilder()
 
         # Add output
-        self.get_outputs_and_metadata(mb, directory, save_int=save_int)
+        self.get_outputs_and_metadata(mb, join(directory, 'prediction'), save_int=save_int)
 
         with open(join(directory, 'issue'), 'r') as f:
             issue = f.read().strip()
@@ -110,31 +117,49 @@ def main():
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('directory', type=str, help='The directory submit-af-job was run from')
     parser.add_argument('--save-int', action='store_true', help='Save intermediate files to JAMO', default=False)
+    parser.add_argument('-f', '--force', action='store_true', help='Force run. Do not stop if already submitted', default=False)
     args = parser.parse_args()
 
     logger = get_logger('publish-af-results')
 
-    with open(os.path.join(args.directory, ISSUE_FILE), 'r') as f:
-        issue_key = f.read().strip()
+    jat_key_file = join(args.directory, 'jat_key')
 
     jc = JiraConnector()
 
     js = AFJATSubmitter(jc)
 
-    logger.info(f"Submitting AlphaFold results from {args.directory} to JAT")
-    jat_data, resp = js.submit(args.directory, save_int=args.save_int)
-    with open(join(args.directory, 'metadata.json'), 'w') as f:
-        json.dump(f, jat_data, indent=2)
+    if os.path.exists(jat_key_file) and not args.force:
+        with open(jat_key_file, 'r') as f:
+            jat_key = f.read().strip()
+        jamo_url = js.get_url(jat_key)
+        logger.error(f"Found existing JAT key - {jat_key}. See {jamo_url} for results")
+        exit(1)
 
-    jat_key = resp['jat_key']
-    logger.info(f"AlphaFold results published to JAT under record {jat_key}")
+    with open(os.path.join(args.directory, ISSUE_FILE), 'r') as f:
+        issue_key = f.read().strip()
+
+    logger.info(f"Submitting AlphaFold results from {args.directory} to JAT")
+    jat_data, response = js.submit(args.directory, save_int=args.save_int)
+    with open(join(args.directory, 'metadata.json'), 'w') as f:
+        json.dump(jat_data, f, indent=2)
+
+    if response.status_code != 200:
+        errors = yaml.dump(response.json(), default_flow_style=False)
+        logger.error(f"Unable to submit to JAT\n{errors}")
+        exit(1)
+    else:
+        response = response.json()
+        jat_key = response['jat_key']
+        logger.info(f"AlphaFold results published to JAT under record {jat_key}")
+        with open(jat_key_file, 'w') as f:
+            f.write(jat_key)
 
     ab = AssetBuilder(47, {'target_asset': 770, 'jamo_url': 771})
 
     logger.info(f"Creating asset in Jira")
     issue = jc.get_issue(issue_key)
     af_asset = jc.create_asset(ab(target_asset=issue['fields']['customfield_10113'][0]['objectId'],
-                                  jamo_url=js.get_url(resp)))
+                                  jamo_url=js.get_url(response)))
     asset_url = f"{os.environ['JIRA_HOST']}/jira/servicedesk/assets/object-schema/3?mode=object&objectId={af_asset['id']}&typeId={ab.type_id}&view=list"
     logger.info(f'Asset created. Visit the URL below for more details\n{asset_url}')
 

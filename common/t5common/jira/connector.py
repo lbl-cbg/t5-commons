@@ -139,7 +139,7 @@ class JiraConnector:
 
 def get_protein_metadata(jc, issue):
     if isinstance(issue, str):
-        issue = jc.get_issue(key)
+        issue = jc.get_issue(issue)
     key = issue['key']
 
     target_asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
