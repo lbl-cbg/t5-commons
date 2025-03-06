@@ -3,6 +3,10 @@ import os
 
 from t5common.jira.connector import JiraConnector, find_asset_attribute
 from t5common.job import SlurmJob
+from t5common.utils import get_logger
+
+from . import ISSUE_FILE
+
 
 def write_fasta(sequence, description, filename):
     """
@@ -19,11 +23,21 @@ def write_fasta(sequence, description, filename):
         for i in range(0, len(sequence), 60):
             fasta_file.write(sequence[i:i+60] + '\n')
 
-def main():
-    epi = """The following environment variables must be set:
 
-    MSA_DB_DIR  - The path to the MSA database
-    AF2_WEIGHTS - The path to the AlphaFold2 weights, as downloaded by ColabFold
+def main():
+    epi = """
+The following environment variables must be set:
+    JIRA_HOST       - The Jira host URL
+    JIRA_USER       - The user to connect to Jira with
+    JIRA_TOKEN      - The token for connecting to Jira
+    MSA_DB_DIR      - The path to the MSA database
+    AF2_WEIGHTS_DIR - The path to the AlphaFold2 weights, as downloaded by ColabFold
+
+This command will write three files to the current working directory:
+    issue   - The issue used to set up this job
+    msa.sh  - The job for running the multiple sequence alignment
+    fold.sh - The job for running AlphaFold2
+Files will be overwritten if they exist.
     """
     parser = argparse.ArgumentParser(description="Run AlphaFold using ColabFold for a protein indicated in a Jira issue",
                                      epilog=epi,
@@ -33,10 +47,14 @@ def main():
     parser.add_argument('--no-jira', action='store_true', help='Do not update Jira', default=False)
     args = parser.parse_args()
 
+    logger = get_logger('submit-af-job')
+
     jc = JiraConnector()
 
     issue = jc.get_issue(args.issue)
     key = issue['key']
+    with open(ISSUE_FILE, "w") as f:
+        print(key, file=f)
 
     asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
 
@@ -54,12 +72,15 @@ def main():
     msa_job.add_command('colabfold_search --mmseqs ${MMSEQS_PATH} --threads=${NCORES} ${INPUT} ${MSA_DB_DIR} ${MSA_OUTPUT_DIR}')
 
     msa_sh = "msa.sh"
+    self.logger.info(f"Writing MSA job script to {msa_sh}")
     with open(msa_sh, 'w') as f:
         msa_job.write(f)
     msa_job_id = '0000000' if args.no_submit else msa_job.submit_job(msa_sh)
 
+    msg = f"ColabFold MSA job submitted to Perlmutter. Job ID {msa_job_id}"
+    self.logger.info(msg)
     if not args.no_jira:
-        jc.add_comment(args.issue, f"ColabFold MSA job submitted to Perlmutter. Job ID {msa_job_id}")
+        jc.add_comment(args.issue, msg)
 
     # Set up job for AlphaFold
     fold_job = SlurmJob(project='m4521', jobname=f"t5af_fold__{key}", output="fold.%J.log", error="fold.%J.log", gpus=1, queue='shared', time="02:00:00")
@@ -68,16 +89,20 @@ def main():
     fold_job.set_env_var('MSA_FILE', os.path.join("msa", f"{name}.a3m"))
     fold_job.set_env_var('PREDICTION_DIR', "prediction")
 
-    fold_job.add_command('colabfold_batch --data ${AF2_WEIGHTS} --save-all --save-recycles --num-recycle=5 ${MSA_FILE} ${PREDICTION_DIR}')
+    fold_job.add_command('colabfold_batch --data ${AF2_WEIGHTS_DIR} --save-all --save-recycles --num-recycle=5 ${MSA_FILE} ${PREDICTION_DIR}')
     fold_job.add_command('mark-job finished')
 
     fold_sh = "fold.sh"
+    self.logger.info(f"Writing MSA job script to {fold_sh}")
     with open(fold_sh, 'w') as f:
         fold_job.write(f)
     fold_job_id = '1111111' if args.no_submit else fold_job.submit_job(fold_sh)
 
+    msg = f"ColabFold prediction job submitted to Perlmutter. Job ID {fold_job_id}"
+    self.logger.info(msg)
     if not args.no_jira:
-        jc.add_comment(args.issue, f"ColabFold prediction job submitted to Perlmutter. Job ID {fold_job_id}")
+        jc.add_comment(args.issue, msg)
+        self.logger.info(f"Marking {args.issue} as In Progress")
         jc.transition_issue(args.issue, 181)   # "In Progress" status id is 181
 
 
