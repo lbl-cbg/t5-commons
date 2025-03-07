@@ -14,44 +14,33 @@ class JAMOConnector:
         jamo_token = jamo_token or os.environ['JAMO_TOKEN']
         self.auth = {'Authorization': f"Application {os.environ['JAMO_TOKEN']}"}
 
-    def __get(self, url):
+    def __get(self, url, params=None):
         # Make the request to get the asset details
         headers = {
             "Accept": "application/json"
         } | self.auth
-        response = requests.get(url, headers=headers, auth=self.auth)
-        if response.status_code not in [200, 201, 204]:
-            print(f"GET FAIL {url}: {response.status_code} - {response.text}", file=sys.stderr)
-            exit(1)
-        return response.json()
+        response = requests.get(url, headers=headers, params=params)
+        return response
 
     def __put(self, url, data):
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json"
         } | self.auth
-        response = requests.put(url, headers=headers, auth=self.auth, data=json.dumps(data))
-        if response.status_code not in [200, 201, 204]:
-            print(f"PUT FAIL {url}: {response.status_code} - {response.text}", file=sys.stderr)
-            exit(1)
-
-        return None if response.status_code == 204 else response.json()
+        response = requests.put(url, headers=headers, data=json.dumps(data))
+        return response
 
     def __post(self, url, data):
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json"
         } | self.auth
-        response = requests.post(url, headers=headers, auth=self.auth, data=json.dumps(data))
-        if response.status_code not in [200, 201, 204]:
-            print(f"POST FAIL {url}: {response.status_code} - {response.text}", file=sys.stderr)
-            exit(1)
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        return response
 
-        return None if response.status_code == 204 else response.json()
-
-    def get(self, url):
+    def get(self, url, params=None):
         url = f'{self.host}/api/{url}'
-        return self.__get(url)
+        return self.__get(url, params=params)
 
     def put(self, url, data):
         url = f'{self.host}/api/{url}'
@@ -70,5 +59,5 @@ class JAMOConnector:
         }
         return self.post("analysis/analysisimport", payload)
 
-    def query(self, **kwargs):
-        return self.get("file/query", **kwargs)
+    def search(self, query):
+        return self.get("metadata/query", params=query)

@@ -9,7 +9,7 @@ class JATSubmitter(metaclass=abc.ABCMeta):
     """A class to simplify submitting data to JAT"""
 
     def __init__(self):
-        self.jc = JAMOConnector()
+        self.jamo_connector = JAMOConnector()
 
     @abc.abstractmethod
     def get_template_data(self, directory, *args, **kwargs):
@@ -52,10 +52,10 @@ class JATSubmitter(metaclass=abc.ABCMeta):
                 'source': source,
                 'location': os.path.abspath(directory)
         }
-        response = self.jc.create_analysis(directory, self.template_name, td, source=source)
+        response = self.jamo_connector.create_analysis(directory, self.template_name, td, source=source)
         return td, response
 
-    def get_url(self, jat_key):
+    def analysis_url(self, jat_key, download=False):
         """Get the URL for the at JAT record
 
         Args:
@@ -63,4 +63,20 @@ class JATSubmitter(metaclass=abc.ABCMeta):
         """
         if isinstance(jat_key, dict):
             jat_key = jat_key['jat_key']
-        return os.path.join(self.jc.host, 'analysis/analysis', jat_key)
+        if download:
+            return os.path.join(self.jamo_connector.host, 'api/analysis/download', jat_key)
+        else:
+            return os.path.join(self.jamo_connector.host, 'analysis/analysis', jat_key)
+
+    def file_url(self, oid, download=False):
+        """Get the URL for the at JAT record
+
+        Args:
+            jat_key:    The key of the JAT record
+        """
+        if isinstance(oid, dict):
+            oid = oid['_id']
+        if download:
+            return os.path.join(self.jamo_connector.host, 'api/metadata/download', oid)
+        else:
+            return os.path.join(self.jamo_connector.host, 'metadata/file', oid)
