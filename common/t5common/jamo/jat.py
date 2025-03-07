@@ -3,12 +3,13 @@ import os
 
 import requests
 
+from .connector import JAMOConnector
 
 class JATSubmitter(metaclass=abc.ABCMeta):
     """A class to simplify submitting data to JAT"""
 
     def __init__(self):
-        self.host = os.environ['JAMO_HOST']
+        self.jc = JAMOConnector()
 
     @abc.abstractmethod
     def get_template_data(self, directory, *args, **kwargs):
@@ -51,13 +52,7 @@ class JATSubmitter(metaclass=abc.ABCMeta):
                 'source': source,
                 'location': os.path.abspath(directory)
         }
-        headers = {
-                'Authorization': f"Application {os.environ['JAMO_TOKEN']}",
-                'Content-Type': 'application/json'
-                }
-        response = requests.post(f"{self.host}/api/analysis/analysisimport",
-                                 headers=headers,
-                                 json=payload)
+        response = self.jc.create_analysis(directory, self.template_name, td, source=source)
         return td, response
 
     def get_url(self, jat_key):
@@ -68,4 +63,4 @@ class JATSubmitter(metaclass=abc.ABCMeta):
         """
         if isinstance(jat_key, dict):
             jat_key = jat_key['jat_key']
-        return os.path.join(self.host, 'analysis/analysis', jat_key)
+        return os.path.join(self.jc.host, 'analysis/analysis', jat_key)
