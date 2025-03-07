@@ -101,7 +101,7 @@ class JiraConnector:
         transition_data = {"transition": {"id": state}}
         return self.post(f"api/3/issue/{issue}/transitions", transition_data)
 
-    def add_comment(self, issue, comment):
+    def add_comment(self, issue, comment, link=None):
         payload = {
                 "body": {
                   "content": [
@@ -119,6 +119,8 @@ class JiraConnector:
                   "version": 1
                 }
             }
+        if link is not None:
+            payload["body"]["content"][0]["content"][0]["marks"] = [{"type": "link", "attrs": {"href": link}}]
         return self.post(f"api/3/issue/{issue}/comment", payload)
 
     def close_issue(self, issue):
