@@ -73,9 +73,9 @@ class AFJATSubmitter(JATSubmitter):
                 model_num = int(model_re.search(pkl).group(1))
                 mb.add_output('raw_model_outputs', pkl, file_format='pkl', module_number=model_num)
 
-    def __init__(self, jc):
+    def __init__(self, jira_connector):
         super().__init__()
-        self.jc = jc
+        self.jira_connector = jira_connector
 
     @property
     def template_name(self):
@@ -95,8 +95,8 @@ class AFJATSubmitter(JATSubmitter):
 
         with open(join(directory, 'issue'), 'r') as f:
             issue = f.read().strip()
-        virus_id, protein_id = get_protein_metadata(self.jc, issue)
-        mb.add_metadata(issue=issue,
+        virus_id, protein_id = get_protein_metadata(self.jira_connector, issue)
+        mb.add_metadata(jira_issue=issue,
                         virus_id=virus_id,
                         protein_id=protein_id)
 
@@ -124,14 +124,14 @@ def main():
 
     jat_key_file = join(args.directory, 'jat_key')
 
-    jc = JiraConnector()
+    jira_connector = JiraConnector()
 
-    js = AFJATSubmitter(jc)
+    js = AFJATSubmitter(jira_connector)
 
     if os.path.exists(jat_key_file) and not args.force:
         with open(jat_key_file, 'r') as f:
             jat_key = f.read().strip()
-        jamo_url = js.get_url(jat_key)
+        jamo_url = js.analysis_url(jat_key)
         logger.error(f"Found existing JAT key - {jat_key}. See {jamo_url} for results")
         exit(1)
 
@@ -154,12 +154,24 @@ def main():
         with open(jat_key_file, 'w') as f:
             f.write(jat_key)
 
-    ab = AssetBuilder(47, {'target_asset': 770, 'jamo_url': 771})
+    ab = AssetBuilder(47, {'target_asset': 770, 'model_url': 771, 'name': 767, 'all_results_url': 773})
+
+    models = js.jamo_connector.search({"metadata.jat_label": "protein_model", "metadata.jat_key": jat_key})
+
+    for model in models.json():
+        if model['metadata']['rank'] == 1:
+            best_model = model
+            break
+
+    all_results_url = js.analysis_url(response)
+    model_url = js.file_url(best_model)
 
     logger.info(f"Creating asset in Jira")
-    issue = jc.get_issue(issue_key)
-    af_asset = jc.create_asset(ab(target_asset=issue['fields']['customfield_10113'][0]['objectId'],
-                                  jamo_url=js.get_url(response)))
+    issue = jira_connector.get_issue(issue_key)
+    af_asset = jira_connector.create_asset(ab(target_asset=issue['fields']['customfield_10113'][0]['objectId'],
+                                            all_results_url=all_results_url,
+                                            model_url=model_url,
+                                            name=f"{jat_data['metadata']['virus_id']} - {jat_data['metadata']['protein_id']}"))
     asset_url = f"{os.environ['JIRA_HOST']}/jira/servicedesk/assets/object-schema/3?mode=object&objectId={af_asset['id']}&typeId={ab.type_id}&view=list"
     logger.info(f'Asset created. Visit the URL below for more details\n{asset_url}')
 
@@ -167,7 +179,10 @@ def main():
                                                      'workspaceId': af_asset['workspaceId'],
                                                      'id': af_asset['globalId']}]}}
     logger.info(f"Updating issue {issue_key} with asset {af_asset['id']}")
-    jc.update_issue(issue_key, pdate_data)
+    jira_connector.update_issue(issue_key, update_data)
+
+    jira_connector.add_comment(issue_key, "Download structure", link=js.file_url(best_model, download=True))
+    jira_connector.add_comment(issue_key, "Download all results", link=js.analysis_url(response, download=True))
 
     # Done state is 151
     # Rejected state is 171
@@ -176,7 +191,7 @@ def main():
     # Open state is 201
     # In Review state is 211
     logger.info(f"Closing issue {issue_key}")
-    jc.transition_issue(issue_key, 151)
+    jira_connector.transition_issue(issue_key, 151)
 
 
 if __name__ == '__main__':
