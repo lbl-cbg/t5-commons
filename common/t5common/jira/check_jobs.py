@@ -29,7 +29,7 @@ async def publish_job(issue, project_config, config):
 
     # Set up the command to run in the subprocess
     command = re.split(r'\s+', project_config['publish_command'])
-    command.append(wd)
+    command.append("./")
 
     # Call the job command in a subprocess
     logger.info(f"Executing publish command for {issue}: {' '.join(command)}")

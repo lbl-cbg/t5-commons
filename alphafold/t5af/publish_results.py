@@ -9,6 +9,7 @@ import yaml
 
 from t5common.jira.connector import JiraConnector, find_asset_attribute, get_protein_metadata
 from t5common.jira.assets import AssetBuilder
+from t5common.jira import mark_job
 from t5common.jamo import JATSubmitter, MetadataBuilder
 from t5common.utils import get_logger
 
@@ -135,6 +136,7 @@ def main():
         logger.error(f"Found existing JAT key - {jat_key}. See {jamo_url} for results")
         exit(1)
 
+    print(os.getcwd())
     with open(os.path.join(args.directory, ISSUE_FILE), 'r') as f:
         issue_key = f.read().strip()
 
@@ -192,6 +194,7 @@ def main():
     # In Review state is 211
     logger.info(f"Closing issue {issue_key}")
     jira_connector.transition_issue(issue_key, 151)
+    mark_job('published', args.directory)
 
 
 if __name__ == '__main__':
