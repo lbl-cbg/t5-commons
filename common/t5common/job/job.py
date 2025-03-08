@@ -74,16 +74,16 @@ class AbstractJob(metaclass=ABCMeta):
     debug_queue = 'debug'
 
 
-    def __init__(self, **kwargs):
-        self.queue = kwargs.get('queue')
-        self.project = kwargs.get('project')
-        self.time = kwargs.get('time')
-        self.output = kwargs.get('output')
-        self.error = kwargs.get('error')
-        self.gpus = kwargs.get('gpus')
-        self.jobname = kwargs.get('jobname')
-        self.nodes = kwargs.get('nodes')
-        self.wait = kwargs.get('wait')
+    def __init__(self, queue, project, time, nodes, gpus, jobname, output, error, wait=None, **kwargs):
+        self.queue = queue
+        self.project = project
+        self.time = time
+        self.nodes = nodes
+        self.gpus = gpus
+        self.jobname = jobname
+        self.output = output
+        self.error = error
+        self.wait = wait
         self.cmdline = kwargs.get('cmdline', " ".join(sys.argv))
         self.conda_env = None
         self.modules = list()
@@ -142,7 +142,6 @@ class AbstractJob(metaclass=ABCMeta):
         cmd = f'{self.submit_cmd} {path}'
         if conda_env is not None:
             cmd = f'conda run -n {conda_env} {cmd}'
-        print(cmd)
         output = subprocess.check_output(
                     cmd,
                     stderr=subprocess.STDOUT,
