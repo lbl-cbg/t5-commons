@@ -1,0 +1,112 @@
+<style>
+
+#vtable {
+    width: 250px;
+    border: none;
+    border-collapse: collapse;
+}
+#vtable th, #vtable td {
+    border: none;
+    border-bottom: solid thin #ff0000; 
+    padding: 0.5rem 2rem;
+}
+#vtable td {
+    border-style: none;
+    padding: 0.5rem 2rem;
+}
+
+
+#vtable td pre.variable {
+    display: inline;
+    font-size: 18px;
+} 
+
+pre.variable {
+    display: inline;
+} 
+
+
+
+
+</style>
+<h2>Publishing Flags</h2>
+Publishing flags are now being used to control distribution of files in JAMO to various groups. Publishing flags are added to files that are submitted to JAMO via JAT. When an analyst submits
+an analysis to JAT, flags that have been specified by the project management office are added as metadata to the files included in the JAT analysis. 
+<br>
+As stated above, flags are specified by the project management office. Each file type in each template has default flags set by a project manager. When
+a JAT user submits an analysis, these defaults are added to the respective file types under <pre class="variable">metadata.publish_to</pre>
+
+<br>
+Flags that get added to the JAMO record for a file are specified <a href="/analysis/templates">here</a> under the <b>Edit Distribution Properties</b> column. 
+
+<h3>Where?</h3>
+The groups or locations that are targeted using publishing flags are:
+<ul>
+<li>IMG</li>
+<li>Mycocosm</li>
+<li>Phytozome</li>
+<li>Portal</li>
+<li>SRA</li>
+<li>Genbank</li>
+</ul>
+
+<h3>Finding your files</h3>
+When querying JAMO, you will need to add an additional field to your queries to ensure that you only get the files that have been published to your group. The
+field you will need to include is:
+<pre>
+{"metadata.publish_to": <b style="color:red;">location</b>}
+</pre>
+where <pre style="color:red;" class="variable"><b>location</b></pre> comes from the table below.
+<br>
+<br>
+
+<table id="vtable">
+<thead style="border-bottom: solid thin;" ><td>Group</td><td><pre class="variable"><b>location</b></pre></td></thead>
+<tr><td>IMG</td><td><pre class="variable">img</pre></td></tr>
+<tr><td>Mycocosm</td><td><pre class="variable">mycocosm</pre></td></tr>
+<tr><td>Phytozome</td><td><pre class="variable">phytozome</pre></td></tr>
+<tr><td>Portal</td><td><pre class="variable">portal</pre></td></tr>
+<tr><td>SRA</td><td><pre class="variable">sra</pre></td></tr>
+<tr><td>Genbank</td><td><pre class="variable">genbank</pre></td></tr>
+</table>
+
+<h3>Examples</h3>
+To demonstrate how this will change queries, here are a few examples.
+<h4>Genome Portal</h4>
+The following query can be used to retrieves files
+for displaying on the Genome Portal.
+<pre>
+{
+    "metadata.sequencing_project_id": 1234567, 
+    "metadata.portal.display_location": {"$exists": true}
+}
+</pre>
+This query will be updated to:
+<pre>
+{
+    "metadata.sequencing_project_id": 1234567, 
+    "metadata.portal.display_location": {"$exists": true},
+    "metadata.publish_to": "portal"
+}
+</pre>
+
+<h4>IMG</h4>
+The following query can be used to retrieve a Microbial Minimal assembly file.
+<pre>
+{
+    "metadata.template_name": "microbial_isolate_minimal", 
+    "metadata.jat_label": "assembly", 
+    "metadata.jat_key": "AUTO-1234"
+}
+</pre>
+If this file is being retrieved for the purposes of annotation for IMG, the user
+would have to update his or her query to the following to ensure that a file is only 
+returned if it was been published to IMG.
+<pre>
+{
+    "metadata.template_name": "microbial_isolate_minimal", 
+    "metadata.jat_label": "assembly", 
+    "metadata.jat_key": "AUTO-1234",
+    "metadata.publish_to": "img"
+}
+</pre>

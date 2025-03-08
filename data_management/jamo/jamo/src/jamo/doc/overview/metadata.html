@@ -1,0 +1,132 @@
+<h2>Metadata</h2>
+Metadata is the information that describes the file(s) put into JAMO.  These metadata are what give JAMO the ability to find and link files together (data provenance).    In general the goal is to provide enough metadata about the file so that  questions of how the file was generated can be answered years later (e.g., pipeline/software versions, parameters, input files, etc).
+
+There are a few top level and organizational-wide fields that should be populated that will establish basic information about your file.  These are:
+<ul>
+<li>file_name - the name of your file you are adding to the archive</li>
+<li>file_path - the path where this file will live in the archive relative to your group's root directory</li>
+<li>file_type - the file type (e.g. fastq, assembly, annotation, etc.)</li>
+</ul>
+In addition, adding in one of the main organizational IDs that link the file to either the ITS Sequencing Project or the ITS Analysis Project/Task:
+sequencing_project_id
+analysis_task_id
+Data that is produced externally that is not related to any particular sequencing_project_id or analysis_task_id, JAMO provides an external_data flag that can be set.
+
+Pipeline/Project level data is defined by the group that owns the pipeline that is creating the data.  These data should include as much information as possible about the creation of the file.  Ideally this should be enough information such that another person with some familiarity with the pipeline can reproduce the data given the provided metadata.
+<h3>A typical record in JAMO</h3>
+<pre class="brush: javascript">
+{
+    "file_owner": "sdm",
+    "md5sum": "3b991d34a506b31a425dd4f8157d1a2a",
+    "file_type": [
+        "fastq.gz",
+        "fastq"
+    ],
+    "file_name": "7324.1.65986.TCGCATGAAGT.fastq.gz",
+    "user": "sdm",
+    "added_date": "2013-09-01T06:41:20.973000",
+    "file_date": "2013-09-01T06:41:19",
+    "modified": "2013-09-01T06:41:20.973000",
+    "file_permissions": "0100644",
+    "file_id": 2873667,
+    "file_size": 30866,
+    "_id": "52234400067c010dcd50e2d7",
+    "file_group": "genome",
+    "file_path": "/global/dna/dm_archive/sdm/illumina/00/73/24",
+    "metadata": {
+        "library_name": "M1895.F8",
+        "lane": 1,
+        "physical_run_unit": {
+            "lane": 1,
+            "physical_run_unit_id": 18425,
+            "illumina_physical_run_id": 7324,
+            "multiplex_type": "Multiplex Paired-End",
+            "physical_run_unit_status_id": 7,
+            "dt_status_modified": "2013-09-01T06:20:02",
+            "dt_ext_data_modified": null
+        },
+        "physical_run": {
+            "physical_run_status_id": 8,
+            "instrument_type": "MiSeq",
+            "dt_sequencing_end": "2013-09-01T05:31:51",
+            "control_lane": 0,
+            "physical_run_reads": [
+            {
+                "physical_run_id": 7324,
+                "length": 251,
+                "start_pos": 1,
+                "indexed": 0,
+                "physical_run_reads_id": 10228,
+                "read_num": 1
+            },
+            {
+                "physical_run_id": 7324,
+                "length": 12,
+                "start_pos": 252,
+                "indexed": 1,
+                "physical_run_reads_id": 10229,
+                "read_num": 2
+            },
+            {
+                "physical_run_id": 7324,
+                "length": 251,
+                "start_pos": 264,
+                "indexed": 0,
+                "physical_run_reads_id": 10230,
+                "read_num": 3
+            }
+            ],
+            "flowcell_barcode": "000000000-A4BJL",
+            "no_pass_bases_per_run": null,
+            "run_name": "130830_M01421_0129_000000000-A4BJL",
+            "is_externally_seq": 0,
+            "dt_sequencing_start": "2013-08-30T14:25:24",
+            "perc_pass_clusters_per_run": null,
+            "instrument_run_number": 128,
+            "no_reads": 3,
+            "physical_run_type": "Paired-End Indexed",
+            "instrument_name": "M01421",
+            "physical_run_id": 7324,
+            "is_in_lims": 0,
+            "no_raw_clusters_per_run": null,
+            "dt_status_modified": "2013-09-01T05:45:02",
+            "std_raw_clusters_per_run": null,
+            "dt_ext_data_modified": null,
+            "lims_id": 7324,
+            "dt_stats_modified": null,
+            "rta_version": "1.17.28",
+            "platform_name": "Illumina",
+            "fs_location": "/house/sdm/prod/illumina/staging/miseq06",
+            "no_pass_clusters_per_run": null,
+            "std_pass_clusters_per_run": null
+        },
+        "fastq_type": "sdm_normal",
+        "illumina_physical_run_id": 7324,
+        "illumina_physical_run_unit_id": 18425,
+        "sdm_seq_unit": {
+            "library_name": "M1895.F8",
+            "sow_segment_id": null,
+            "sdm_seq_unit_status_id": 31,
+            "parent_sdm_seq_unit_id": 65986,
+            "illumina_physical_run_unit_id": 18425,
+            "control_lane": 0,
+            "fs_location": "Data/Intensities/BaseCalls/Unaligned001/Project_7324/Sample_M1895.F81",
+            "basecall_version": "CASAVA-1.8.2",
+            "seq_barcode": "TCGCATGAAGT",
+            "is_multiplexed": 0,
+            "posted_date": "2013-09-01T06:41:20",
+            "is_production": 1,
+            "sdm_seq_unit_id": 66062,
+            "dt_status_modified": "2013-09-01T06:41:20",
+            "basecalling_date": "2013-09-01T06:20:43",
+            "analysis_task_id": null,
+            "children": [],
+            "basecall_id": 65986,
+            "dt_ext_data_modified": null
+        },
+        "sow_segment_id": null,
+        "analysis_task_id": null,
+        "illumina_sdm_seq_unit_id": 66062
+    }
+}
+</pre>

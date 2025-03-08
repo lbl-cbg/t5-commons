@@ -1,0 +1,68 @@
+<style>
+.statustable{
+    border-top: 1px solid rgb(209, 209, 209);
+    overflow-x:auto;
+    margin-left:50px;
+    width:auto;
+    font-size:14;
+    border:1px solid black;
+}
+.statustable header: {
+    background: #e0e000;
+    width: 52px;
+}
+
+.statustable tr:nth-of-type(odd) {
+    background: #d6d6d6;
+}
+.statustable tr:nth-of-type(even) {
+    background: #f0f0f0:
+}
+.statustable tr td{
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding:3px 10px ;
+}
+td.right {
+    text-align: right;
+}
+p.shifted {
+    margin-left: 50px;
+}
+.row {
+  display: flex;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.column {
+  flex: 50%;
+}
+</style>
+
+<h3>Restore Queue: Active and Waiting</h3>
+Table is sorted by status, priority, and date modified.
+<P>
+    <table class="statustable">
+        <tr style='background: #cddae4'>
+            <th>Queue Id</th>
+            <th>File Name</th>
+            <th>Date Modified</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>File Size (MB)</th>
+            <th>Requestor</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td class='right'>{{ "{:,}".format(row.queue_id) }}</td>
+            <td>{{ row.file_name }}</td>
+            <td>{{ row.date_modified }}</td>
+            <td>{{ row.priority_queue }}</td>
+            <td>{{ row.status }}</td>
+            <td class='right'>{{ "{:,.3f}".format(row.file_size / 1e6) }}</td>
+            <td>{{ row.requestor }}</td>
+        </tr>
+        {% endfor %}
+    </table>

@@ -1,0 +1,93 @@
+<style>
+.statustable{
+    border-top: 1px solid rgb(209, 209, 209);
+    overflow-x:auto;
+    margin-left:50px;
+    width:auto;
+    font-size:14;
+    border:1px solid black;
+}
+.statustable header: {
+    background: #e0e000;
+    width: 52px;
+}
+
+.statustable tr:nth-of-type(odd) {
+    background: #d6d6d6;
+}
+.statustable tr:nth-of-type(even) {
+    background: #f0f0f0:
+}
+.statustable tr td{
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding:3px 10px ;
+}
+td.right {
+    text-align: right;
+}
+p.shifted {
+    margin-left: 50px;
+}
+.row {
+  display: flex;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.column {
+  float: left;
+}
+.column.left {
+    width: 30%
+}
+.column.middle {
+    width: 30%
+}
+.column.right {
+    width: 40%
+}
+</style>
+
+<h3>Files Requested from JAMO over last five days by hour/user.</h3>
+This will include files already on disk and files that are in the queue to be restored or have yet to be restored.
+<div class="row">
+    <div class="column">
+        <h3>By User</h3>
+            <table class="statustable">
+                <tr style='background: #cddae4'>
+                    <th>User</th>
+                    <th>N</th>
+                    <th>Gb</th>
+                </tr>
+                {% for row in data.user %}
+                <tr>
+                    <td>{{row.requestor}}</td>
+                    <td class='right'>{{ "{:,}".format(row.N) }}</td>
+                    <td class='right'>{{ "{:,.3f}".format(row.gb) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <div class="column">
+        <h3>By Date/Hour</h3>
+            <table class="statustable">
+                <tr style='background: #cddae4'>
+                    <th>Date Hour</th>
+                    <th>N</th>
+                    <th>Gb</th>
+                </tr>
+                {% for row in data.hour %}
+                <tr>
+                    <td>{{row.ymdh}}</td>
+                    <td class='right'>{{ "{:,}".format(row.N) }}</td>
+                    <td class='right'>{{ "{:,.3f}".format(row.gb) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <div class="column">
+        {{ data.graph }}
+    </div>
+</div>

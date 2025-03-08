@@ -1,0 +1,22 @@
+<div id="savequery" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" >
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h3 class="modal-title" >Save Query</h3>
+      </div>
+      <div class="header-border"> </div>
+      <div class="modal-body" >
+        <input type="text ng-pristine ng-valid" id="modal_query_name" placeholder="Enter a query name" ng-model="saved_query.name">
+        <input type="text ng-pristine ng-valid" id="modal_query_desc" placeholder="Enter a description"  ng-model="saved_query.description">
+        <textarea rows="4 ng-pristine" id="modal_query" ng-model='query_to_save' ng-model="saved_query.query">
+        </textarea>
+        <pre>replace any value you wish to be dynamic with ?</pre>
+      </div>
+      <div class="modal-footer">
+        <a href="#" title="Close" ng-click="$hide()">Close</a>
+        <button type="button" ng-click="saveQuery()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

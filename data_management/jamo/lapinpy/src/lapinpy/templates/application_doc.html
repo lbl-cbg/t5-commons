@@ -1,0 +1,91 @@
+<style type="text/css">
+.views-table{
+    border-top: 1px solid #9E9E9E;
+    margin: 0 0 3em 0;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+caption{
+    text-align:left;
+    line-height:1.1;
+}
+caption strong{
+    font-size:20px;
+    text-transform: capitalize;
+}
+caption p{
+    margin-top: 0.5em;
+    font-size: 14px;
+}
+.views-field-title {
+    width: 35%;
+}
+.views-field-title{
+    font-size: 16px;
+    vertical-align: baseline;
+}
+.views-field-body{
+    font-size: 14px;
+}
+td{
+    border-bottom: 1px solid #9E9E9E;
+    padding: 8px 0 8px 0;
+    vertical-align: top;
+}
+tr:hover{
+    background-color:#EEE;
+}
+th, thead th {
+    padding: 8px 0;
+    width: 140px;
+    border-bottom: 1px solid #9E9E9E;
+    font-weight: bold;
+    text-align: left;
+}
+.method{
+    text-transform:uppercase;
+    float:left;
+    padding-right:10px;
+}
+#center-content{
+    min-height: 400px;
+    margin-bottom: 6em;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+}
+#center-content h2{
+    margin:0;
+}
+</style>
+<div id="center-content">
+<h2>Documentation</h2>
+{% for application in data %}
+<table class="views-table cols-2">
+    <caption><a title="{{application.name}}"></a>
+        <strong>{{application.name}}</strong>
+        <p>{{application.description}}</p>
+    </caption>
+    <thead>
+        <tr>
+            <th class="views-field views-field-title">Resource</th>
+            <th class="views-field views-field-body">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for method in application.methods %}
+        <tr class="odd">
+            <td class="views-field views-field-title">
+                <a href="/doc/method/{{application.name}}/{{method.name}}/{{method.method}}">
+                    <div class="method">{{method.method}}</div>
+                    {{application.name}}/{{method.name}}
+                </a>
+            </td>
+            <td class="views-field views-field-body">{{method.description}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+</table>
+{% endfor %}
+</div>

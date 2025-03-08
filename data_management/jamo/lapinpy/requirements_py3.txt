@@ -1,0 +1,37 @@
+authlib         <= 0.15.5
+pbr		>= 1.8
+PyYAML		>= 3.10
+CherryPy	>= 3.2.4
+Jinja2		>= 2.7.1
+SPARQLWrapper   >= 1.7.2
+rsa             == 4.0
+pyOpenSSL	>= 0.13.1
+rdflib		>= 4.0.1
+rpyc		>= 3.2.3
+pymysql		== 0.9.3
+pymongo		>= 3.12, < 4.0
+pycryptodome    >= 3.0
+python-daemon	== 2.2.4
+python-dateutil	>= 2.1
+pandas		> 0.20
+bitstring	> 3.1
+lxml		>= 2.7.0
+numpy		>= 1.7.1
+python-dateutil	>= 2.1
+numpydoc	>= 0.5
+scipy		>= 0.17.0
+decorator	>= 4.0.6
+nbformat	>= 4.2
+matplotlib      >= 3.3.4
+google-auth-oauthlib	== 0.4.1
+requests
+pytz
+prometheus_client
+more_itertools
+mock
+parameterized
+backports.tempfile
+future
+psutil
+ratelimit
+backoff

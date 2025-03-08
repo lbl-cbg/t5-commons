@@ -1,0 +1,25 @@
+<div class="search_filter" ng-keydown="keypressed($event)">
+	<form ng-submit="dataChange(1, true)">
+		[[saved_queries]]
+		<div class="query">
+			<h4>Query</h4>
+			<ul>
+				<li ng-repeat="condition in conditions">
+					<div class="delete" ng-click="remove_filter($index)" title="Remove condition from query">X</div>
+					<a class="condition" value="{{condition.value}}" href="#" ng-click="editFilter($index, condition.key, condition.operator, condition.value, condition.type)" title="Edit Filter">{{get_condition_key_display(condition.key)}} <span class="uppercase">{{condition.operator}}</span> {{condition.value}}</a>
+				</li>
+			</ul>
+			<div class="add_query_value">
+                   <select class="filterkey minput" name="key" ng-model="current_filter.key" ng-change="check_type()">[[key_options]]</select>
+                   <select class="filterop minput" name="op" ng-model="current_filter.operator">[[comparison_options]]</select>
+                   <input class="filterval minput" type="text" name="value" ng-click="value_click()" ng-model="current_filter.value" placeholder="filter" spellcheck="false" />
+                   <input type="hidden" class="minput" disabled/>
+                   <button type="submit" class="button" ng-disabled="!(current_filter.key)" ng-click="add_filter()">Add</button>
+			</div>	
+		</div>							
+		<div class="actions">
+			<button type="submit" class="button" ng-disabled="!filter_enabled || (last_query == query)" value="Filter">Filter</button>
+			[[saved_queries_actions]]
+		</div>
+	</form>
+</div>

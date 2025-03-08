@@ -1,0 +1,26 @@
+<h2>User defined queries</h2>
+The jamo tool provides users with a global defined set of queries, however if a user would like to add custom queries they can.<br>
+Queries can be added by creating a file in the users ~/.jamo/queries file. The format is:<br>
+<pre class="brush: bash">
+[query name]
+description=What this query is actually doing
+query=JSON formated hash of the mongo query to make
+</pre>
+
+<h4>Example</h4>
+<pre class="brush: bash">
+[dir]
+description=Match against the pmo project directory number
+query={"metadata.dir_number":{"$in":"int($args)"}
+</pre>
+
+Notice the user of $args, this will get replaced with the list of arguments passed into the command line. Since this is also a number and not a string we want to parse this to a int so we do so by calling int().
+
+<h4>Use individual arguments</h4>
+<pre class="brush: bash">
+[run]
+description=Get all files that have the illumina run id of x and run on lane y
+query={'metadata.lane':'int($args.1)','metadata.illumina_physical_run_id':'int($args.0)'}
+</pre>
+
+Notice that we called $args.0 and $args.1, you can access any value in the args by calling $args.(array position) 0 based.

@@ -1,0 +1,100 @@
+<style type="text/css">
+#module-title{
+    padding:10px;
+    border-bottom: 1px solid rgb(177, 169, 169);
+}
+#doc-side ul{
+    list-style: none;
+    padding-left:15px;
+}
+#doc-side li{
+    padding:5px;
+}
+.docnav-title, .docnav-title:visited{
+    cursor: pointer;
+    text-transform:capitalize;
+    color:black;
+}
+#doc-side{
+    width: 250px;
+    padding: 10px 0;
+    float: left;
+    min-height:10px;
+}
+#doc-content{
+    margin-left: 250px;
+    max-width: 1040px;
+    vertical-align: top;
+    padding-top: 14px;
+    min-height: 200px;
+}
+#doc-main h3, #doc-main h2, #doc-main h4{
+    margin:0px;
+    border-bottom: 1px solid rgb(177, 169, 169);
+    margin-bottom:20px;
+    color:#0094D2;
+}
+#doc-main{
+    font-family: Arial, sans-serif;
+    font-size:15px;
+}
+#doc-content h2{
+    font-size:22px;
+}
+#doc-content h4{
+    padding-top:15px;
+    padding-left:15px;
+    font-size:15px;
+}
+.note{
+    background-color: white;
+    border-left: 10px solid rgb(172, 171, 171);
+    padding: 5px;
+    margin: 10px;
+}
+#module-title img{
+    height: 50px;
+    float:left;
+    padding-right:10px;
+}
+.highlight,.highlight:visited{
+    color:rgb(108, 190, 255);
+}
+</style>
+<script type="text/javascript" src="/scripts/shCore.js"></script>
+<script type="text/javascript" src="/scripts/shBrushBash.js"></script>
+<script type="text/javascript" src="/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/scripts/shBrushYaml.js"></script>
+
+<!-- Include *at least* the core style and default theme -->
+<link href="/scripts/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/scripts/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+ </script>
+<div id="module-title"><img src="/images/sdm_logo.png" /><h2>{{data.moduleName}}</h2></div>
+<div id="doc-main">
+    <div id="doc-side"><nav><ul>
+        {% for item in data.navigation recursive %}
+            <li>
+                {% if item.children %}
+                    {% if item.selected %}
+                    <a class="docnav-collapsed" title="▾">▾</a>
+                    {% else %}
+                    <a class="docnav-collapsed" title="▸">▸</a>
+                    {% endif %}
+                    <a class="docnav-title" href="{{item.link}}">{{item.title}}</a>
+                    <ul {% if not item.selected %}style="display:none;"{% endif %}>{{ loop(item.children) }}</ul>
+                {% else %}
+                    <a class="docnav-title {% if item.highlight %}highlight{%endif%}" href="{{item.link}}">{{item.title}}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </nav></ul></div>
+    <div id="doc-content">
+        {{data.content}}
+    </div>
+
+
+</div>

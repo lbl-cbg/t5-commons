@@ -1,0 +1,55 @@
+<h2>SDM's python curl library</h2>
+We have created a python curl library to make RESTful calls easier. For all of the python tutorials we will assume that you are using this library. 
+<br>If you are new to curl or RESTful you can check out the Wikipedia pages at <a href="http://en.wikipedia.org/wiki/CURL">Curl</a> and <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">REST</a>.
+<br>To use this library you can load the jamo module on a terminal like so:
+<pre class="brush: bash">module load jamo</pre>
+Once you have loaded the module you can then import the sdm_curl module:
+<pre class="brush: python">import sdm_curl</pre>
+<h3>Curl class</h3>
+The sdm_curl module contains a Curl class. That can be initialized with the host address and credentials. SDM authenticates against app tokens that can be generated on request. For the examples below we will pretend that we have generated a token and it is 'h8sfhusdf98gherg98'. 
+<aside>The Curl class has the ability to use other forms of authentication such as oAuth.</aside>
+SDM's web services communicates though JSON which is JavaScript Object Notation. You can read more on that <a href="http://www.json.org/">here</a>. By default the Curl class will automatically
+serialize all data that is passed to it into this format. And by default it will automatically parse the JSON response to a python data format. This makes talking to the sdm services much easier.
+Below is an example of a post call. You can see that the response is now a python list of dictionaries
+<pre class="brush: python">
+from sdm_curl import Curl
+
+#create the Curl object and assign it to curl
+curl = Curl('https://sdm-dev.jgi-psf.org',appToken='h8sfhusdf98gherg98')
+
+#make a post call to the api/metadata/query resource and send the key file_id with the value of 1
+results = curl.post('api/metadata/query',file_id=1111)
+print results
+[{u'file_type': [u'fastq.gz', u'fastq'], u'file_name': u'1.4.3.UNKNOWN-FAIL.fastq.gz', u'file_id': 1111,...}]
+</pre>
+The Curl library supports GET, POST, PUT, and DELETE html methods, which are conveniently the methods of the Curl object. You can use them like so:
+<pre class="brush: python">
+#make a get request
+curl.get('api/tape/file/1')
+
+#make a post request
+curl.post('api/metadata/file',file='/global/homes/a/aeboyd/test.py')
+
+#make a put request
+curl.put('api/something/something/1',status='updating')
+
+#make a delete request
+curl.delete('api/tape/file/1')
+</pre>
+<aside>You may have noticed that all the request above do not have a / at the beginning of the resource. The curl class will automatically prepend the / to the resource and then make the call to the server.</aside>
+
+<h3>sdm_curl.CurlHttpException</h3>
+sdm_curl also has a class that represents and Http Errors that occur. An error is considered to be any call that returns a status call other than 200.
+<br>The code is:
+<pre class="brush: python">
+class CurlHttpException(Exception):
+
+    def __init__(self, httpError ):
+        self.response = httpError.readlines()
+        self.url = httpError.geturl()
+        self.code = httpError.getcode()
+        Exception.__init__(self, 'call to: %s threw code: %d %s'%(self.url, self.code,self.response)) 
+    
+    def __repr__(self):
+        return 'call to: %s threw code: %d'%(self.url, self.code)
+</pre>

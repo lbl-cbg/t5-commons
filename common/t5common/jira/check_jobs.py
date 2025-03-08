@@ -20,6 +20,14 @@ logger = get_logger()
 
 
 async def publish_job(issue, project_config, config):
+    """Publish results from a job
+
+    Args:
+        issue:              The Jira issue key the job was run for
+        project_config:     Information on the project, namely how to publish results
+        config:             General information about this workflow runner
+
+    """
     logger.info(f"Publishing results for {issue}")
     env, wd = get_job_env(issue, config)
 
@@ -55,6 +63,13 @@ async def publish_job(issue, project_config, config):
 
 
 async def check_jobs(config):
+    """Check for finished jobs and publish the results of finished jobs.
+
+    Args:
+        config: General information about this workflow runner. This should also contain
+                information about the projects to check and how to run jobs for those
+                projects
+    """
     database = config['database']
     dbc = DBConnector(f"sqlite:///{database}")
 
