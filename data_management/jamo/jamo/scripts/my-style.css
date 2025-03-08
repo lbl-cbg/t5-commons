@@ -1,0 +1,50 @@
+#mytable {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 800px; /* this can vary */
+}
+
+#mytable * {
+    box-sizing: inherit;
+    -moz-box-sizing: inherit;
+}
+
+#mytable thead {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#mytable tbody {
+    overflow-y: scroll;
+    display: inline-block;
+}
+
+#mytable thead > tr, #mytable tbody > tr, #mytable tfoot > tr {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+}
+#mytable thead, #mytable tfoot {
+    flex-shrink: 0;
+}
+
+#mytable th, #mytable tbody td {
+    width: 20%; /* this can vary */
+    overflow-x: hidden;
+    /*text-overflow: ellipsis; */
+    display: inline-block;
+}
+
+#mytable tfoot {
+    display: inline-block;
+}
+
+#mytable tfoot td {
+    width: 100%;
+    display: inline-block;
+}

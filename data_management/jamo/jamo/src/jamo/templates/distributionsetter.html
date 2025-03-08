@@ -1,0 +1,442 @@
+<script src="/scripts/angular.js"></script>
+<script src="/scripts/angular-sanitize.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link rel="stylesheet" href="/scripts/angular-motion.min.css">
+
+
+<script src="/scripts/angular-animate.js"></script>
+<script type='text/javascript'>
+var filtertable = angular.module('filtertable', ['ngAnimate', 'ngSanitize']);
+filtertable.controller('FilterCtrl',['$scope','$http' ,function ($scope,$http){
+//    $scope.files = {{data.files|jsonify}};
+    $scope.pubFlagsDisplay = {{data.publishing_flags|jsonify}};
+    $scope.displayLocCV = {{data.display_location_cv|jsonify}};
+    $scope.queryOptions = {{data.search_fields|jsonify}};
+    $scope.pubFlags = [ ];
+    for (var i = 0; i < $scope.pubFlagsDisplay.length; i++) {
+        var displayName = $scope.pubFlagsDisplay[i];
+        $scope.pubFlags.push( displayName.replace(" ", "_").toLowerCase() );
+    }
+    var originalValues = {};
+    $scope.pubFlagValues = {};
+    $scope.displayLocations = {};
+
+    /**
+        Used to reset original values. This is needed to keep track of the current
+        state of the UI and database. It also avoids the need to refresh the screen
+        to get the current state
+    */
+    var setOriginalValues = function () {
+        for (var i = 0; i < $scope.files.length; i++) {
+            var file_id = $scope.files[i]["_id"];
+            originalValues[file_id] = {}; 
+            originalValues[file_id]["display_location"] = $scope.displayLocations[file_id];
+            originalValues[file_id]["publish_to"] = {};
+            for (var j = 0; j < $scope.pubFlags.length; j++) {
+                var flag = $scope.pubFlags[j];
+                originalValues[file_id]["publish_to"][flag] = $scope.pubFlagValues[file_id][flag];
+            }
+        }
+    };
+
+    var updatePortalLocation = function(id, path){
+        if(path=="" || path=="Remove"){
+            //remoave the path
+        $http.delete('/api/metadata/portallocation/'+id).success(
+            function(data, status, headers, config) {
+            });
+            return "";
+        }
+        path = path.replace(/^\/+/g,"").replace(/\/+/g,"/");
+        var newPath = path.split("/");
+        $http.put('/api/metadata/portallocation/'+id,{"path":newPath }).success(
+            function(data, status, headers, config) {
+            });
+    };
+    var updatePublishingFlags = function(id, flags){
+        if(flags.length == 0){
+            $http.delete('/api/metadata/publishingflags/'+id).success(
+            function(data, status, headers, config) {
+            });
+            return "";
+        } else {
+            $http.put('/api/metadata/publishingflags/'+id,{"flags":flags }).success(
+                function(data, status, headers, config) {
+                });
+        }
+    };
+    
+    $scope.setraw = function(){
+        for(var i=0;i<$scope.files.length;i++){
+            var file = $scope.files[i]; 
+            if(file['group']=='sdm' && (file['file_name'].search('fastq.gz')>0 || file['file_name'].toLowerCase().search('ztr')>0) && file['file_name'].search('FAIL')<0 && file['file_name'].search('UNKNOWN')<0){
+                updatePortalLocation(file['_id'],'/Raw Data');
+            }
+        }
+        alert('done updating files, you will have to refesh to see the changes');
+    };
+
+    // BEGIN: Variables for searching
+    $scope.queryValue = "";
+    $scope.prevQueryValue = "";
+    $scope.queryField = "";
+    $scope.prevQueryField = "";
+    // END: Variables for searching
+    $scope.search = function(query) {
+        // We might need to move this variable somewhere else
+        if ($scope.queryField == $scope.prevQueryField && $scope.queryValue == $scope.prevQueryValue) {
+            if (!confirm ("You have not changed your search. Would you like to resubmit your original search?")) {
+                return;
+            }
+        }
+        var fields = ['_id', 'file_name', 'metadata.library_name','metadata.portal.display_location', 'metadata.publish_to', 'file_type','group'];
+        var values = $scope.queryValue.split(/[ ,]+/);
+        var identifier = $scope.queryField;
+        if ($scope.queryField in $scope.queryOptions){
+            identifier = $scope.queryOptions[$scope.queryField];
+        }
+        $http.post('/api/metadata/projectfiles',{"identifier":identifier, "values": values, "fields": fields }).success(
+            function(data, status, headers, config) {
+                $scope.files = data.files;
+                /*
+                $scope.filter_enabled=true;
+                $scope.current_results=data.records;
+                $scope.prev_records =  [];
+                $scope.cursor_id = data.cursor_id;
+                $scope.rec_count = data.end;
+                $scope.fields = data.fields;
+                $location.search('query',$scope.query);
+                $scope.result_desc = { start:data.start, end:data.end, record_count:data.record_count};
+                $scope.prev_records = $scope.prev_records.concat($scope.current_results);
+                $scope.stored_amount = data.end;
+                $scope.next_enabled = data.end<data.record_count;
+                */
+                // Initialize data for display and binding
+                for(var i=0;i<$scope.files.length;i++){
+                    var file = $scope.files[i];
+                    if("portal" in file.metadata && "display_location" in file.metadata.portal){
+                        if (file.metadata.portal.display_location instanceof Array){
+                            $scope.displayLocations[file["_id"]] = file.metadata.portal.display_location.join('/');
+                        } else {
+                            $scope.displayLocations[file["_id"]] = file.metadata.portal.display_location;
+                        }
+                    } else {
+                        $scope.displayLocations[file["_id"]] = "";
+                    } 
+                    $scope.pubFlagValues[file["_id"]] = {};
+                    for (var j=0; j < $scope.pubFlags.length; j++) {
+                        var flag = $scope.pubFlags[j];
+                        $scope.pubFlagValues[file._id][flag] = false;
+                    }
+                    if ("publish_to" in file.metadata) {
+                        for (var j = 0; j < file.metadata.publish_to.length; j++) {
+                            var flag = file.metadata.publish_to[j];
+                            $scope.pubFlagValues[file["_id"]][flag] = true;
+                        }
+                    }
+                }
+                // Set a holder for original values. This is needed to check if any changes were made before saving
+                setOriginalValues();
+
+                $scope.prevQueryField = $scope.queryField;
+                $scope.prevQueryValue = $scope.queryValue;
+            }).error(function(data, status, headers, config) {
+                var myModal = $modal({scope:$scope, title: 'Error with query', content: data.errors[0], show: true});
+                myModal.show()
+                $scope.filter_enabled=true;
+            });
+        return "";
+        
+
+    };
+    $scope.next = function(){
+        if(!$scope.next_enabled){
+            return;
+        }
+        if($scope.prev_records.length >= $scope.rec_count+$scope.result_desc.end){
+           $scope.result_desc.start +=$scope.rec_count;
+           $scope.result_desc.end += $scope.rec_count;
+           if($scope.result_desc.end>$scope.result_desc.record_count){
+                $scope.result_desc.end=$scope.result_desc.record_count;
+           }
+           $scope.current_results=[] ;
+           for(var i=$scope.result_desc.start-1;i<$scope.result_desc.end;i++){
+                $scope.current_results.push($scope.prev_records[i]);
+           }
+           $scope.next_enabled = $scope.result_desc.end<$scope.result_desc.record_count;
+           $scope.prev_enabled = $scope.result_desc.start>1;
+           $scope.$apply();
+        }else if($scope.result_desc.end<$scope.result_desc.record_count){
+            $http.get(address+'/'+$scope.cursor_id,{query:$scope.query}).success(
+                function(data, status, headers, config) {
+                    $scope.current_results=data.records;
+                    $scope.result_desc = { start:data.start, end:data.end, record_count:data.record_count}
+                    $scope.prev_records = $scope.prev_records.concat($scope.current_results);
+                    $scope.stored_amount+=$scope.rec_count;
+                    $scope.next_enabled = data.end<data.record_count;
+                    $scope.prev_enabled = true;
+                });
+        }
+    };
+    $scope.prev = function(){
+        if($scope.result_desc.start>1 && $scope.prev_enabled){
+            $scope.result_desc.start -=$scope.rec_count;
+            $scope.result_desc.end = $scope.result_desc.start + $scope.rec_count-1;
+            $scope.current_results=[] ;
+            for(var i=$scope.result_desc.start-1;i<$scope.result_desc.end;i++){
+                $scope.current_results.push($scope.prev_records[i]);
+            }
+            $scope.next_enabled = $scope.result_desc.end<$scope.result_desc.record_count;
+        }
+        $scope.prev_enabled = $scope.result_desc.start>1;
+        $scope.$apply();
+
+    };
+    
+    /**
+        A function to check if publshing flags were changed
+    */
+    var flagsChanged = function(dict1, dict2) {
+        for (var key in dict1) {
+            if (dict1[key] != dict2[key]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+        A function to easily convert to a list for saving. 
+        We convert to a list instead of a dict of booleans to avoid
+        storing "false" values in Mongo
+    */
+    var flagDictToSet = function(dict) {
+        var ret = [];
+        for (var key in dict) {
+            if (dict[key]) {
+                ret.push(key);
+            }
+        }
+        return ret;
+    };
+    
+    /**
+        A function to make sure a macro was not used for display location
+    */
+    var isValidDisplayLocation = function(displayLocation) {
+        var illegalChars = "{}";
+        for (var i = 0; i < illegalChars.length; i++) {
+            if (displayLocation.indexOf(illegalChars[i]) >= 0) {
+                return false;
+            }
+        }
+        return true;
+    };
+    $scope.save = function(){
+        var numFilesUpdated = 0;
+        // store changes, so we can commit them only after we make sure all requested changes are valid
+        var displayLocationUpdates = {};
+        var publishingFlagsUpdates = {};
+        for(var i=0;i<$scope.files.length;i++){
+            var file_id = $scope.files[i]["_id"]; 
+            var thisFileUpdated = false;
+            if(originalValues[file_id]["display_location"]!=$scope.displayLocations[file_id]){
+                if (isValidDisplayLocation($scope.displayLocations[file_id])) {
+                    displayLocationUpdates[file_id] = $scope.displayLocations[file_id];
+                    thisFileUpdated = true;
+                } else {
+                    // if display location change is invalid, return and commit no changes
+                    alert("Invalid portal location for " + $scope.files[i]["file_name"] + ": " + $scope.displayLocations[file_id]);
+                    return;
+                }
+            } 
+            if(flagsChanged(originalValues[file_id]["publish_to"],$scope.pubFlagValues[file_id])){
+                publishingFlagsUpdates[file_id] = flagDictToSet($scope.pubFlagValues[file_id]);
+                thisFileUpdated = true;
+            }
+            if (thisFileUpdated) {
+                numFilesUpdated += 1;
+            }
+        }
+        for (var file_id in displayLocationUpdates) {
+            updatePortalLocation(file_id,displayLocationUpdates[file_id]);
+        }
+        for (var file_id in publishingFlagsUpdates) {
+            updatePublishingFlags(file_id,publishingFlagsUpdates[file_id]);
+        }
+        
+        // respond with a confirmation for the number of files changes
+        var numNames = [ "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven" ,
+                         "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty" ];
+        if (numFilesUpdated == 0) {
+            alert("No files were updated.");
+        } else {
+            if (numFilesUpdated == 1) {
+                alert("One file was updated.");
+            } else if (numFilesUpdated < numNames.length) {
+                alert( numNames[numFilesUpdated] + " files were updated.");
+            } else {
+                alert( numFilesUpdated + " files were updated.");
+            }
+            // Reset the holder for original values
+            setOriginalValues();
+        }
+    };
+
+
+}]);
+
+</script>
+
+<style>
+
+
+.searchfield {
+
+    width: 15%;
+}
+.searchvalue {
+    width: 25%;
+}
+
+
+.disttable{
+    width:100%;
+    border-top: 1px solid rgb(209, 209, 209);
+    background-color:rgb(247, 247, 247);
+    overflow-x:auto;
+}
+.disttable th: {
+    background-color: #FFFFFF;
+    width: 52px;
+}
+.disttable th.h_name{
+    max-width: 175px;
+    width: 175px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 11px;
+}
+
+.disttable th.ft_col{
+    vertical-align: middle;
+    text-align: left;
+    padding-left: 10px;
+}
+.disttable td.ft_col{
+    white-space: nowrap;
+    padding-right:10px;
+    text-align: left;
+}
+.disttable th.pdl_col{
+    vertical-align: middle;
+    text-align: center;
+    max-width:475px;
+    width:475px;
+    min-width:475px;
+}
+.disttable th.pbf_col{
+    vertical-align: middle;
+    text-align: center;
+    max-width:200px;
+    width:200px;
+}
+.disttable td.pdl_col{
+    white-space: nowrap;
+    padding-right:0px;
+    text-align: left;
+}
+
+
+.disttable tr:nth-of-type(even) {
+    background: #e0e0e0;
+}
+.disttable tr td{
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding:3px 10px ;
+}
+.disttable tr td.c_name{
+    margin: 0 auto;
+    width: 20px;
+}
+
+.disttable td input[type="checkbox"]{
+    margin: auto;
+    text-align: center;
+    display: block;
+   width: 14px;
+}
+
+.disttable td input[type="text"] {
+   font-family: 'Droid Sans', sans-serif;
+   font-size: 13px;
+   margin: 5px 0px 0 0;
+   width: 100%;
+   background-color: whiteSmoke;
+   border: 1px solid #DDD;
+}
+
+.disttable td select{
+    text-align: center;
+    width: 100%;
+    
+}
+
+</style>
+
+{% raw %}
+<link rel="stylesheet" href="/scripts/table.css">
+<!--link rel="stylesheet" href="table.css"-->
+<div id="search_window" ng-app='filtertable'>
+    <!-- button class="button" width="200px" ng-click="setraw()">Set all raw</button-->
+    <br>
+    <br>
+    <div id="FilterCtrl" ng-controller="FilterCtrl">
+    
+    <!-- BEGIN: search box -->
+    <input class="searchfield" ="text" list="query_field" autocomplete="off" ng-model="queryField">
+    <datalist id="query_field">
+     <option ng-repeat="(queryOption, queryKey) in queryOptions" value="{{queryOption}}">
+    </datalist>
+    <input class="searchvalue" type="text" width=400px ng-model="queryValue">
+    <button class="button" ng-click="search()">Filter</button>
+    <!-- END: search box -->
+
+
+
+    <div class="disttable">
+    <table class="qresults" cellspacing="0" width=50%>
+        <tr class="header">
+           <th class="ft_col" rowspan=2>Group</th> 
+           <th class="ft_col" rowspan=2>File Name</th> 
+           <th class="pdl_col" rowspan=2>Portal Location</th> 
+           <th class="pbf_col" colspan={{pubFlags.length}}>Publishing Flags</th> 
+        </tr>
+        <th class="h_name" ng-repeat="displayFlag in pubFlagsDisplay">{{displayFlag}}</th>
+       <tr ng-repeat="result in files">
+           <td class="ft_col" ng-bind-html="result.group"></td>
+           <td class="ft_col" ng-bind-html="result.file_name"></td>
+           <td class="pdl_col">
+           <input type="text" list="display_locations" autocomplete="off" ng-model="displayLocations[result._id]">
+           <datalist id="display_locations">
+            <option ng-repeat="displayLoc in displayLocCV" value="{{displayLoc}}">
+           </datalist>
+           </td>
+           <td class="c_name" ng-repeat="loc in pubFlags">
+                <input type="checkbox" ng-model="pubFlagValues[result._id][loc]">
+           </td>
+       <tr> 
+    </table>
+
+    </div>
+    <br>
+    <button class="button" ng-click="save()">Save</button>
+    </div>
+</div>
+<br>
+<div id="footer">
+Having trouble viewing this? Try using Google Chrome or Firefox
+</div>
+{% endraw %}

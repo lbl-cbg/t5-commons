@@ -1,0 +1,9 @@
+<h2> Portal locations for template: {{args[0]}}</h2>
+
+<form method="post" action="/api/analysis/portallocations/{{args[0]}}">
+    {% for output in data %}
+    {{output}}:<input name="{{output}}" value="{{data[output]}}" style="width:400px"/><br>
+    {% endfor %}
+    <input name="XXredirect_internalXX" type="hidden" value="/analysis/portallocations/{{args[0]}}">
+    <button>Save</button>
+</form>

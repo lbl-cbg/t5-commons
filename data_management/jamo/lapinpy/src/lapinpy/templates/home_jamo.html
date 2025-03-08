@@ -1,0 +1,51 @@
+{% if not data.user %}
+Please login to access this website.
+{% else %}
+Welcome to SDM's homepage for JAMO and JAT.
+<p>
+    Illumina and SRA can be found at <a href="https://illumina.jgi.doe.gov">https://illumina.jgi.doe.gov</a>
+<p>
+    PacBio can be found at <a href="https://pacbio.jgi.doe.gov">https://pacbio.jgi.doe.gov</a>
+<p>
+    Click on a menu item above.
+<p>
+<tablE style="margin-left:20px">
+    <tr>
+        <td>&#8227; Home
+        <td>&dash; This page
+    </tr>
+    <tr>
+        <td>&#8227; Doc
+        <td>&dash; Documentation on the JAMO and JAT APIs
+    <tr>
+        <td>&#8227; JAT
+        <td>&dash; JGI Analysis Tracker
+    <tr>
+        <td style="vertical-align: top;">&#8227; Misc
+        <td>
+            <table>
+                <tr><td>&dash; Genomic Citation Service (GCS) search</td></tr>
+                <tr><td>&dash; Venonat querying</td></tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>&#8227; Tape
+        <td>&dash; Shows files on tape and the HPSS retrieval queue
+    </tr>
+    <tr>
+        <td>&#8227; Metadata
+        <td>&dash; Search JAMO for metadata
+    </tr>
+</table>
+<p>
+NOTE:
+<ul>
+    <li>
+        The above are the basic menu options available to everyone.  You might see more if you have enhanced privileges.
+    <li>
+        Venonat is a copy of the Venonat Project and Sample databases.  Any changes to the production Venonat system made since early 2014 are not reflected here.
+    <li>
+        'Search Site' is currently not functional on IGB JAMO
+</ul>
+{% endif %}

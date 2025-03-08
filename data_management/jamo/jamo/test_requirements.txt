@@ -1,0 +1,25 @@
+future==0.18.2
+parameterized==0.8.1
+rpyc==5.0.1
+pymongo==3.12.3
+python-dateutil==2.8.2
+CherryPy==18.8.0
+PyYAML==6.0
+Jinja2==3.0.3
+requests==2.27.1
+Authlib==0.15.5
+google-auth-oauthlib==0.4.1
+prometheus-client==0.15.0
+PyMySQL==0.9.3
+pytest==7.0.1
+pytest-cov==4.0.0
+coverage==6.2
+flake8==5.0.4
+matplotlib==3.3.4
+
+# need this workaround as we can't properly build/test the libs as they have circular dependencies, so we
+# build the wheels from source...
+# lapinpy
+./jgi-lapinpy
+# sdm-common
+./jgi-sdm-common

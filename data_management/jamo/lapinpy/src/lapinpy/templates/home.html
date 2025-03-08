@@ -1,0 +1,46 @@
+{% if not data.user %}
+Please login to access this website.
+{% else %}
+Welcome to SDM's homepage for JAMO, JAT, K-Base, NCBI-SRA, Illumina, PacBio, etc.
+<P>
+Click on a menu item above.
+<P>
+<TABLE style="margin-left:20px">
+    <TR>
+        <TD>&#8227; Home
+        <TD>&dash; This page
+    </TR>
+    <TR>
+        <TD>&#8227; Doc
+        <TD>&dash; Documentation on the JAMO and JAT APIs, as well as SRA
+    <TR>
+        <TD>&#8227; JAT
+        <TD>&dash; JGI Analysis Tracker
+    <TR>
+        <TD>&#8227; Misc
+        <TD>&dash; KBase submissions and Venonat querying
+    </TR>
+    <TR>
+        <TD>&#8227; Tape
+        <TD>&dash; Shows files on tape and the HPSS retrieval queue
+    </TR>
+    <TR>
+        <TD>&#8227; Sequencing
+        <TD>&dash; PacBio and Illumina data
+    </TR>
+    <TR>
+        <TD>&#8227; Metadata
+        <TD>&dash; Search JAMO for metadata
+    </TR>
+</TABLE>
+<P>
+NOTE:
+<UL>
+    <LI>
+        The above are the basic menu options available to everyone.  You will see more options if you have enhanced privileges.
+    <LI>
+        Venonat is a copy of the Venonat Project and Sample databases.  Any changes to the production Venonat system made since early 2014 are not reflected here.
+    <LI>
+        'Search Site' will only search the Illumina database for runs with a matching library name or illumina run id.
+</UL>
+{% endif %}

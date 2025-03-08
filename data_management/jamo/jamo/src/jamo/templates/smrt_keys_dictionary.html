@@ -1,0 +1,193 @@
+<script src="/scripts/angular.min.js"></script>
+<script src="/scripts/angular-strap.min.js" ></script>
+<script src="/scripts/angular-strap.tpl.min.js"></script>
+<link rel="stylesheet" href="scripts/my-style.css">
+<link rel="stylesheet" href="/scripts/bootstrap.min.css">
+<link href="scripts/angular-xeditable/css/xeditable.css" rel="stylesheet">
+<script src="scripts/angular-xeditable/js/xeditable.js"></script>
+<script src="scripts/smart-table.min.js"></script>
+<script type='text/javascript'>
+
+var app = angular.module("app", ["xeditable","smart-table"]);
+{% raw %}
+app.run(['$templateCache', function($templateCache) {
+		$templateCache.put('template/smart-table/pagination.html',
+			' <nav ng-if="pages.length >= 2"> <ul class="pagination"> <li><a href ng-click="selectPage(1)">First</a> </li> <li><a href ng-click="selectPage(currentPage - 1)">&lt;</a></li> <li><a><page-select></page-select> of {{numPages}} </a></li> <li><a href ng-click="selectPage(currentPage + 1)">&gt;</a></li> <li><a href ng-click="selectPage(numPages)">Last</a></li> </ul></nav>' );
+	}]);
+{% endraw %}
+app.run(function(editableOptions) {
+		editableOptions.theme = 'bs3';
+		});
+app.directive('stRatio',function(){
+        return {
+          link:function(scope, element, attr){
+            var ratio=+(attr.stRatio);
+            
+            element.css('width',ratio+'%');
+            
+          }
+        };
+});
+app.controller('Ctrl', function($scope, $filter, $http,$q) {
+		$scope.records = {{data | jsonify}}; 
+		$scope.errors = [];
+		for(i=0; i < $scope.records.length ; i++){
+			if($scope.records[i].value.isindexed == 1) {
+				$scope.records[i]._id = $scope.records[i]._id + " *"
+			};
+			if($scope.records[i].iserror == null ) {
+				$scope.records[i].iserror = 0;
+			};
+			if($scope.records[i].value != null && $scope.records[i].value.last_seen != null && $scope.records[i].value.last_seen != 0) {
+				var last_date = new Date($scope.records[i].value.last_seen);
+				$scope.records[i].last_seen = last_date.toLocaleDateString('en-US',{month:'2-digit',year:'numeric'} );
+			};
+			if($scope.records[i].value != null && $scope.records[i].value.first_seen != null && $scope.records[i].value.first_seen != 0 ) {
+				var first_date = new Date($scope.records[i].value.first_seen);
+				$scope.records[i].first_seen = first_date.toLocaleDateString('en-US',{month:'2-digit',year:'numeric'});
+			};
+			$scope.records[i].isselected = 0;
+		};  
+		//pagination at initialization
+		$scope.itemsByPage=30;
+		$scope.displayedPages = 10;
+		$scope.priorities = [0,1,2,3,4,5,6,7,8,9,10];
+		$scope.saveRecord = function(data,i) {
+			data.iserror = $scope.records[i].iserror;
+			var d = $q.defer();
+			$http.put('/api/metadata/update_keys',{ "_id":$scope.records[i]._id, "data": data} ).success(function(response) {
+					d.resolve();
+					}).error(function(response){
+						d.reject('Error:'+ response.errors);
+						}); 
+			return d.promise;         
+		};
+		$scope.checkId = function(data) {
+			if(data === '' || data == null ) { 
+				return;
+			}               
+			var d = $q.defer();
+			$http.get('/api/metadata/check_keys',{params: {"_id":data}}
+				 ).success(function(re) {
+					 d.resolve();
+					 }).error(function(e){
+						 d.reject('Error: '+ e.errors); 
+						 }); 
+			return d.promise; 
+		};
+
+		$scope.selectAll = function() {
+			var toggle = !$scope.selectval;
+			for(i=0; i<$scope.records.length ; i++) {
+				$scope.records[i].isselected = toggle; 
+			};
+		};
+});
+</script>
+
+{% raw %}
+<div ng-app='app' ng-controller="Ctrl">
+	<table id="mytable" st-table="displayedCollection" st-safe-src="records" class="table table-striped">
+		<thead>
+			<tr style="font-weight: bold">
+                                <th st-ratio="25"><input st-search="_id" placeholder="FILTER BY _ID" class="input-sm form-control" type="search" /></th>
+				<th st-ratio="7.5"></th>
+				<th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                                <th st-ratio="7.5"></th>
+                        </tr>
+			<tr style="font-weight: bold">
+				<th st-ratio="2"><input type="checkbox" ng-model="selectval" ng-click="selectAll()" /></th>
+				<th st-ratio="8">Edit</th>
+				<th st-ratio="16" st-sort="_id">_ID</th>
+				<th st-ratio="10">Name</th>
+				<th st-ratio="17">Description</th>
+				<th st-ratio="10" st-sort="source">Source</th>
+				<th st-ratio="12">Map_to</th>
+			        <th st-ratio="7" st-sort="last_seen">Last Seen</th>
+				<th st-ratio="7" st-sort="first_seen" >First Seen</th>
+				<th st-ratio="6">Err</th>
+				<th st-ratio="5" st-sort="priority">Prio</th>
+			</tr>
+
+		</thead>
+		<tbody>
+<tr ng-repeat="record in displayedCollection">
+                                <!-- Select rows checkbox -->
+                                <td st-ratio="2"> <input type="checkbox"  ng-model="record.isselected" /> </td>
+                                <td st-ratio="8">
+                                        <!-- form -->
+                                        <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" onbeforesave="saveRecord($data, $index)" shown="inserted == record">
+                                                <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                                                        save
+                                                </button>
+                                                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                                                        cancel
+                                                </button>
+                                        </form>
+                                        <div class="buttons" ng-show="!rowform.$visible">
+                                                <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                                        </div>  
+                                </td> 
+                                <td st-ratio="16" style="overflow:auto;"> {{record._id}} </td>
+                                <td st-ratio="10"> 
+                                        <!-- editable Name -->
+                                        <span  editable-text="record.name"  e-name="name" e-form="rowform">
+                                                {{ record.name || '' }}
+                                        </span>
+                                </td>
+                                <td st-ratio="17">
+                                        <!--  editable Description -->
+                                        <div style="width:100%; max-height:100px; overflow:auto">
+                                                <span e-style="width:400px; height:100px;" editable-textarea="record.description" e-name="description" e-form="rowform" >
+                                                        {{ record.description || '' }}
+                                                </span>
+                                        </div>
+                                </td>
+                                <td st-ratio="10">
+                                        <!-- editable  Source name-->
+                                        <span editable-text="record.source" e-style="width:100px;" e-name="source" e-form="rowform">
+                                                {{ record.source || '' }}
+                                        </span>
+                                </td>
+                                <td st-ratio="12">
+                                        <!-- Map this key to another key _ID -->
+                                        <span editable-text="record.mapto" e-style="width:200px;" e-name="mapto" e-form="rowform" onbeforesave="checkId($data)">
+                                                {{record.mapto || '' }}
+                                        </span>
+                                </td>
+                                <td st-ratio="7" e-name="last_seen"> {{record.last_seen}} </td>
+                                <td st-ratio="7" e-name="first_seen"> {{record.first_seen}} </td>
+				<!-- Check if key is error -->
+				<td st-ratio="6">
+                                        <span>    <input type="checkbox" ng-checked="record.iserror" ng-model="record.iserror" ng-true-value=1 ng-false-value=0 ng-disabled="!rowform.$visible">
+                                        </span>
+                                </td>
+
+                                <!-- Set priority 1 highest 10 lowest; 0 = not assigned -->
+                                <td st-ratio="5">
+                                        <span editable-select="record.priority" e-name="priority" e-form="rowform" e-ng-options="i for i in priorities ">
+                                                {{record.priority || 0}}
+                                        </span>
+                                </td>
+                        </tr>
+                </tbody>
+			
+		<tfoot>
+		<tr>
+			<td colspan="11" class="text-center">
+			<div  st-items-by-page="20" st-pagination=""></div>
+			</td>
+		</tr>
+		</tfoot>	
+
+		</tbody>
+	</table>
+</div>
+{% endraw %}

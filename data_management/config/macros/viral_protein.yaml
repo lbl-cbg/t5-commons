@@ -1,0 +1,11 @@
+name: viral_protein
+description: information about a viral protein
+required_metadata_keys:
+- description: Identifier for Protein in CSBID
+  key: protein_id
+  required: true
+  type: string
+- description: Identifier for Virus in CSBID
+  key: virus_id
+  required: true
+  type: string

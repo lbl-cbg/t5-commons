@@ -1,0 +1,21 @@
+<h2>Querying JAMO to find files</h2>
+JAMO stores metadata for every file that gets put into it in a key value store. <a href="http://www.mongodb.org">MongoDB</a> is used as the data storage engine. JAMO will store information on each file such as file name and file path into its top level document and all the user metadata goes into the metadata subdocument. You can find a list of all keys <a href="https://docs.google.com/a/lbl.gov/spreadsheet/ccc?key=0Aj28OnSv3bPxdEtVc2JDeER3UndveFJuQktKbXhOX3c#gid=1">here</a>.
+You can find files by searching against any one of these keys. We support most query operators that MongoDB supports. You can get a full list of operators <a href="http://docs.mongodb.org/manual/reference/operator/nav-query/">here</a>.
+<h3>Make some calls</h3>
+<aside>We will be using the sdm_curl library for all of these examples. You can read about it <a href='/doc/JAMO/tutorials/sdm_curl.html'>here</a></aside>
+<pre class="brush: python">
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034')
+
+files = curl.post('api/metadata/query',data={'file_type':'fastq.gz','metadata.library_name':'HYCU'})
+
+#search for a range of file_types
+files = curl.post('api/metadata/query',data={'file_type':['fastq.gz','fasta'],'metadata.library_name':'HYCU'})
+</pre>
+<br>
+This service will always return a list of metadata records. That contain all the metadata associated to it.
+<aside>At the moment the number of results are limited to 500. In the future a paging service will be added.</aside>
+<h3>_id key</h3>
+Every file gets an unique _id identifier which is commonly referred to as the "metadata_id". This is a special key and can't actually be searched against, if you would like to get the metadata for a specific file you can make a get request to the resource /api/metadata/file/_id.
+

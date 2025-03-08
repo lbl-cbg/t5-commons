@@ -1,0 +1,28 @@
+<h2>JAMO on the command line</h2>
+The command line tool used to interact with jamo on the command line is called jamo. You can gain access to this utility by loading the jamo module:<br>
+<pre class="brush: bash">
+module load jamo
+jamo help
+</pre>
+
+The jamo command line tool operates very similar to the git tool. It is used in the following way:<br>
+jamo command [file filter] query_name query_args... <br>
+The following commands can be used:
+<ul>
+  <li><b>info</b>: Prints the file info</li>
+  <li><b>fetch</b>: Makes a request to restore the files</li>
+  <li><b>link</b>: Makes a request to restore files and creates a link in the current folder to the file</li>
+  <li><b>report</b>: Will run the custom user report on the retrieved metadata</li>
+</ul>
+
+<h3>Info</h3>
+This command is used to just get file information back on the files returned by the query passed in. It will print a list of files that matched the query criteria in a tab delimited format in the order of:
+<ul>
+<li><b>File path</b>: Where the file should be if it is on disk</li>
+<li><b>File status</b>: The current status that the file is in. If this is in the PURGED state than it is currently not on disk.</li>
+<li><b>Metadata ID</b>: The id of the metadata record, this can be used to get the full information for that record and make a restore request</li>
+</ul>
+
+
+<h3>Link</h3>
+This command will make a request to restore the files that have matched the query and create a symbolic link in the current directory. This is not a blocking operation so likely these links will point to files that don't exist yet. You can run jamo info on the same query passed to this command to check up on the status of the restore.

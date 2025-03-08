@@ -1,0 +1,29 @@
+<h2>Data Stores</h2>
+For an overview of what a data store is you can go <a href="/doc/JAMO/overview/data_store.html">here</a>.<br>
+Data stores are owned by the user that created them and can only be modified by that user. Currently there can only be one data store per metadata key, this will change to one store per identifier in the future. <br>
+We will be using the <a href="/doc/method/metadata/datastore/post">/api/metadata/datastore POST</a> resource and the <a href="/doc/JAMO/tutorials/python/sdm_curl.html">sdm_curl</a> python library for the following examples.
+
+<h3>Create a Data Store</h3>
+<pre class="brush: python">
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+curl.post('api/metadata/datastore',
+    key          = 'sow_segment_id',
+    identifier   = 'sow_segment',
+    conform_keys = True,
+    url          = 'http://geneusprod.jgi-psf.org:8180/pluss/sow-segments/{{value}}/sow-segment-metadata'  
+    map          = { 'library-name': { 'extract':True } }
+    )
+</pre>
+<aside>Notice in the url value we pass {{value}}, this string will replaced with the value of the key of the metadata file.</aside>
+<h3>Test the datastore</h3>
+You can test what your datastore retuns by using the POST resource at /api/metadata/checkdata
+<pre class="brush: python">
+from sdm_curl import Curl
+
+curl = Curl('https://sdm-dev.jgi-psf.org:8034',appToken='TOKEN')
+response = curl.post('api/metadata/checkdata',sow_segment_id=1234)
+print response
+</pre>
+

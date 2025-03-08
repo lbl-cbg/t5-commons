@@ -1,0 +1,16 @@
+future==0.18.2
+parameterized==0.8.1
+pyparsing==3.0.9
+pymongo==3.12.3
+PyYAML==6.0
+python-dateutil==2.8.2
+pytest==7.0.1
+pytest-cov==4.0.0
+coverage==6.2
+flake8==5.0.4
+requests==2.27.1
+
+# lapinpy - need this workaround as we can't properly build/test the libs as they have circular dependencies, so we
+# build the wheel from source...
+./jgi-lapinpy
+

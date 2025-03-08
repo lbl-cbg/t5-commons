@@ -1,0 +1,40 @@
+{% if not data.user %}
+Please login to access this website.
+{% else %}
+Welcome to SDM's homepage for PacBio.
+<p>
+Illumina and SRA can be found at <a href="https://illumina.jgi.doe.gov">illumina.jgi.doe.gov</a>
+<p>
+JAMO and JAT can be found at <a href="https://jamo.jgi.doe.gov">jamo.jgi.doe.gov</a>
+<p>
+Click on a menu item above.
+<p>
+<table style="margin-left:20px">
+    <tr>
+        <td>&#8227; Home
+        <td>&dash; This page
+    </tr>
+    <tr>
+        <td>&#8227; Doc
+        <td>&dash; Documentation on the SRA api
+    </tr>
+    <tr>
+        <td>&#8227; Misc
+        <td>&dash; SRA submissions
+    </tr>
+    <tr>
+        <td>&#8227; Sequencing
+        <td>&dash; PacBio data
+    </tr>
+</table>
+<p>
+NOTE:
+<ul>
+    <Li>
+        The above are the basic menu options available to everyone.  You might see more if you have enhanced privileges.
+    <li>
+        Venonat is a copy of the Venonat Project and Sample databases.  Any changes to the production Venonat system made since early 2014 are not reflected here.
+    <li>
+        'Search Site' will only search the Illumina database for runs with a matching library name or illumina run id.
+</ul>
+{% endif %}

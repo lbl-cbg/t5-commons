@@ -1,0 +1,17 @@
+<h2>JAMO file states</h2>
+When you put a file into JAMO it doesn't go into the repository right away, instead it gets put into a workflow and thoughout the workflow the file_status key will change states depending where it is in the queue. The states and descriptions are:
+<ul>
+<li><b>COPY_READY:</b> This file is currently in the queue to be copied</li>
+<li><b>COPY_IN_PROGRESS:</b> This file is currently being copied to the repository</li>
+<li><b>COPY_FAILED:</b> This file failed to be copied, if this occurs JAMO will attempt to copy again at a later time</li>
+<li><b>COPY_COMPLETE:</b> This file has been copied to the repository</li>
+<li><b>BACKUP_READY:</b> This file is in the queue to be sent off to tape</li>
+<li><b>BACKUP_IN_PROGRESS:</b> This file is currently being backed up to tape or is waiting to be validated</li>
+<li><b>BACKUP_COMPLETE:</b> This file has been sent off to tape and validated sucessfully</li>
+<li><b>PURGED:</b> This file is not on disk and only on tape</li>
+<li><b>RESTORE_IN_PROGRESS:</b> This file is currently being restored</li>
+<li><b>RESTORED:</b> This file is now on disk after it has been purged</li>
+<li><b>TAR_READY:</b> This folder is ready to be tared and is in the queue</li>
+<li><b>TAR_IN_PROGRESS:</b> This folder is currently being tared</li>
+<li><b>TAR_COMPLETE:</b> This folder has been tared sucessfully</li>
+</ul>

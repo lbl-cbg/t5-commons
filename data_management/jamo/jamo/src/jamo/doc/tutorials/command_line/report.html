@@ -1,0 +1,25 @@
+<h2>Custom reports</h2>
+The jamo utility allows users to create their own reports based on the metadata that is returned from the query. To do so you need to create a python script called report.py in the ~/.jamo folder. You then need to get the expose method from the jamo_common module and use it to decorate a method that you want to use as your report. So something like this:
+<pre class="brush: python">
+from jamo_common import expose
+
+@expose('this report will just print the library name for each result')
+def libs(data):
+    for result in data:
+        if 'library_name' in result['metadata']:
+            print result['metadata']['library_name']
+
+</pre>
+
+The method you expose must take in an argument which when called will be a list of dictionaries that represent the jamo <a href="/doc/JAMO/overview/metadata.html">metadata</a>
+
+
+<h2>Select statements from jamo</h2>
+The jamo utility also allows users to run a select report which will return all the fields in the select clause that matches the where clause. Here are some examples:
+<br>
+<h3>To get assembly stats for all JAT Microbial Minimal draft template</h3>
+jamo report  select  metadata.template_name,metadata.jat_key,added_date, metadata.contig_bp, metadata.ctg_L50, metadata.ctg_N50, metadata.ctg_max, metadata.n_contigs where metadata.template_name=microbial_isolate_minimal and metadata.jat_label=assembly
+
+<br>
+<h3>To get assembly stats for all JAT Microbial Improved draft template</h3>
+jamo report  select  metadata.template_name,metadata.jat_key,added_date, metadata.contig_bp, metadata.ctg_L50, metadata.ctg_N50, metadata.ctg_max, metadata.n_contigs where metadata.template_name=microbial_isolate_improved_pacbio and metadata.jat_label=assembly

@@ -1,0 +1,21 @@
+{% if not data.user %}
+Please login to access this website.
+{% else %}
+Welcome to SDM's old homepage.  Please go to one of the following links for our new homepage:
+<p>
+    Illumina and SRA can be found at <a href="https://illumina.jgi.doe.gov">illumina.jgi.doe.gov</a>
+<p>
+    JAMO and JAT can be found at <a href="https://jamo.jgi.doe.gov">jamo.jgi.doe.gov</a>
+<p>
+    PacBio can be found at <a href="https://pacbio.jgi.doe.gov">pacbio.jgi.doe.gov</a>
+<p>
+Click on a menu item above.
+<p>
+<table style="margin-left:20px">
+    <tr>
+        <td>&#8227; Home
+        <td>&dash; This page
+    </tr>
+</table>
+<p>
+{% endif %}
