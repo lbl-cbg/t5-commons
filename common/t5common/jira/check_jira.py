@@ -20,10 +20,19 @@ logger = get_logger()
 
 
 def format_query(config):
+    """Build JQL query to get issues from Jira"""
     return 'project = {project} AND status = "{new_status}"'.format(**config)
 
 
 async def intiate_job(issue, project_config, config):
+    """Start a job from an issue
+
+    Args:
+        issue:              The Jira issue key
+        project_config:     Information on the project to pull issues from
+        config:             General information about this workflow runner
+
+    """
     logger.info(f"Initiating job for {issue}")
     env, wd = get_job_env(issue, config)
 
@@ -70,6 +79,13 @@ async def intiate_job(issue, project_config, config):
 
 
 async def check_jira(config):
+    """Check Jira, and start a job for every issue returned
+
+    Args:
+        config: General information about this workflow runner. This should also contain
+                information about the projects to check and how to run jobs for those
+                projects
+    """
     # Connect to Jira
     jc = JiraConnector(jira_host=config['host'],
                        jira_user=config['user'],
