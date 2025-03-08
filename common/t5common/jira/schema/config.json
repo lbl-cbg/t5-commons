@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string",
+      "format": "uri",
+      "description": "The Jira host to query from"
+    },
+    "user": {
+      "type": "string",
+      "format": "email",
+      "description": "The email of the user to connect to Jira with"
+    },
+    "token_file": {
+      "type": "string",
+      "description": "The path to the file containing the Jira API token"
+    },
+    "database": {
+      "type": "string",
+      "description": "The path to the SQLite database to containing workflow information"
+    },
+    "job_directory": {
+      "type": "string",
+      "description": "The directory to save jobs to. Defaults to current working directory."
+    },
+    "projects": {
+      "type": "array",
+      "description": "Information required to start workflows from a Jira project",
+      "items": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "The Jira project"
+          },
+          "new_status": {
+            "type": "string",
+            "description": "The status that indicates an issue is new"
+          },
+          "workflow_command": {
+            "type": "string",
+            "description": "The command to run to start a workflow. The command should take the issues as its only command line argument"
+          },
+          "publish_command": {
+            "type": "string",
+            "description": "The command to run to publish the results of a workflow. The command should take the job working directory as its only command line argument"
+          }
+        },
+        "required": ["project", "new_status", "wf_command", "publish_command"]
+      }
+    }
+  },
+  "required": ["host", "user", "token_file", "database", "projects"]
+}
