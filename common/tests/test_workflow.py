@@ -18,6 +18,7 @@ class TestYourFunction(unittest.TestCase):
 
     issue = 'TEST-1234'
     db = 'jobs.db'
+    job_dir = '.'
 
     def _read_db(self):
         """Read the database tracking workflow state"""
@@ -69,6 +70,7 @@ class TestYourFunction(unittest.TestCase):
                 'user': "noone@lbl.gov",
                 'token_file': "nonexistent_token_file",
                 'database': self.db,
+                'job_directory': self.job_dir,
                 'projects':[
                         {
                             'project': 'TEST',

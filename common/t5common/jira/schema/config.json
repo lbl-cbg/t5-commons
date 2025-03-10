@@ -47,7 +47,7 @@
             "description": "The command to run to publish the results of a workflow. The command should take the job working directory as its only command line argument"
           }
         },
-        "required": ["project", "new_status", "wf_command", "publish_command"]
+        "required": ["project", "new_status", "workflow_command", "publish_command"]
       }
     }
   },
