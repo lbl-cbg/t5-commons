@@ -8,12 +8,11 @@ export const defaultSession = {
         id: 'linearGenomeView',
         minimized: false,
         type: 'LinearGenomeView', 
-        bpPerPx:10,
         displayedRegions: [
             {
                 refName:"NC_003899.1",
                 start: 1,
-                end: 11675, 
+                end: 11675,
                 reversed: false,
                 assemblyName: 'NC_003899.1',
             }
@@ -29,6 +28,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
+                        height:40,
                         configuration:
                         'EEEVgp2-LinearBasicDisplay',
                     },
@@ -42,7 +42,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:60,
                         configuration:
                         'YP_913810_1-LinearBasicDisplay',
                     },
@@ -56,7 +56,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'YP_913811_1-LinearBasicDisplay',
                     },
@@ -70,7 +70,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'YP_913812_1-LinearBasicDisplay',
                     },
@@ -128,7 +128,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'YP_913813_1-LinearBasicDisplay',
                     },
@@ -142,7 +142,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'NP_740652_1-LinearBasicDisplay',
                     },
@@ -156,7 +156,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'EEEVgp1-LinearBasicDisplay',
                     },
@@ -170,7 +170,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740649_1-LinearBasicDisplay',
                     },
@@ -184,7 +184,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740650_1-LinearBasicDisplay',
                     },
@@ -198,7 +198,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740651_1-LinearBasicDisplay',
                     },
@@ -212,7 +212,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:50,
+                        height:40,
                         configuration:
                         'EEEVgp3-LinearBasicDisplay',
                     },
@@ -240,7 +240,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:60,
                         configuration:
                         'YP_913809_1-LinearBasicDisplay',
                     },
@@ -268,7 +268,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740646_1-LinearBasicDisplay',
                     },
@@ -282,7 +282,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740647_1-LinearBasicDisplay',
                     },
@@ -296,7 +296,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:30,
+                        height:40,
                         configuration:
                         'NP_740648_1-LinearBasicDisplay',
                     },

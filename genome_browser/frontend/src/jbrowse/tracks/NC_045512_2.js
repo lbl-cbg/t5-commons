@@ -20,7 +20,8 @@ export const tracks = [
             "displayId": "ORF1ab-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",  
             }
           }
         ]
@@ -28,7 +29,7 @@ export const tracks = [
     {
       type: 'FeatureTrack',
       trackId: 'YP_009724389_1_CDS',
-      name: 'YP_009724389_1_CDS',
+      name: 'YP_009724389_1',
       assemblyNames: ['NC_045512.2'],
       category: ['CDS'],
       adapter: {
@@ -43,38 +44,377 @@ export const tracks = [
           "displayId": "YP_009724389_1_CDS-LinearBasicDisplay",
           "renderer": {
             "type": "SvgFeatureRenderer",
-            "color1": "jexl:colorFeature(feature)" 
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
           }
         }
       ]
     },
     {
-        type: 'FeatureTrack',
-        trackId: 'YP_009724389_1_proteins',
-        name: 'YP_009724389_1_proteins',
-        assemblyNames: ['NC_045512.2'],
-        category: ['Proteins'],
-        adapter: {
-            type: 'Gff3Adapter',
-            gffLocation: {
-            uri: '/assets/NC_045512_2/YP_009724389_1_proteins.gff3',
-            }
-        },
-        "displays": [
-          {
-            "type": "LinearBasicDisplay",
-            "displayId": "YP_009724389_1_proteins-LinearBasicDisplay",
-            "renderer": {
-              "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
-            }
+      type: 'FeatureTrack',
+      trackId: 'YP_009725297_1',
+      name: 'nsp1',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725297_1.gff3',
           }
-        ]
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725297_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725298_1',
+      name: 'nsp2',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725298_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725298_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725299_1',
+      name: 'nsp3',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725299_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725299_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725300_1',
+      name: 'nsp4',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725300_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725300_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725301_1',
+      name: 'nsp5',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725301_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725301_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ], 
+      //"formatDetails":{"feature":{"hello":"newewewewewewew"}}
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725302_1',
+      name: 'nsp6',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725302_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725302_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725303_1',
+      name: 'nsp7',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725303_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725303_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725304_1',
+      name: 'nsp8',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725304_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725304_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725305_1',
+      name: 'nsp9',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725305_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725305_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725306_1',
+      name: 'nsp10',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725306_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725306_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725307_1',
+      name: 'nsp12',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725307_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725307_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725308_1',
+      name: 'nsp13',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725308_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725308_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725309_1',
+      name: 'nsp14',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725309_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725309_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725310_1',
+      name: 'nsp15',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725310_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725310_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725311_1',
+      name: 'nsp16',
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725311_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725311_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
     },
     {
       type: 'FeatureTrack',
       trackId: 'YP_009725295_1_CDS',
-      name: 'YP_009725295_1_CDS',
+      name: 'YP_009725295_1',
       assemblyNames: ['NC_045512.2'],
       category: ['CDS'],
       adapter: {
@@ -89,34 +429,301 @@ export const tracks = [
           "displayId": "YP_009725295_1_CDS-LinearBasicDisplay",
           "renderer": {
             "type": "SvgFeatureRenderer",
-            "color1": "jexl:colorFeature(feature)" 
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
           }
         }
       ]
     },
     {
       type: 'FeatureTrack',
-      trackId: 'YP_009725295_1_proteins',
-      name: 'YP_009725295_1_proteins',
+      trackId: 'YP_009742608_1',
+      name: 'YP_009742608_1', 
       assemblyNames: ['NC_045512.2'],
       category: ['Proteins'],
       adapter: {
           type: 'Gff3Adapter',
           gffLocation: {
-          uri: '/assets/NC_045512_2/YP_009725295_1_proteins.gff3',
+          uri: '/assets/NC_045512_2/YP_009742608_1.gff3',
           }
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "YP_009725295_1_proteins-LinearBasicDisplay",
+          "displayId": "YP_009742608_1-LinearBasicDisplay",
           "renderer": {
             "type": "SvgFeatureRenderer",
-            "color1": "jexl:colorFeature(feature)" 
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
           }
         }
       ]
     },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742609_1',
+      name: 'YP_009742609_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742609_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742609_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742610_1',
+      name: 'YP_009742610_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742610_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742610_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact", 
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742611_1',
+      name: 'YP_009742611_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742611_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742611_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742612_1',
+      name: 'YP_009742612_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742612_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742612_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742613_1',
+      name: 'YP_009742613_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742613_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742613_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742614_1',
+      name: 'YP_009742614_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742614_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742614_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742615_1',
+      name: 'YP_009742615_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742615_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742615_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742616_1',
+      name: 'YP_009742616_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742616_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742616_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009742617_1',
+      name: 'YP_009742617_1', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009742617_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009742617_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+    {
+      type: 'FeatureTrack',
+      trackId: 'YP_009725312_1',
+      name: 'nsp11', 
+      assemblyNames: ['NC_045512.2'],
+      category: ['Proteins'],
+      adapter: {
+          type: 'Gff3Adapter',
+          gffLocation: {
+          uri: '/assets/NC_045512_2/YP_009725312_1.gff3',
+          }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "YP_009725312_1-LinearBasicDisplay",
+          "renderer": {
+            "type": "SvgFeatureRenderer",
+            "color1": "jexl:colorFeature(feature)",
+            "displayMode": "compact",  
+          }
+        }
+      ]
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     {
         type: 'FeatureTrack',
         trackId: 'YP_009724390_1',
