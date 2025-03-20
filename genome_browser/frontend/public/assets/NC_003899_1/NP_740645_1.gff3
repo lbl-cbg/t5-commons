@@ -3,4 +3,6 @@
 #!processor NCBI annotwriter
 ##sequence-region NC_003899.1 1 11675
 ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
-NC_003899.1	RefSeq	mature_protein_region_of_CDS	8372	8560	.	+	.	ID=id-NP_632022.1:261..323;_Note=In some alphaviruses%2C E3 was not detected;xParent=cds-NP_632022.1;gbkey=Prot;product=E3 protein;protein_id=NP_740645.1
+
+NC_003899.1	feature	mat_peptide	8372	8560	.	+	.	ID=NP_740645.1;locus_tag=EEEVgp3;_note=In some alphaviruses%2C E3 was not detected;product=E3 protein;protein_id=NP_740645.1
+NC_003899.1	feature	polypeptide_domain	8377	8434	.	+	.	ID=NP_740645.1:Alpha_E3_glycop;Name=Alpha_E3_glycop;_Parent=NP_740645.1;region_name=Alpha_E3_glycop

@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[6126],{26126:(e,t,a)=>{a.r(t),a.d(t,{default:()=>n});var s=a(19192),r=a(37452);class n extends r.default{async configurePre(){const e=this.getConf("htsgetBase"),t=this.getConf("htsgetTrackId"),a=new s.Wg({baseUrl:e,trackId:t}),r=this.getConf("sequenceAdapter");if(r&&this.getSubAdapter){return{bam:a,sequenceAdapter:(await this.getSubAdapter(r)).dataAdapter}}return{bam:a}}}}}]);
-//# sourceMappingURL=6126.d6dfb6f3.chunk.js.map
