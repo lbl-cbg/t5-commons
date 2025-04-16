@@ -1,4 +1,5 @@
 import argparse
+import sqlite3
 
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DDL
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
@@ -105,6 +106,36 @@ def init_db():
 
     config = load_config(args.config)
     initialize_database(config['database'])
+
+def dump_db():
+    """Read the database tracking workflow state"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('db', help='the database to dump')
+    args = parser.parse_args()
+
+    conn = sqlite3.connect(args.db)
+    cursor = conn.cursor()
+
+    statement = """
+    SELECT
+        job.issue,
+        job.job_directory,
+        project.name AS project,
+        job_states.name AS job_state
+    FROM
+        job
+    JOIN
+        job_states ON job.job_state_id = job_states.id
+    JOIN
+        project ON job.project_id = project.id;
+    """
+    cursor.execute(statement)
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    for row in rows:
+        print("|".join(row))
 
 
 class DBConnector:
