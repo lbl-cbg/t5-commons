@@ -1,0 +1,5 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	20659	21552	.	+	.	ID=YP_009725311.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp16_OMT%3B 2%27-o-MT%3B produced by pp1ab only;product=2%27-O-ribose methyltransferase;protein_id=YP_009725311.1;targetid=IDP52016
+NC_045512.2	feature	polypeptide_domain	20660	20955	.	+	.	ID=YP_009725311.1:CoV_Methyltr_2;Name=CoV_Methyltr_2;_Parent=YP_009725311.1;region_name=CoV_Methyltr_2

@@ -1,0 +1,17 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+
+
+NC_045512.2	feature	mat_peptide	2720	8554	.	+	.	ID=YP_009742610.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=former nsp1%3B conserved domains are: N-terminal acidic %28Ac%29%2C predicted phosphoesterase%2C papain-like proteinase%2C Y-domain%2C transmembrane domain 1 %28TM1%29%2C adenosine diphosphate-ribose 1%27%27-phosphatase %28ADRP%29%3B produced by both pp1a and pp1ab;product=nsp3;protein_id=YP_009742610.1
+NC_045512.2	feature	polypeptide_domain	2781	2951	.	+	.	ID=YP_009742610.1:bCoV_NSP3_N;Name=bCoV_NSP3_N;_Parent=YP_009742610.1;region_name=bCoV_NSP3_N
+NC_045512.2	feature	polypeptide_domain	2955	3078	.	+	.	ID=YP_009742610.1:Macro_X_Nsp3-like;Name=Macro_X_Nsp3-like;_Parent=YP_009742610.1;region_name=Macro_X_Nsp3-like
+NC_045512.2	feature	polypeptide_domain	3134	3259	.	+	.	ID=YP_009742610.1:Macro_SF;Name=Macro_SF;_Parent=YP_009742610.1;region_name=Macro_SF
+NC_045512.2	feature	polypeptide_domain	3269	3394	.	+	.	ID=YP_009742610.1:bCoV_SUD_M;Name=bCoV_SUD_M;_Parent=YP_009742610.1;region_name=bCoV_SUD_M
+NC_045512.2	feature	polypeptide_domain	3397	3462	.	+	.	ID=YP_009742610.1:SUD_C_SARS-CoV_Nsp3;Name=SUD_C_SARS-CoV_Nsp3;_Parent=YP_009742610.1;region_name=SUD_C_SARS-CoV_Nsp3
+NC_045512.2	feature	polypeptide_domain	3467	3769	.	+	.	ID=YP_009742610.1:betaCoV_PLPro;Name=betaCoV_PLPro;_Parent=YP_009742610.1;region_name=betaCoV_PLPro
+NC_045512.2	feature	polypeptide_domain	3814	3920	.	+	.	ID=YP_009742610.1:SARS-CoV-like_Nsp3_NAB;Name=SARS-CoV-like_Nsp3_NAB;_Parent=YP_009742610.1;region_name=SARS-CoV-like_Nsp3_NAB
+NC_045512.2	feature	polypeptide_domain	3945	4060	.	+	.	ID=YP_009742610.1:betaCoV_Nsp3_betaSM;Name=betaCoV_Nsp3_betaSM;_Parent=YP_009742610.1;region_name=betaCoV_Nsp3_betaSM
+NC_045512.2	feature	polypeptide_domain	4133	4663	.	+	.	ID=YP_009742610.1:TM_Y_SARS-CoV-like_Nsp3_C;Name=TM_Y_SARS-CoV-like_Nsp3_C;_Parent=YP_009742610.1;region_name=TM_Y_SARS-CoV-like_Nsp3_C
+NC_045512.2	feature	polypeptide_domain	4133	4155	.	+	.	ID=YP_009742610.1:TM1;Name=TM1;_Parent=YP_009742610.1;region_name=TM1
+NC_045512.2	feature	polypeptide_domain	4238	4260	.	+	.	ID=YP_009742610.1:TM2;Name=TM2;_Parent=YP_009742610.1;region_name=TM2

@@ -1,0 +1,5 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	13025	13441	.	+	.	ID=YP_009742617.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp10_CysHis%3B formerly known as growth-factor-like protein %28GFL%29%3B produced by both pp1a and pp1ab;product=nsp10;protein_id=YP_009742617.1
+NC_045512.2	feature	polypeptide_domain	13025	13155	.	+	.	ID=YP_009742617.1:CoV_Nsp10;Name=CoV_Nsp10;_Parent=YP_009742617.1;region_name=CoV_Nsp10
