@@ -63,12 +63,19 @@ export default function GenomeBrowser(props) {
         setViewState(state);
 
         setTimeout(()=>{
-          //highlight track labels\
+          //highlight track labels
           let labels = [];
+          let targetsDict = {};
           for(let targetRow of props.targetsTableRows)
           {
-            labels.push(targetRow.originaltargetid);
+            if(!(targetRow.targetid in targetsDict))
+            { 
+              labels.push(targetRow.originaltargetid);
+              targetsDict[targetRow.targetid] = true;
+            }
+              
           }
+
           let trackLabels = document.querySelectorAll('div[class*="trackLabel"]');
           for(let e of trackLabels)
           {

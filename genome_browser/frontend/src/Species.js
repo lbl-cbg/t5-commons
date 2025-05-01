@@ -140,6 +140,7 @@ export default function Species() {
     { field: 'proteinvolume', headerName: 'Protein Volume (µL)', flex: 1,},
     { field: 'buffercontent', headerName: 'Buffer Content', flex: 1,}, 
     { field: 'targetid', headerName: 'Target ID', flex: 1,}, 
+    { field: 'id', headerName: 'ID', flex: 1,},
   ];
 
 
@@ -152,7 +153,7 @@ export default function Species() {
       if(data && data.length>0)
       {
         let na = data.map((item) => {
-          item.id=item.targetid;
+          item.id=item.targetid+"_"+Math.floor(Math.random() * 100000);;
           return item;
         });
         setTargetsTableRows(data); 
@@ -164,7 +165,8 @@ export default function Species() {
   }, []);
  
   const getRowId = (row) =>{
-    return row.targetid;
+    return row.id;
+    //return row.targetid;
   }
 
   const autosizeOptions = {
@@ -188,7 +190,28 @@ export default function Species() {
   };
 
   window.speciesSetTargetRow = (targetID) => { 
-    setRowSelectionModel(targetID);
+    /*
+    const grids = document.getElementsByClassName("MuiDataGrid-root");
+    let grid = grids.item(0);
+    */
+ 
+    let highlighRows = [];
+    for(let item of targetsTableRows )
+    {
+      let row = targetTableRef.current.querySelector('[data-id="'+item.id+'"]');
+      row.classList.remove("Mui-selected");
+
+      if(item.targetid == targetID)
+        highlighRows.push(item.id);
+    } 
+
+    setRowSelectionModel(highlighRows[0]);
+    for(let rid of highlighRows)
+    {
+      let row = targetTableRef.current.querySelector('[data-id="'+rid+'"]');
+      row.classList.add("Mui-selected");
+    }
+
     targetTableRef.current.scrollIntoView({behavior: 'smooth'});
   };
 
@@ -299,15 +322,18 @@ export default function Species() {
                         getRowId={getRowId}
                         getRowHeight={() => 'auto'}
                         autosizeOptions={autosizeOptions}
+                        pageSizeOptions={[100, 50, 25, { value: -1, label: 'All' }]}
                         initialState={{
                           sorting: {
                             sortModel: [{ field: 'originaltargetid', sort: 'asc' }],
                           },
                           columns: {
                             columnVisibilityModel: { 
-                              targetid: false
+                              targetid: false,
+                              id: false
                             },
                           },
+                          pagination: { paginationModel: { pageSize: -1 } },
                         }}
                         rowSelectionModel={rowSelectionModel}
               />
