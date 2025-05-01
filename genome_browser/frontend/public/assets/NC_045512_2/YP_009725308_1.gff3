@@ -1,0 +1,8 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	16237	18039	.	+	.	ID=YP_009725308.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp13_ZBD%2C nsp13_TB%2C and nsp_HEL1core%3B zinc-binding domain %28ZD%29%2C NTPase/helicase domain %28HEL%29%2C RNA 5%27-triphosphatase%3B produced by pp1ab only;product=helicase;protein_id=YP_009725308.1;targetid=IDP52013
+NC_045512.2	feature	polypeptide_domain	16237	16331	.	+	.	ID=YP_009725308.1:ZBD_cv_Nsp13-like;Name=ZBD_cv_Nsp13-like;_Parent=YP_009725308.1;region_name=ZBD_cv_Nsp13-like
+NC_045512.2	feature	polypeptide_domain	16335	16382	.	+	.	ID=YP_009725308.1:stalk_CoV_Nsp13-like;Name=stalk_CoV_Nsp13-like;_Parent=YP_009725308.1;region_name=stalk_CoV_Nsp13-like
+NC_045512.2	feature	polypeptide_domain	16386	16464	.	+	.	ID=YP_009725308.1:1B_cv_Nsp13-like;Name=1B_cv_Nsp13-like;_Parent=YP_009725308.1;region_name=1B_cv_Nsp13-like
+NC_045512.2	feature	polypeptide_domain	16487	16826	.	+	.	ID=YP_009725308.1:betaCoV_Nsp13-helicase;Name=betaCoV_Nsp13-helicase;_Parent=YP_009725308.1;region_name=betaCoV_Nsp13-helicase

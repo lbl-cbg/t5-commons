@@ -3,4 +3,6 @@
 #!processor NCBI annotwriter
 ##sequence-region NC_003899.1 1 11675
 ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
-NC_003899.1	RefSeq	mature_protein_region_of_CDS	4025	5680	.	+	.	ID=id-NP_632021.2:1327..1878;xParent=cds-NP_632021.2;gbkey=Prot;product=nsP3 protein;protein_id=YP_913813.1;Name=YP_913813.1;Note=IDP100402;targetid=IDP100402;
+
+NC_003899.1	feature	mat_peptide	4025	5680	.	+	.	ID=YP_913813.1;locus_tag=EEEVgp2;product=nsP3 protein;protein_id=YP_913813.1;targetid=IDP100402
+NC_003899.1	feature	polypeptide_domain	4040	4166	.	+	.	ID=YP_913813.1:Macro_X_Nsp3-like;Name=Macro_X_Nsp3-like;_Parent=YP_913813.1;region_name=Macro_X_Nsp3-like

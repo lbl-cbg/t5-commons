@@ -24,3 +24,37 @@
 {
     background: #6fbfdc40 !important;
 }
+
+#legend-container
+{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    font-size: 0.8em;
+    justify-content: end;
+}
+
+.legend-item
+{
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.legend-icon
+{
+    width: 20px;
+    height: 3px;
+}
+
+.legend-item.target{ color: #0f9cd0; }  
+.legend-item.target .legend-icon{ background: #0f9cd0; }  
+.legend-item.gene{ color: #1b8f13; }  
+.legend-item.gene .legend-icon{ background: #1b8f13; }  
+.legend-item.protein{ color: #ac662b; }  
+.legend-item.protein .legend-icon{ background: #ac662b; }  
+.legend-item.cds{ color: #ff1312; }  
+.legend-item.cds .legend-icon{ background: #ff1312; }  
+.legend-item.other{ color: #131314; }  
+.legend-item.other .legend-icon{ background: #131314; }  
+ 

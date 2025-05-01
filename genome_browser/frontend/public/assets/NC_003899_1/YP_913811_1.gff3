@@ -3,4 +3,6 @@
 #!processor NCBI annotwriter
 ##sequence-region NC_003899.1 1 11675
 ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
-NC_003899.1	RefSeq	mature_protein_region_of_CDS	47	1642	.	+	.	ID=id-NP_632021.2:1..532;xParent=cds-NP_632021.2;gbkey=Prot;product=nsP1 protein;protein_id=YP_913811.1;Name=YP_913811.1;Note=IDP100401;targetid=IDP100401;
+
+NC_003899.1	feature	mat_peptide	47	1642	.	+	.	ID=YP_913811.1;locus_tag=EEEVgp2;product=nsP1 protein;protein_id=YP_913811.1;targetid=IDP100401
+NC_003899.1	feature	polypeptide_domain	57	418	.	+	.	ID=YP_913811.1:Vmethyltransf;Name=Vmethyltransf;_Parent=YP_913811.1;region_name=Vmethyltransf
