@@ -57,7 +57,7 @@ class MailinSAXSTask(JIRAImportUtil):
     def get_data(self):
         print('Get mailin SAXS data...') 
 
-        mailin_saxs_url = "https://sibyls.als.lbl.gov/htsaxs/api/v1"
+        mailin_saxs_url = "https://htsaxs.bl1231.als.lbl.gov/api/v1" #"https://sibyls.als.lbl.gov/htsaxs/api/v1"
         mailin_saxs_header = {'Content-Type': 'application/json',  
                             'X-ROTKEY': self.ROTKEY}
 
@@ -207,7 +207,7 @@ class MailinSAXSTask(JIRAImportUtil):
                     ]
             },
             {
-                    "objectTypeAttributeId": "536", 
+                    "objectTypeAttributeId": "534", 
                     "objectAttributeValues": [
                         {
                             "value": self.getShiftObjectID(data["shift_id"])  
