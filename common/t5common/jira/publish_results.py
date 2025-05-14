@@ -94,7 +94,7 @@ async def check_jobs(config):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Poll Jira projects and run a script for each issue.")
+    parser = argparse.ArgumentParser(description="Check for finished jobs and publish results.")
     parser.add_argument('config', type=str, help='Path to the YAML configuration file')
     args = parser.parse_args()
 
