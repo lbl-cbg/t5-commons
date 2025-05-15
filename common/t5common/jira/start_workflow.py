@@ -8,11 +8,13 @@ import sys
 import subprocess
 import time
 
+import typer
 import yaml
 
 from .connector import JiraConnector
 from .database import DBConnector
 from .utils import load_config, get_job_env, open_wf_file
+from .mark_job import mark_job
 from ..utils import get_logger, read_token
 
 
@@ -119,20 +121,19 @@ async def check_jira(config):
             dbc.start_job(issue, wd, project)
         else:
             logger.error(f"Issue {issue} failed -- not marking as workflow started")
+            jc.add_comment("Workflow start failed")
+            mark_job(wd, JobState.WORKFLOW_START_FAILED)
 
     dbc.close()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Poll Jira projects and run a script for each issue.")
-    parser.add_argument('config', type=str, help='Path to the YAML configuration file')
-    args = parser.parse_args()
+def start_workflows(
+    config: str = typer.Argument(..., help="Path to the YAML configuration file")
+):
+    """Check Jira project(s) and start workflows for new issues"""
 
-    config = None
-
-    config = load_config(args.config)
+    config = load_config(config)
     asyncio.run(check_jira(config))
 
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    typer.run(start_workflows)

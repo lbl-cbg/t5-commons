@@ -7,12 +7,15 @@ import re
 import sys
 import subprocess
 import time
+from pathlib import Path
 
 import yaml
+import typer
 
 from .connector import JiraConnector
-from .database import DBConnector, WORKFLOW_FINISHED, PUBLISH_STARTED
+from .database import DBConnector, JobState
 from .utils import load_config, get_job_env, open_wf_file
+from .mark_job import mark_job
 from ..utils import get_logger, read_token
 
 
@@ -77,7 +80,7 @@ async def check_jobs(config):
     tasks = list()
     issues = list()
     for project_config in config['projects']:
-        jobs = dbc.get_jobs(WORKFLOW_FINISHED, project_config['project'])
+        jobs = dbc.get_jobs(JobState.WORKFLOW_FINISHED, project_config['project'])
         for job in jobs:
             issues.append(job.issue)
             tasks.append(publish_job(job.issue, project_config, config))
@@ -85,22 +88,18 @@ async def check_jobs(config):
     results = await asyncio.gather(*tasks)
     for issue, (retcode, wd) in zip(issues, results):
         if retcode == 0:
-            logger.info(f"Issue {issue} marked as publishing started")
-            dbc.transition_job(issue, PUBLISH_STARTED)
+            logger.info(f"Issue {issue} publish command succeeded")
         else:
-            logger.error(f"Issue {issue} publishing start failed")
+            logger.error(f"Issue {issue} publish command failed")
+            jc.add_comment(issue, "Publish failed")
+            mark_job(wd, JobState.PUBLISH_FAILED)
 
     dbc.close()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Check for finished jobs and publish results.")
-    parser.add_argument('config', type=str, help='Path to the YAML configuration file')
-    args = parser.parse_args()
-
-    config = None
-
-    config = load_config(args.config)
+def publish_results(config: Path = typer.Argument(..., help="Path to the YAML configuration file")):
+    """Publish results of finished workflows"""
+    config = load_config(config)
     asyncio.run(check_jobs(config))
 
 
