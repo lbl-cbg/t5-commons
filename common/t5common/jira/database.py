@@ -24,6 +24,7 @@ class JobState(Enum):
     WORKFLOW_FINISHED = 'WORKFLOW_FINISHED'
     PUBLISH_FAILED = 'PUBLISH_FAILED'
     PUBLISHED = 'PUBLISHED'
+    WORKFLOW_FAILED = 'WORKFLOW_FAILED'
 
 class JobStates(Base):
     __tablename__ = 'job_states'
