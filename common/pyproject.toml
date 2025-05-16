@@ -23,14 +23,13 @@ dependencies = [
     "jsonschema",
     "sqlalchemy",
     "pyyaml",
+    "typer",
 ]
 
 [project.scripts]
-init-db = "t5common.jira.database:init_db"
-dump-db = "t5common.jira.database:dump_db"
-check-jira = "t5common.jira.check_jira:main"
-check-jobs = "t5common.jira.check_jobs:main"
-mark-job = "t5common.jira.mark_job:main"
+t5 = "t5common.cli:app"
+# init-db = "t5common.jira.database:init_db"
+# dump-db = "t5common.jira.database:dump_db"
 
 [tool.setuptools.package-data]
 "t5common.jira" = ["schema/*.json"] 

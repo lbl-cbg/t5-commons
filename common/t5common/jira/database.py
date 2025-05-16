@@ -1,5 +1,9 @@
 import argparse
 import sqlite3
+from pathlib import Path
+from enum import Enum
+
+import typer
 
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DDL
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
@@ -8,13 +12,19 @@ from sqlalchemy import event
 from .utils import load_config
 from ..utils import get_logger
 
+app = typer.Typer(help="Commands for managing workflow database", no_args_is_help=True)
 
 Base = declarative_base()
 
-WORKFLOW_STARTED = 'WORKFLOW_STARTED'
-WORKFLOW_FINISHED = 'WORKFLOW_FINISHED'
-PUBLISH_STARTED = 'PUBLISH_STARTED'
-PUBLISHED = 'PUBLISHED'
+
+class JobState(Enum):
+    WORKFLOW_STARTED = 'WORKFLOW_STARTED'
+    WORKFLOW_START_FAILED = 'WORKFLOW_START_FAILED'
+    WORKFLOW_CHECK_FAILED = 'WORKFLOW_CHECK_FAILED'
+    WORKFLOW_FINISHED = 'WORKFLOW_FINISHED'
+    PUBLISH_FAILED = 'PUBLISH_FAILED'
+    PUBLISHED = 'PUBLISHED'
+    WORKFLOW_FAILED = 'WORKFLOW_FAILED'
 
 class JobStates(Base):
     __tablename__ = 'job_states'
@@ -87,10 +97,12 @@ def initialize_database(database):
 
     else:
         states = [
-            JobStates(name=WORKFLOW_STARTED, description='Job has been started'),
-            JobStates(name=WORKFLOW_FINISHED, description='Job executing has been finished'),
-            JobStates(name=PUBLISH_STARTED, description='Job executing has been finished'),
-            JobStates(name=PUBLISHED, description='Job resulst have been published')
+            JobStates(name=JobState.WORKFLOW_STARTED.value, description='Job has been started'),
+            JobStates(name=JobState.WORKFLOW_START_FAILED.value, description='Job could not be started'),
+            JobStates(name=JobState.WORKFLOW_CHECK_FAILED.value, description='Job check could not be executed'),
+            JobStates(name=JobState.WORKFLOW_FINISHED.value, description='Job executing has been finished'),
+            JobStates(name=JobState.PUBLISH_FAILED.value, description='Job publish could not be executed'),
+            JobStates(name=JobState.PUBLISHED.value, description='Job resulst have been published')
         ]
 
         session.add_all(states)
@@ -98,22 +110,19 @@ def initialize_database(database):
         session.close()
 
 
-def init_db():
+@app.command(name="init")
+def init_db(config: Path = typer.Argument(..., help="Path to the YAML configuration file")):
+    """Initialize database"""
 
-    parser = argparse.ArgumentParser(description="Set up a database for a Jira workflow tracker")
-    parser.add_argument('config', type=str, help='the config file for the Jira workflow management instance')
-    args = parser.parse_args()
-
-    config = load_config(args.config)
+    config = load_config(config)
     initialize_database(config['database'])
 
-def dump_db():
-    """Read the database tracking workflow state"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('db', help='the database to dump')
-    args = parser.parse_args()
 
-    conn = sqlite3.connect(args.db)
+@app.command(name="dump")
+def dump_db(db: Path = typer.Argument(..., help="Path to the database to dump")):
+    """Dump the contents of database tracking workflow state to stdout"""
+
+    conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
     statement = """
@@ -175,30 +184,27 @@ class DBConnector:
         return job
 
     def transition_job(self, issue, state):
+        state = self._check_state(state)
         job = self.session.query(Job).filter_by(issue=issue).first()
         if job:
-            requested_state = self.session.query(JobStates).filter_by(name=state).first()
-            if requested_state.id > 1:
-                previous_state = self.session.query(JobStates).filter_by(id=requested_state.id-1).first()
-                if job.job_state is not previous_state:
-                    self.logger.error(f"Transition for {issue} ignored. Cannot transition from {job.job_state.name} to {state}")
-                    return False
-            else:
-                self.logger.error(f"Transition for {issue} ignored. Cannot transition state to {state}")
-                return False
-            job.job_state = requested_state
+            job.job_state = self.session.query(JobStates).filter_by(name=state).first()
             self.session.commit()
             return True
         self.logger.error(f"Cannot transition {issue} to {state} -- no job found")
         return False
 
     def get_jobs(self, state, project=None):
+        state = self._check_state(state)
         query = self.session.query(Job).join(JobStates)
         if project is not None:
             query = query.join(Project).filter(Project.name == project)
         query = query.filter(JobStates.name == state)
         jobs = query.all()
         return jobs
+
+    @staticmethod
+    def _check_state(state):
+        return state.value if isinstance(state, JobState) else state
 
     def close(self):
         self.session.close()
