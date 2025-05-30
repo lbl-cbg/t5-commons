@@ -1,0 +1,40 @@
+name: Add issues to T5 Development Project Board
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_URL: https://github.com/orgs/lbl-cbg/projects/1
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PEM: ${{ secrets.APP_PEM }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: tibdex/github-app-token@v1.7.0
+        with:
+          app_id: ${{ env.APP_ID }}
+          private_key: ${{ env.APP_PEM }}
+
+      - name: Add issue to Developer Board
+        uses: actions/add-to-project@v0.4.0
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ steps.generate_token.outputs.token }}
+        continue-on-error: false
+
+      - name: Debug Info
+        if: failure()
+        run: |
+          echo "Failed to add issue to project board"
+          echo "Event: ${{ toJson(github.event) }}"
+          echo "Token: ${{ steps.generate_token.outputs.token }}"
