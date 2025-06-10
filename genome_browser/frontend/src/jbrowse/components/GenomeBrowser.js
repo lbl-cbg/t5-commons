@@ -6,16 +6,13 @@ import {
     createViewState,
     JBrowseLinearGenomeView,
   } from '@jbrowse/react-linear-genome-view';
-/*
-import makeWorkerInstance from '@jbrowse/react-linear-genome-view/esm/makeWorkerInstance';
-import ViewType from '@jbrowse/core/pluggableElementTypes/ViewType';
+import CustomTrackPlugin from "../plugins/custom-track-plugin"; 
+import "./genome-browser.css"; 
+//import makeWorkerInstance from '@jbrowse/react-linear-genome-view/esm/makeWorkerInstance';
+/*import ViewType from '@jbrowse/core/pluggableElementTypes/ViewType';
 import PluginManager from '@jbrowse/core/PluginManager';
 */
-import CustomTrackPlugin from "../plugins/custom-track-plugin";
-//import {assembly} from "../assemblies/NC_003899_1";
-//import {tracks} from "../tracks/NC_003899_1";
-//import {defaultSession} from "../defaultSessions/NC_003899_1";
-import "./genome-browser.css";
+
 
 
 export default function GenomeBrowser(props) {
@@ -23,15 +20,19 @@ export default function GenomeBrowser(props) {
     const [viewState, setViewState] = useState();
 
     useEffect(() => {
-      console.log("tid:", props.taxonId);
+      console.log("tid:", props.taxonId, props.targetsTableRows);
 
       async function fetchData() {
-        let data = await getData(props.taxonId);
+        let data = await getData(props.taxonId, props.targetsTableRows);
         if(!data.assembly)
           return;
         const state = createViewState({
+          "plugins":[CustomTrackPlugin], 
+          "assembly":data.assembly.assembly,
+          "tracks":data.tracks.tracks,
+          "defaultSession":data.defaultSession.defaultSession,
           "configuration": {
-            "theme" :{
+            "theme": {
               "logoPath": {
                 "uri": ""
               },
@@ -48,20 +49,33 @@ export default function GenomeBrowser(props) {
                 //"quaternary": {
                 //  "main": "#d50000"
                 //}
-              }}
+              }
+            },
+            "rpc": {
+              "defaultDriver": 'WebWorkerRpcDriver',
+            },
           },
-          "plugins":[CustomTrackPlugin], 
-          "assembly":data.assembly.assembly,
-          "tracks":data.tracks.tracks,
-          "defaultSession":data.defaultSession.defaultSession,
+          makeWorkerInstance: () =>
+            new Worker(new URL('../plugins/rpcWorker', import.meta.url)),
+          
         });  
 
         setViewState(state);
 
         setTimeout(()=>{
           //highlight track labels
-          let labels = ["YP_913811_1","YP_913812_1","YP_913813_1","NP_740652_1",
-                        "YP_009724389_1_proteins","YP_009725295_1_proteins"];
+          let labels = [];
+          let targetsDict = {};
+          for(let targetRow of props.targetsTableRows)
+          {
+            if(!(targetRow.targetid in targetsDict))
+            { 
+              labels.push(targetRow.originaltargetid);
+              targetsDict[targetRow.targetid] = true;
+            }
+              
+          }
+
           let trackLabels = document.querySelectorAll('div[class*="trackLabel"]');
           for(let e of trackLabels)
           {
@@ -115,7 +129,7 @@ export default function GenomeBrowser(props) {
     }, [props.taxonId])
 
 
-    const getData = async(taxonId) => {
+    const getData = async(taxonId, targetsTableRows) => {
       let data = {"assembly":null,
                   "tracks":null,
                   "defaultSession":null
@@ -144,8 +158,27 @@ export default function GenomeBrowser(props) {
 
     return (
         <div>
-            {viewState &&
-            <JBrowseLinearGenomeView viewState={viewState} height="300px"/>
+            {viewState && 
+              <div>
+                <div id="legend-container" >
+                  <div className="legend-item target">
+                    Target <div className="legend-icon"></div>
+                  </div>
+                  <div className="legend-item gene">
+                    Gene <div className="legend-icon"></div>
+                  </div>
+                  <div className="legend-item protein">
+                  Protein <div className="legend-icon"></div>
+                  </div>
+                  <div className="legend-item cds">
+                    CDS <div className="legend-icon"></div>
+                  </div>
+                  <div className="legend-item other">
+                    Other <div className="legend-icon"></div>
+                  </div>
+                </div>
+                <JBrowseLinearGenomeView viewState={viewState} height="300px"/>
+              </div>
             }
         </div>
     );

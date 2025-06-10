@@ -1,0 +1,7 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	19621	20658	.	+	.	ID=YP_009725310.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp15-A1 and nsp15B-NendoU%3B produced by pp1ab only;product=endoRNAse;protein_id=YP_009725310.1;targetid=IDP52015
+NC_045512.2	feature	polypeptide_domain	19621	19681	.	+	.	ID=YP_009725310.1:NTD_alpha_betaCoV_Nsp15-like;Name=NTD_alpha_betaCoV_Nsp15-like;_Parent=YP_009725310.1;region_name=NTD_alpha_betaCoV_Nsp15-like
+NC_045512.2	feature	polypeptide_domain	19685	19816	.	+	.	ID=YP_009725310.1:M_alpha_beta_cv_Nsp15-like;Name=M_alpha_beta_cv_Nsp15-like;_Parent=YP_009725310.1;region_name=M_alpha_beta_cv_Nsp15-like
+NC_045512.2	feature	polypeptide_domain	19814	19964	.	+	.	ID=YP_009725310.1:NendoU_cv_Nsp15-like;Name=NendoU_cv_Nsp15-like;_Parent=YP_009725310.1;region_name=NendoU_cv_Nsp15-like

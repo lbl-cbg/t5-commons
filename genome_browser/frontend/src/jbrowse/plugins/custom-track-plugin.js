@@ -47,26 +47,31 @@ export default class CustomTrackPlugin extends Plugin {
   
     install(pluginManager) {
   
-      pluginManager.jexl.addFunction('colorFeature', feature => {
+      pluginManager.jexl.addFunction('colorFeature', (feature) => {
         
-        console.log("Feature:", feature);
-        
+        /*console.log("F:",feature); 
+        console.log("TR:",window.targetsTableRows); 
+        let targetFound = window.targetsTableRows.find(item=>{
+          return item.dataid ==feature.data.id;
+        })
+        */
+
         let targetid = feature.data.targetid;
         if(targetid)
           return '#0f9cd0'; //'#34eb74'
 
-        let type = feature.data.type; //feature.get('type')
+        let type = feature.data.type;  
         if (type === 'gene') {
-          return "#329d2f40"; //green
+          return "#1b8f13"; //green
         }
-        else if (type.includes('protein')) {
-          return '#b6794540'; //golden brown
+        else if (type.includes('protein') || type.includes('mat_peptide')) {
+          return '#ac662b'; //golden brown
         } 
         else if (type === 'CDS') {
-          return '#cf331440' //red
+          return '#ff1312' //red
         } 
         else {
-          return "black";
+          return "#131314"; //black
         }
 
       });
@@ -127,8 +132,7 @@ export default class CustomTrackPlugin extends Plugin {
       );
   
       pluginManager.addToExtensionPoint(
-        'Core-extendPluggableElement',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        'Core-extendPluggableElement', 
         (pluggableElement) => {
           if (pluggableElement.name === 'LinearGenomeView') { 
             const { stateModel } = pluggableElement

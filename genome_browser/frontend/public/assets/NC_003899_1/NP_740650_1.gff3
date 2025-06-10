@@ -3,4 +3,6 @@
 #!processor NCBI annotwriter
 ##sequence-region NC_003899.1 1 11675
 ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
-NC_003899.1	RefSeq	mature_protein_region_of_CDS	1643	4024	.	+	.	ID=id-NP_632020.1:533..1326;xParent=cds-NP_632020.1;gbkey=Prot;product=nsP2 protein;protein_id=NP_740650.1
+
+NC_003899.1	feature	mat_peptide	1643	4024	.	+	.	ID=NP_740650.1;locus_tag=EEEVgp1;product=nsP2 protein;protein_id=NP_740650.1
+NC_003899.1	feature	polypeptide_domain	1826	2063	.	+	.	ID=NP_740650.1:Viral_helicase1;Name=Viral_helicase1;_Parent=NP_740650.1;region_name=Viral_helicase1
