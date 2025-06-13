@@ -49,6 +49,7 @@ def get_job_env(issue, config):
     env['JIRA_USER'] = config['jira_user']
     env['JIRA_TOKEN'] = read_token(config['jira_token_file'])
     env['JAMO_HOST'] = config['jamo_host']
+    env['JAMO_URL'] = config['jamo_host']
     env['JAMO_TOKEN'] = read_token(config['jamo_token_file'])
 
     # Set up the working directory to run the job in
