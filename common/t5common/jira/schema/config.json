@@ -64,5 +64,5 @@
       }
     }
   },
-  "required": ["host", "user", "token_file", "database", "projects"]
+  "required": ["jira_host", "jira_user", "jira_token_file", "jamo_host", "jamo_token_file", "database", "projects"]
 }
