@@ -45,9 +45,11 @@ def load_config(config_path):
 def get_job_env(issue, config):
     # Set up environment to run subprocess in
     env = os.environ.copy()
-    env['JIRA_HOST'] = config['host']
-    env['JIRA_USER'] = config['user']
-    env['JIRA_TOKEN'] = read_token(config['token_file'])
+    env['JIRA_HOST'] = config['jira_host']
+    env['JIRA_USER'] = config['jira_user']
+    env['JIRA_TOKEN'] = read_token(config['jira_token_file'])
+    env['JAMO_HOST'] = config['jamo_host']
+    env['JAMO_TOKEN'] = read_token(config['jamo_token_file'])
 
     # Set up the working directory to run the job in
     wd = os.path.join(config.get('job_directory', '.'), issue)
