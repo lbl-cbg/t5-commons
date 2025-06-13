@@ -194,7 +194,7 @@ def main():
     # In Review state is 211
     logger.info(f"Closing issue {issue_key}")
     jira_connector.transition_issue(issue_key, 151)
-    mark_job('published', args.directory)
+    mark_job('PUBLISHED', args.directory)
 
 
 if __name__ == '__main__':
