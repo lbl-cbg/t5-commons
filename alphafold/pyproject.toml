@@ -25,3 +25,8 @@ dependencies = [
 [project.scripts]
 submit-af-job = "t5af.submit_job:main"
 publish-af-results = "t5af.publish_results:main"
+
+[tool.ruff]
+lint.ignore = [
+    "F401"
+]
