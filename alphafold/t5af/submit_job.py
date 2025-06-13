@@ -63,7 +63,7 @@ Files will be overwritten if they exist.
         asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
 
         sequence = find_asset_attribute(asset, 'Parent Protein Seq', key='name')[0]['value']
-        name = find_asset_attribute(asset, 'Original Target ID', key='name')[0]['value']
+        name = find_asset_attribute(asset, 'Target Annotation', key='name')[0]['value']
 
         write_fasta(sequence, name, "input.fasta")
 
@@ -97,7 +97,7 @@ Files will be overwritten if they exist.
     fold_job.set_env_var('PREDICTION_DIR', "prediction")
 
     fold_job.add_command('colabfold_batch --data ${AF2_WEIGHTS_DIR} --save-all --save-recycles --num-recycle=5 ${MSA_FILE} ${PREDICTION_DIR}')
-    fold_job.add_command('mark-job finished')
+    fold_job.add_command("if [ $? -eq 0 ]; then t5 jwf mark-job WORKFLOW_FINISHED; else t5 jwf mark-job WORKFLOW_FAILED; fi")
 
     fold_sh = "fold.sh"
     logger.info(f"Writing MSA job script to {fold_sh}")
