@@ -33,3 +33,8 @@ t5 = "t5common.cli:app"
 
 [tool.setuptools.package-data]
 "t5common.jira" = ["schema/*.json"] 
+
+[tool.ruff]
+lint.ignore = [
+    "F401"
+]

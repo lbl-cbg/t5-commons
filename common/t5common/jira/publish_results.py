@@ -1,20 +1,12 @@
-import argparse
 import asyncio
-import json
-import os
-from os.path import abspath, relpath
 import re
-import sys
-import subprocess
-import time
 from pathlib import Path
 
-import yaml
 import typer
 
 from .connector import JiraConnector
 from .database import DBConnector, JobState
-from .utils import load_config, get_job_env, open_wf_file
+from .utils import load_config, get_job_env
 from .mark_job import mark_job
 from ..utils import get_logger, read_token
 
@@ -33,10 +25,6 @@ async def publish_job(issue, project_config, config):
     """
     logger.info(f"Publishing results for {issue}")
     env, wd = get_job_env(issue, config)
-
-    # Add workflow info to the working directory for subsequent steps
-    with open_wf_file(wd, 'r') as f:
-        wf_info = json.load(f)
 
     # Set up the command to run in the subprocess
     command = re.split(r'\s+', project_config['publish_command'])
@@ -106,7 +94,3 @@ def publish_results(config: Path = typer.Argument(..., help="Path to the YAML co
     """Publish results of finished workflows"""
     config = load_config(config)
     asyncio.run(check_jobs(config))
-
-
-if __name__ == "__main__":
-    main()
