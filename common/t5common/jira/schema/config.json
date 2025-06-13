@@ -2,19 +2,28 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "host": {
+    "jira_host": {
       "type": "string",
       "format": "uri",
       "description": "The Jira host to query from"
     },
-    "user": {
+    "jira_user": {
       "type": "string",
       "format": "email",
       "description": "The email of the user to connect to Jira with"
     },
-    "token_file": {
+    "jira_token_file": {
       "type": "string",
       "description": "The path to the file containing the Jira API token"
+    },
+    "jamo_host": {
+      "type": "string",
+      "format": "uri",
+      "description": "The JAMO host to pass along to workflows"
+    },
+    "jamo_token_file": {
+      "type": "string",
+      "description": "The JAMO API token to pass along to workflows"
     },
     "database": {
       "type": "string",
