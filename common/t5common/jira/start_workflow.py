@@ -89,9 +89,9 @@ async def check_jira(config):
                 projects
     """
     # Connect to Jira
-    jc = JiraConnector(jira_host=config['host'],
-                       jira_user=config['user'],
-                       jira_token=read_token(config['token_file']))
+    jc = JiraConnector(jira_host=config['jira_host'],
+                       jira_user=config['jira_user'],
+                       jira_token=read_token(config['jira_token_file']))
 
     database = config['database']
 
