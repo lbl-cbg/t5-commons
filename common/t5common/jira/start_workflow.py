@@ -89,9 +89,9 @@ async def check_jira(config):
                 projects
     """
     # Connect to Jira
-    jc = JiraConnector(jira_host=config['host'],
-                       jira_user=config['user'],
-                       jira_token=read_token(config['token_file']))
+    jc = JiraConnector(jira_host=config['jira_host'],
+                       jira_user=config['jira_user'],
+                       jira_token=read_token(config['jira_token_file']))
 
     database = config['database']
 
@@ -121,7 +121,7 @@ async def check_jira(config):
             dbc.start_job(issue, wd, project)
         else:
             logger.error(f"Issue {issue} failed -- not marking as workflow started")
-            jc.add_comment("Workflow start failed")
+            jc.add_comment(issue, "Workflow start failed")
             mark_job(wd, JobState.WORKFLOW_START_FAILED)
 
     dbc.close()

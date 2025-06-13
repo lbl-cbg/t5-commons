@@ -73,6 +73,11 @@ async def check_jobs(config):
                 information about the projects to check and how to run jobs for those
                 projects
     """
+    # Connect to Jira
+    jc = JiraConnector(jira_host=config['jira_host'],
+                       jira_user=config['jira_user'],
+                       jira_token=read_token(config['jira_token_file']))
+
     database = config['database']
     dbc = DBConnector(f"sqlite:///{database}")
 
