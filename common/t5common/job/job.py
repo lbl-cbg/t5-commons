@@ -189,7 +189,7 @@ class AbstractJob(metaclass=ABCMeta):
             self.write_line(f, k, v)
 
     def write_header(self, f, options):
-        print(f'#!/bin/bash', file=f)
+        print('#!/bin/bash', file=f)
         self._write_standard(f, options)
         self.write_additional(f, options)
 

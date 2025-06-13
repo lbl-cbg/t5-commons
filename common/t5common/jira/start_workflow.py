@@ -1,18 +1,13 @@
-import argparse
 import asyncio
 import json
 import os
 from os.path import abspath, relpath
 import re
-import sys
-import subprocess
-import time
 
 import typer
-import yaml
 
 from .connector import JiraConnector
-from .database import DBConnector
+from .database import DBConnector, JobState
 from .utils import load_config, get_job_env, open_wf_file
 from .mark_job import mark_job
 from ..utils import get_logger, read_token

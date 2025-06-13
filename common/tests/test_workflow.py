@@ -55,7 +55,9 @@ class WorkflowTests(unittest.TestCase):
     @patch('t5common.jira.connector.requests.post')
     @patch('t5common.jira.utils.read_token')
     @patch('t5common.jira.start_workflow.read_token')
-    def test_wf_mark_job(self, mock_read_token1, mock_read_token2, mock_post):
+    @patch('t5common.jira.check_workflow.read_token')
+    @patch('t5common.jira.publish_results.read_token')
+    def test_wf_mark_job(self, mock_read_token1, mock_read_token2, mock_read_token3, mock_read_token4, mock_post):
         # Mock requests for POST to Jira search endpoint
         mock_response = Mock()
         mock_response.status_code = 200
@@ -65,11 +67,15 @@ class WorkflowTests(unittest.TestCase):
         # Mock token reading
         mock_read_token1.return_value = '=======FAKETOKEN======='
         mock_read_token2.return_value = '=======FAKETOKEN======='
+        mock_read_token3.return_value = '=======FAKETOKEN======='
+        mock_read_token4.return_value = '=======FAKETOKEN======='
 
         config = {
-                'host': "https://nonexistent.jira.site",
-                'user': "noone@lbl.gov",
-                'token_file': "nonexistent_token_file",
+                'jira_host': "https://nonexistent.jira.site",
+                'jira_user': "noone@lbl.gov",
+                'jira_token_file': "nonexistent_token_file",
+                'jamo_host': "https://nonexistent.jamo.site",
+                'jamo_token_file': "nonexistent_token_file",
                 'database': self.db,
                 'job_directory': self.job_dir,
                 'projects':[
@@ -135,7 +141,9 @@ class WorkflowTests(unittest.TestCase):
     @patch('t5common.jira.connector.requests.post')
     @patch('t5common.jira.utils.read_token')
     @patch('t5common.jira.start_workflow.read_token')
-    def test_wf_no_check(self, mock_read_token1, mock_read_token2, mock_post):
+    @patch('t5common.jira.check_workflow.read_token')
+    @patch('t5common.jira.publish_results.read_token')
+    def test_wf_no_check(self, mock_read_token1, mock_read_token2, mock_read_token3, mock_read_token4, mock_post):
         # Mock requests for POST to Jira search endpoint
         mock_response = Mock()
         mock_response.status_code = 200
@@ -145,11 +153,15 @@ class WorkflowTests(unittest.TestCase):
         # Mock token reading
         mock_read_token1.return_value = '=======FAKETOKEN======='
         mock_read_token2.return_value = '=======FAKETOKEN======='
+        mock_read_token3.return_value = '=======FAKETOKEN======='
+        mock_read_token4.return_value = '=======FAKETOKEN======='
 
         config = {
-                'host': "https://nonexistent.jira.site",
-                'user': "noone@lbl.gov",
-                'token_file': "nonexistent_token_file",
+                'jira_host': "https://nonexistent.jira.site",
+                'jira_user': "noone@lbl.gov",
+                'jira_token_file': "nonexistent_token_file",
+                'jamo_host': "https://nonexistent.jamo.site",
+                'jamo_token_file': "nonexistent_token_file",
                 'database': self.db,
                 'job_directory': self.job_dir,
                 'projects':[

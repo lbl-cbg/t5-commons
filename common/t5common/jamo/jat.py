@@ -1,7 +1,6 @@
 import abc
 import os
 
-import requests
 
 from .connector import JAMOConnector
 
@@ -46,12 +45,6 @@ class JATSubmitter(metaclass=abc.ABCMeta):
         """
 
         td = self.get_template_data(directory, *args, **kwargs)
-        payload = {
-                'template_name': self.template_name,
-                'template_data': td,
-                'source': source,
-                'location': os.path.abspath(directory)
-        }
         response = self.jamo_connector.create_analysis(directory, self.template_name, td, source=source)
         return td, response
 

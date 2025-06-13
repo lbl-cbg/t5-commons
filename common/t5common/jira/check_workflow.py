@@ -1,21 +1,15 @@
-import argparse
 import asyncio
-from importlib.resources import files
-import json
 import re
 import os
-import sys
-from enum import Enum
 from pathlib import Path
 
 import typer
-import yaml
 
 from .connector import JiraConnector
 from .database import DBConnector, JobState
-from .utils import load_config, get_job_env, WF_FILENAME
+from .utils import load_config, get_job_env
 from .mark_job import mark_job
-from ..utils import get_logger
+from ..utils import get_logger, read_token
 
 
 logger = get_logger()
@@ -73,6 +67,9 @@ async def check_jobs(config):
                 information about the projects to check and how to run jobs for those
                 projects
     """
+    jc = JiraConnector(jira_host=config['jira_host'],
+                       jira_user=config['jira_user'],
+                       jira_token=read_token(config['jira_token_file']))
     database = config['database']
     dbc = DBConnector(f"sqlite:///{database}")
 

@@ -168,7 +168,7 @@ def main():
     all_results_url = js.analysis_url(response)
     model_url = js.file_url(best_model)
 
-    logger.info(f"Creating asset in Jira")
+    logger.info("Creating asset in Jira")
     issue = jira_connector.get_issue(issue_key)
     af_asset = jira_connector.create_asset(ab(target_asset=issue['fields']['customfield_10113'][0]['objectId'],
                                             all_results_url=all_results_url,
