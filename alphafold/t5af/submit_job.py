@@ -63,7 +63,7 @@ Files will be overwritten if they exist.
         asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
 
         sequence = find_asset_attribute(asset, 'Parent Protein Seq', key='name')[0]['value']
-        name = find_asset_attribute(asset, 'Original Target ID', key='name')[0]['value']
+        name = find_asset_attribute(asset, 'Target Annotation', key='name')[0]['value']
 
         write_fasta(sequence, name, "input.fasta")
 
