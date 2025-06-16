@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 
 TARGET_ID_ID = '97'  # the asset attribute id to use for finding the protein target_id
+TARGET_ANNOTATION_ID = '100'  # the asset attribute id to use for finding the protein target_id
 PARENT_NAME_ID = '491'
 
 class JiraConnector:
@@ -146,10 +147,11 @@ def get_protein_metadata(jc, issue):
 
     target_asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
 
+
     target_id = None
     virus_id = None
     for attr in target_asset['attributes']:
-        if attr['objectTypeAttribute']['id'] == TARGET_ID_ID:
+        if attr['objectTypeAttribute']['id'] == TARGET_ANNOTATION_ID :
             target_id = attr['objectAttributeValues'][0]['value']
         elif attr['objectTypeAttribute']['id'] == PARENT_NAME_ID:
             virus_id = attr['objectAttributeValues'][0]['referencedObject']['name']
