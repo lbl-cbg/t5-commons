@@ -9,7 +9,7 @@ import yaml
 
 from t5common.jira.connector import JiraConnector, find_asset_attribute, get_protein_metadata
 from t5common.jira.assets import AssetBuilder
-from t5common.jira import mark_job
+from t5common.jira.mark_job import mark_job
 from t5common.jamo import JATSubmitter, MetadataBuilder
 from t5common.utils import get_logger
 
