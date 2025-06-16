@@ -63,9 +63,8 @@ Files will be overwritten if they exist.
         asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
 
         sequence = find_asset_attribute(asset, 'Parent Protein Seq', key='name')[0]['value']
-        name = find_asset_attribute(asset, 'Target Annotation', key='name')[0]['value']
 
-        write_fasta(sequence, name, "input.fasta")
+        write_fasta(sequence, 'seq', "input.fasta")
 
         # Set up job for MSA
         msa_job = SlurmJob(project='m4521', jobname=f"t5af_msa__{key}", output="msa.%J.log", error="msa.%J.log", time="02:00:00")
@@ -86,7 +85,7 @@ Files will be overwritten if they exist.
         if not args.no_jira:
             jc.add_comment(args.issue, msg)
 
-        msa = os.path.join("msa", f"{name}.a3m")
+        msa = os.path.join("msa", "seq.a3m")
 
     # Set up job for AlphaFold
     fold_job = SlurmJob(project='m4521', jobname=f"t5af_fold__{key}", output="fold.%J.log", error="fold.%J.log", gpus=1, queue='shared', time="02:00:00")
