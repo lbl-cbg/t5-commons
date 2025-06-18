@@ -582,7 +582,6 @@ class Analysis(MongoRestful):
         return analysis
 
     @restful.raw
-    @restful.passreq
     def get_download(self, args, kwargs):
         key = args[0] if len(args) > 0 else kwargs['key']
         ret = self.query('analysis', **{'key': key})
