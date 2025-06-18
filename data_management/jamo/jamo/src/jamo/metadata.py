@@ -1053,7 +1053,6 @@ class Metadata(MongoRestful):
             return {}
 
     @restful.raw
-    @restful.passreq
     def get_download(self, args, kwargs):
         if len(args[0]) == 24 and ObjectId.is_valid((args[0])):
             data = self.query('file', _id=ObjectId(args[0]))
