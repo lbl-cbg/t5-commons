@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 
 TARGET_ID_ID = '97'  # the asset attribute id to use for finding the protein target_id
+TARGET_ANNOTATION_ID = '100'  # the asset attribute id to use for finding the protein target_id
 PARENT_NAME_ID = '491'
 
 class JiraConnector:
@@ -101,8 +102,27 @@ class JiraConnector:
         transition_data = {"transition": {"id": state}}
         return self.post(f"api/3/issue/{issue}/transitions", transition_data)
 
-    def add_comment(self, issue, comment):
-        return self.post(f"api/3/issue/{issue}/comment", {'body': comment})
+    def add_comment(self, issue, comment, link=None):
+        payload = {
+                "body": {
+                  "content": [
+                    {
+                      "content": [
+                        {
+                          "text": comment,
+                          "type": "text"
+                        }
+                      ],
+                      "type": "paragraph"
+                    }
+                  ],
+                  "type": "doc",
+                  "version": 1
+                }
+            }
+        if link is not None:
+            payload["body"]["content"][0]["content"][0]["marks"] = [{"type": "link", "attrs": {"href": link}}]
+        return self.post(f"api/3/issue/{issue}/comment", payload)
 
     def close_issue(self, issue):
         return self.transition_issue(issue, self.DONE_STATE)
@@ -118,6 +138,30 @@ class JiraConnector:
             'maxResults': maxResults
         }
         return self.post("api/3/search", payload)
+
+
+def get_protein_metadata(jc, issue):
+    if isinstance(issue, str):
+        issue = jc.get_issue(issue)
+    key = issue['key']
+
+    target_asset = jc.get_asset(issue['fields']['customfield_10113'][0]['objectId'])
+
+
+    target_id = None
+    virus_id = None
+    for attr in target_asset['attributes']:
+        if attr['objectTypeAttribute']['id'] == TARGET_ANNOTATION_ID :
+            target_id = attr['objectAttributeValues'][0]['value']
+        elif attr['objectTypeAttribute']['id'] == PARENT_NAME_ID:
+            virus_id = attr['objectAttributeValues'][0]['referencedObject']['name']
+
+    if virus_id is None:
+        raise ValueError(f"Unable to get virus name from issue {key}")
+    if target_id is None:
+        raise ValueError(f"Unable to get protein target from issue {key}")
+
+    return virus_id, target_id
 
 
 def find_asset_attribute(asset, value, key='id'):

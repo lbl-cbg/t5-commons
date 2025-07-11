@@ -1,0 +1,12 @@
+jira_host: "https://taskforce5.atlassian.net"
+jira_user: "ajtritt@lbl.gov"
+jira_token_file: "/global/u1/t/t5user/jira_automation/jira_token"
+jamo_host: "https://data-dev.taskforce5.lbl.gov"
+jamo_token_file: "/global/u1/t/t5user/jira_automation/jamo_token"
+database: "workflows.db"
+job_directory: "/pscratch/sd/t/t5user/jira_automation/jobs"
+projects:
+  - project: AFP
+    new_status: Open
+    workflow_command: bash /global/u1/t/t5user/alphafold/submit-af-job.sh
+    publish_command:  bash /global/u1/t/t5user/alphafold/publish-af-results.sh

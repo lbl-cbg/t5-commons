@@ -1,0 +1,17 @@
+name: t5wf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - pip:
+      - ../common
+variables:
+  JWF_RUN_DIR: /global/cfs/cdirs/m4521/jira_automation
+  JIRA_TOKEN: XXXXXX
+  JIRA_HOST: https://taskforce5.atlassian.net
+  JIRA_USER: ajtritt@lbl.gov
+  JAMO_HOST: https://data-dev.taskforce5.lbl.gov
+  JAMO_URL: https://data-dev.taskforce5.lbl.gov
+  JAMO_TOKEN: XXXXXX
+prefix: /global/common/software/m4521/t5wf

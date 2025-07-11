@@ -1,0 +1,131 @@
+name: alphafold_results
+description: The output of an AlphaFold run done with ColabFold
+tags:
+  - alphafold
+required_metadata_keys:
+  - description: The JIRA issue requesting this AlphaFold run
+    key: jira_issue
+    type: string
+    required: false
+  - macro: viral_protein
+  - description: Number of recyling iterations used
+    key: num_recycle
+    type: number
+    required: true
+
+outputs:
+- description: The AlphaFold run parameters
+  label: config
+  tags:
+    - config
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The log file for the AlphaFold run
+  label: log
+  tags:
+    - log
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The multisequence alignment file
+  label: colabfold_msa
+  tags:
+    - msa
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The coverage figure produced by AlphaFold
+  label: coverage_figure
+  tags:
+    - figure
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The PAE figure produced by AlphaFold
+  label: pae_figure
+  tags:
+    - figure
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The pLDDT figure produced by AlphaFold
+  label: plddt_figure
+  tags:
+    - figure
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: A PDB file of the AlphaFold model
+  label: protein_model
+  tags:
+    - pdb
+  required: true
+  required_metadata_keys:
+    - description: The model number of this model. (See --num-models in colabfold_batch for more details)
+      key: model_number
+      required: true
+      type: number
+    - description: The ranking given by the AlphaFold program
+      key: rank
+      required: true
+      type: number
+    - description: The pLDDT score of the model.
+      key: plddt
+      required: true
+      type: number
+    - description: The pTM score of the model
+      key: ptm
+      required: true
+      type: number
+    - description: The recycling iteration of this model
+      key: recycle_iteration
+      required: false
+      type: number
+    - macro: file_info
+
+- description: The raw outputs from AlphaFold
+  label: raw_model_outputs
+  tags:
+    - intermediate_results
+  required: false
+  required_metadata_keys:
+    - description: The model number of this model. (See --num-models in colabfold_batch for more details)
+      key: model_number
+      required: true
+      type: number
+    - description: The recycling iteration of this model
+      key: recycle_iteration
+      required: false
+      type: number
+    - macro: file_info
+
+- description: The scores for a protein model
+  label: scores
+  tags:
+    - confidence
+  required: true
+  required_metadata_keys:
+    - description: The model number of this model. (See --num-models in colabfold_batch for more details)
+      key: model_number
+      required: true
+      type: number
+    - description: The ranking given by the AlphaFold program
+      key: rank
+      required: true
+      type: number
+    - macro: file_info
+
+email:
+  to:
+    - ajtritt@lbl.gov
+  reply_to: ajtritt@lbl.gov
+  subject: '[alphafold] {metadata.protein_id} (Request: {metadata.jira_issue})'
+  content:
+    - file: log

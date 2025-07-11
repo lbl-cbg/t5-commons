@@ -1,0 +1,24 @@
+name: jamo_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - pip
+  - pip:
+      - ../jamo/sdm-common
+      - ../jamo/lapinpy
+      - ../jamo/jamo
+      - ../jamo/jat
+variables:
+  DTS_SCRIPT_DIR: /global/common/software/m4521/jamo_code/dt_service/scripts
+  DTS_LOG_DIR: /global/cfs/cdirs/m4521/jamo/dt_service
+  JAMO_URL: https://data-dev.taskforce5.lbl.gov
+  JAMO_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  JAMO_HOST: https://data-dev.taskforce5.lbl.gov
+  BILBOMD_JAMO_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  JIRA_TOKEN:
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  JIRA_USER: ajtritt@lbl.gov
+  JIRA_HOST: https://taskforce5.atlassian.net
+prefix: /global/common/software/m4521/jamo_env
