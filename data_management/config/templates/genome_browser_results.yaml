@@ -1,0 +1,60 @@
+name: genome_browser_results
+description: The output of config files for genome browser visualization
+tags:
+  - genome_browser
+required_metadata_keys:
+  - description: The virus gene id
+    key: virus_id
+    type: string
+    required: false
+  - macro: viral_protein
+
+outputs:
+- description: The assembly file
+  label: assembly
+  tags:
+    - assembly
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The assembly fasta file
+  label: fasta
+  tags:
+    - fasta
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The assembly fasta.fai file
+  label: fasta_fai
+  tags:
+    - fasta_fai
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The default sessions file
+  label: default_sessions
+  tags:
+    - default_sessions
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The tracks file
+  label: tracks
+  tags:
+    - tracks
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+
+email:
+  to:
+    - ajtritt@lbl.gov
+  reply_to: ajtritt@lbl.gov
+  subject: '[alphafold] {metadata.protein_id} (Request: {metadata.jira_issue})'
+  content:
+    - file: log
