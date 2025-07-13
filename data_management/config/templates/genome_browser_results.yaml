@@ -1,12 +1,8 @@
 name: genome_browser_results
-description: The output of config files for genome browser visualization
+description: Config files for JBrowse genome browser visualization
 tags:
   - genome_browser
 required_metadata_keys:
-  - description: The virus gene id
-    key: virus_id
-    type: string
-    required: false
   - macro: viral_protein
 
 outputs:
