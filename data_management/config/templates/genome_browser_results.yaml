@@ -1,0 +1,47 @@
+name: genome_browser_inputs
+description: Config files for JBrowse genome browser visualization
+tags:
+  - genome_browser
+required_metadata_keys:
+  - description: Name for Virus
+    key: virus_id
+    required: true
+    type: string
+  - description: NCBI accession ID eg NC_234234
+    key: ncbi_id
+    required: true
+    type: string
+outputs:
+- description: JBrowse assembly config file
+  label: assembly
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: The JBrowse assembly fasta file
+  label: fasta
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: fasta index for JBrowse assembly fasta file
+  label: fasta_fai
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: JBrowse default sessions config file
+  label: default_sessions
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+- description: JBrowse tracks config file
+  label: tracks
+  required: true
+  required_metadata_keys:
+    - macro: file_info
+
+
+
+
