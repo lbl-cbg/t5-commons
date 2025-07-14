@@ -652,11 +652,11 @@ class Analysis(MongoRestful):
         'name': {'type': str},
         'md5': {'type': str, 'required': False},
         'description': {'type': str},
-        'tags': {'type': list, 'validator': {'*': {'type': str}}},
+        'tags': {'type': list, 'required': False, 'validator': {'*': {'type': str}}},
         # 'outputs': {'type': list, 'validator': {'*: 1': {'type': dict, 'validator': { # could add *:1 to require that a template always has an output. Note, this gets parsed in restful.validate
         'outputs': {'type': list, 'validator': {'*': {'type': dict, 'validator': {
             'label': {'type': str, 'doc': 'The file label used soley to map submission files'},
-            'tags': {'type': list, 'validator': {'*': {'type': str}}, 'doc': 'The file tags that describe this file'},
+            'tags': {'type': list, 'required': False, 'validator': {'*': {'type': str}}, 'doc': 'The file tags that describe this file'},
             'required': {'type': bool, 'default': True},
             'metadata': {'type': dict, 'required': False, 'validator': {'*:1': {'type': '*'}}},
             'description': {'type': str},
