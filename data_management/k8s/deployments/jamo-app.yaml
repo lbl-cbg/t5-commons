@@ -13,7 +13,7 @@ spec:
         - env:
             - name: TZ
               value: America/Los_Angeles
-          image: registry.nersc.gov/m4521/jamo-service:13
+          image: registry.nersc.gov/m4521/jamo-service:14
           imagePullPolicy: Always
           name: lapin-app
           ports:
