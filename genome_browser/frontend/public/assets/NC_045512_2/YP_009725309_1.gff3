@@ -1,0 +1,5 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	18040	19620	.	+	.	ID=YP_009725309.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp14A2_ExoN and nsp14B_NMT%3B produced by pp1ab only;product=3%27-to-5%27 exonuclease;protein_id=YP_009725309.1;targetid=IDP52014
+NC_045512.2	feature	polypeptide_domain	18044	18564	.	+	.	ID=YP_009725309.1:CoV_Nsp14;Name=CoV_Nsp14;_Parent=YP_009725309.1;region_name=CoV_Nsp14

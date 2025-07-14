@@ -1,0 +1,10 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	8555	10054	.	+	.	ID=YP_009742611.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp4B_TM%3B contains transmembrane domain 2 %28TM2%29%3B produced by both pp1a and pp1ab;product=nsp4;protein_id=YP_009742611.1
+NC_045512.2	feature	polypeptide_domain	8568	8948	.	+	.	ID=YP_009742611.1:cv_Nsp4_TM;Name=cv_Nsp4_TM;_Parent=YP_009742611.1;region_name=cv_Nsp4_TM
+NC_045512.2	feature	polypeptide_domain	8568	8590	.	+	.	ID=YP_009742611.1:putative TM helix 1;Name=putative TM helix 1;_Parent=YP_009742611.1;region_name=putative TM helix 1
+NC_045512.2	feature	polypeptide_domain	8834	8855	.	+	.	ID=YP_009742611.1:putative TM helix 2;Name=putative TM helix 2;_Parent=YP_009742611.1;region_name=putative TM helix 2
+NC_045512.2	feature	polypeptide_domain	8870	8891	.	+	.	ID=YP_009742611.1:putative TM helix 3;Name=putative TM helix 3;_Parent=YP_009742611.1;region_name=putative TM helix 3
+NC_045512.2	feature	polypeptide_domain	8918	8940	.	+	.	ID=YP_009742611.1:putative TM helix 4;Name=putative TM helix 4;_Parent=YP_009742611.1;region_name=putative TM helix 4
+NC_045512.2	feature	polypeptide_domain	8960	9052	.	+	.	ID=YP_009742611.1:CoV_NSP4_C;Name=CoV_NSP4_C;_Parent=YP_009742611.1;region_name=CoV_NSP4_C
