@@ -1,10 +1,16 @@
-name: genome_browser_results
+name: genome_browser_inputs
 description: Config files for JBrowse genome browser visualization
 tags:
   - genome_browser
 required_metadata_keys:
-  - macro: viral_protein
-
+  - description: Name for Virus
+    key: virus_id
+    required: true
+    type: string
+  - description: NCBI accession ID eg NC_234234
+    key: ncbi_id
+    required: true
+    type: string
 outputs:
 - description: JBrowse assembly config file
   label: assembly
@@ -35,5 +41,7 @@ outputs:
   required: true
   required_metadata_keys:
     - macro: file_info
+
+
 
 
