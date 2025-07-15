@@ -37,7 +37,6 @@ jobs:
         push: true
         tags: |
           registry.nersc.gov/m4521/jamo-service:${{ github.sha }}
-          registry.nersc.gov/m4521/jamo-service:${{ substr(github.sha, 0, 7) }}
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
