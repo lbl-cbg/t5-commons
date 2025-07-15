@@ -33,7 +33,7 @@ jobs:
     - name: Build and push image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: data_management/jamo
         platforms: linux/amd64
         push: true
         tags: |
