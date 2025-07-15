@@ -281,7 +281,6 @@ class Analysis(MongoRestful):
                            'Resequencing']
 
     def __init__(self, config=None):
-
         # config should be required, but when config added, needed to default to None
         if config is not None:
             self.config = config
