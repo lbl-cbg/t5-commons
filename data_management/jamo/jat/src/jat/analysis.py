@@ -129,7 +129,7 @@ def process_template_data(template, template_data):
         matching_output = template_outputs[output['label']]
         metadata = matching_output.get('metadata', {})
         metadata.update(output.get('metadata', {}))
-        output['tags'] = matching_output['tags']
+        output['tags'] = matching_output.get('tags', [])
         output['metadata'] = metadata
         for var in ('required', 'description', 'required_metadata_keys', 'default_metadata_values'):
             if var in matching_output:
@@ -788,11 +788,11 @@ class Analysis(MongoRestful):
     @restful.validate(templateValidator, allowExtra=False)
     def post_validatetemplate(self, args, kwargs):
         errors = []
-        for tag in kwargs['tags']:
+        for tag in kwargs.get('tags', []):
             if 'tags' in self.cv and tag not in self.cv['tags']:
                 errors.append('''Analysis level tag: '%s' is not valid''' % tag)
         for output in kwargs['outputs']:
-            for tag in output['tags']:
+            for tag in output.get('tags', []):
                 if 'outputs.tags' in self.cv and tag not in self.cv['outputs.tags']:
                     errors.append('''Output level tag: '%s' on label: '%s' is not valid''' % (tag, output['label']))
         return errors
