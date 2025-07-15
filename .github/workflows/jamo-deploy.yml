@@ -2,13 +2,12 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
-      - "data_management/jamo/jamo"
-      - "data_management/jamo/jat"
-      - "data_management/jamo/lapinpy"
-      - "data_management/jamo/sdm-common"
-      # Add your specific subdirectories here
+      - "data_management/jamo/jamo/**"
+      - "data_management/jamo/jat/**"
+      - "data_management/jamo/lapinpy/**"
+      - "data_management/jamo/sdm-common/**"
 
 jobs:
   deploy-container:
