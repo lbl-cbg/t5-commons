@@ -174,8 +174,10 @@ class DBConnector:
             self.session.commit()  # Commit the new project to the database
             return project
 
-    def start_job(self, issue, job_directory, project):
-        start_state = self.session.query(JobStates).filter_by(id=1).first()
+    def start_job(self, issue, job_directory, project, state=JobState.WORKFLOW_STARTED):
+        if isinstance(state, JobState):
+            state = state.value
+        start_state = self.session.query(JobStates).filter_by(name=state).first()
         project = self._check_project(project)
         job = Job(issue=issue, job_directory=job_directory, job_state=start_state, project=project)
         self.session.add(job)
