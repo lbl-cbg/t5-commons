@@ -431,9 +431,9 @@ class Analysis(MongoRestful):
         return ','.join(map(str, args)) if isinstance(args, list) else str(args)
 
     report_map = {'key': {'order': 0, 'title': 'JAT Key', 'type': 'html', 'value': '<a href="/analysis/analysis/{{value}}">{{value}}</a>'},
-                  'metadata.sequencing_project_id': {'order': 1, 'title': 'SPID', 'value': tostrlist},
-                  'metadata.sequencing_project.sequencing_project_name': {'order': 2, 'title': 'Sequencing Project Name'},
-                  'metadata.library_name': {'order': 3, 'title': 'Library', 'value': tostrlist},
+                  'metadata.virus_id': {'order': 1, 'title': 'Virus', 'value': tostrlist},
+                  'metadata.protein_id': {'order': 2, 'title': 'Protein'},
+                  'metadata.jira_issue': {'order': 3, 'title': 'Jira Issue', 'value': tostrlist},
                   'template': {'order': 4, 'title': 'Type'},
                   'user': {'order': 5, 'title': 'Analyst'},
                   'group': {'order': 6, 'title': 'Group'},
@@ -1476,6 +1476,7 @@ class Analysis(MongoRestful):
         del clean_kwargs['warnings']
         data = self.import_analysis(clean_kwargs)
         data['warnings'] = warnings
+        self.logger.debug(f"Created analysis: {data}")
         return data
 
     @restful.doc("Add metadata to another group's analysis. New values will be put under in a sub-document named after your group.  While this is mainly used to tag other group's data, it can be used to tag your own data.  "
