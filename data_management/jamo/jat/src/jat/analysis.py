@@ -1414,7 +1414,7 @@ class Analysis(MongoRestful):
                 for new_file in temp_files:
                     os.unlink(new_file)
             # update the publishing flags for the JAMO records
-            self.update_publish(kwargs.get('key'), publish, keep_defined=keep_defined, user=kwargs.get('user'))
+            # self.update_publish(kwargs.get('key'), publish, keep_defined=keep_defined, user=kwargs.get('user'))
         return {'analysis_id': self.save('analysis', kwargs), 'location': kwargs.get('location'),
                 'jat_key': kwargs.get('key')}
 
