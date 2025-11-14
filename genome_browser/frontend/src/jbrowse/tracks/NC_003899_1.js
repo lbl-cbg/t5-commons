@@ -1,3 +1,7 @@
+ 
+
+
+
 
 
 
@@ -20,7 +24,8 @@ export const tracks = [
             "displayId": "EEEVgp2-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -43,7 +48,8 @@ export const tracks = [
             "displayId": "YP_913810_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -51,7 +57,7 @@ export const tracks = [
     {
         type: 'FeatureTrack',
         trackId: 'YP_913811_1',
-        name: 'YP_913811_1',
+        name: 'EEEV_MT',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -69,18 +75,16 @@ export const tracks = [
             "displayId": "YP_913811_1-LinearBasicDisplay",
             "renderer": {
                 "type": "SvgFeatureRenderer",
-                "color1": "jexl:colorFeature(feature)" //"#34eb74"
+                "color1": "jexl:colorFeature(feature)",//"#34eb74"
+                "displayMode": "compact",   
             }
             }
         ]
     },
-
-
-
     {
       type: 'FeatureTrack',
       trackId: 'YP_913812_1',
-      name: 'YP_913812_1',
+      name: 'EEEV_HEL',
       assemblyNames: ['NC_003899.1'],
       category: ['Genes'],
       adapter: {
@@ -95,7 +99,8 @@ export const tracks = [
           "displayId": "YP_913812_1-LinearBasicDisplay",
           "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" //TARGETS
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",  
           }
           }
       ]
@@ -174,7 +179,7 @@ export const tracks = [
     {
         type: 'FeatureTrack',
         trackId: 'YP_913813_1',
-        name: 'YP_913813_1',
+        name: 'EEEV_MACRO',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -190,7 +195,8 @@ export const tracks = [
             "displayId": "YP_913813_1-LinearBasicDisplay",
             "renderer": {
                 "type": "SvgFeatureRenderer",
-                "color1": "jexl:colorFeature(feature)" //"#34eb74"
+                "color1": "jexl:colorFeature(feature)",
+                "displayMode": "compact",  
             }
             }
         ]
@@ -198,7 +204,7 @@ export const tracks = [
     {
         type: 'FeatureTrack',
         trackId: 'NP_740652_1',
-        name: 'NP_740652_1',
+        name: 'EEEV_RDRP',
         assemblyNames: ['NC_003899.1'],
         category: ['Genes'],
         adapter: {
@@ -213,7 +219,8 @@ export const tracks = [
           "displayId": "NP_740652_1-LinearBasicDisplay",
           "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" //"#34eb74"
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",  
           }
           }
         ]
@@ -236,7 +243,8 @@ export const tracks = [
             "displayId": "EEEVgp1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -259,7 +267,8 @@ export const tracks = [
             "displayId": "NP_740649_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -282,7 +291,8 @@ export const tracks = [
             "displayId": "NP_740650_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -305,7 +315,8 @@ export const tracks = [
             "displayId": "NP_740651_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -328,7 +339,8 @@ export const tracks = [
             "displayId": "EEEVgp3-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -351,7 +363,8 @@ export const tracks = [
             "displayId": "NP_740644_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -374,7 +387,8 @@ export const tracks = [
             "displayId": "YP_913809_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -397,7 +411,8 @@ export const tracks = [
             "displayId": "NP_740645_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -420,7 +435,8 @@ export const tracks = [
             "displayId": "NP_740646_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -443,7 +459,8 @@ export const tracks = [
             "displayId": "NP_740647_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]
@@ -466,7 +483,8 @@ export const tracks = [
             "displayId": "NP_740648_1-LinearBasicDisplay",
             "renderer": {
               "type": "SvgFeatureRenderer",
-              "color1": "jexl:colorFeature(feature)" 
+              "color1": "jexl:colorFeature(feature)",
+              "displayMode": "compact",   
             }
           }
         ]

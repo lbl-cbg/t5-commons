@@ -1,5 +1,7 @@
 # Node and React
 node_modules
+npm-debug.log
+#build
 
 # Cypress
 cypress
@@ -7,3 +9,7 @@ cypress.json
 
 # Docker
 Dockerfile
+.dockerignore
+.git
+.gitignore
+.env

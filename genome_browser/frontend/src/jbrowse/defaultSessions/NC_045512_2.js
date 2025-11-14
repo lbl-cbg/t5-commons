@@ -17,7 +17,7 @@ export const defaultSession = {
                 assemblyName: 'NC_045512.2',
             }
         ],
-        offsetPx:-250,
+        offsetPx:-170,
         bpPerPx:25,
         tracks: [
             {
@@ -28,7 +28,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:40,
+                        height:20,
                         configuration:
                         'ORF1ab-LinearBasicDisplay',
                     },
@@ -42,7 +42,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:40,
+                        height:20,
                         configuration:
                         'YP_009724389_1_CDS-LinearBasicDisplay',
                     },
@@ -50,15 +50,211 @@ export const defaultSession = {
             },
             {
                 type: 'FeatureTrack',
-                id: 'YP_009724389_1_proteins-LinearBasicDisplay',
-                configuration: 'YP_009724389_1_proteins',
+                id: 'YP_009725297_1-LinearBasicDisplay',
+                configuration: 'YP_009725297_1',
                 minimized: false,
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:250,
+                        height:60,
                         configuration:
-                        'YP_009724389_1_proteins-LinearBasicDisplay',
+                        'YP_009725297_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725298_1-LinearBasicDisplay',
+                configuration: 'YP_009725298_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725298_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725299_1-LinearBasicDisplay',
+                configuration: 'YP_009725299_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:240,
+                        configuration:
+                        'YP_009725299_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725300_1-LinearBasicDisplay',
+                configuration: 'YP_009725300_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:140,
+                        configuration:
+                        'YP_009725300_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725301_1-LinearBasicDisplay',
+                configuration: 'YP_009725301_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725301_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725302_1-LinearBasicDisplay',
+                configuration: 'YP_009725302_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725302_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725303_1-LinearBasicDisplay',
+                configuration: 'YP_009725303_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725303_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725304_1-LinearBasicDisplay',
+                configuration: 'YP_009725304_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725304_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725305_1-LinearBasicDisplay',
+                configuration: 'YP_009725305_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725305_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725306_1-LinearBasicDisplay',
+                configuration: 'YP_009725306_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725306_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725307_1-LinearBasicDisplay',
+                configuration: 'YP_009725307_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725307_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725308_1-LinearBasicDisplay',
+                configuration: 'YP_009725308_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:100,
+                        configuration:
+                        'YP_009725308_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725309_1-LinearBasicDisplay',
+                configuration: 'YP_009725309_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725309_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725310_1-LinearBasicDisplay',
+                configuration: 'YP_009725310_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:80,
+                        configuration:
+                        'YP_009725310_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725311_1-LinearBasicDisplay',
+                configuration: 'YP_009725311_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009725311_1-LinearBasicDisplay',
                     },
                 ],
             },
@@ -70,7 +266,7 @@ export const defaultSession = {
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:40,
+                        height:20,
                         configuration:
                         'YP_009725295_1_CDS-LinearBasicDisplay',
                     },
@@ -78,18 +274,178 @@ export const defaultSession = {
             },
             {
                 type: 'FeatureTrack',
-                id: 'YP_009725295_1_proteins-LinearBasicDisplay',
-                configuration: 'YP_009725295_1_proteins',
+                id: 'YP_009742608_1-LinearBasicDisplay',
+                configuration: 'YP_009742608_1',
                 minimized: false,
                 displays: [
                     {
                         type: 'LinearBasicDisplay',
-                        height:200,
+                        height:60,
                         configuration:
-                        'YP_009725295_1_proteins-LinearBasicDisplay',
+                        'YP_009742608_1-LinearBasicDisplay',
                     },
                 ],
             },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742609_1-LinearBasicDisplay',
+                configuration: 'YP_009742609_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742609_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742610_1-LinearBasicDisplay',
+                configuration: 'YP_009742610_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:240,
+                        configuration:
+                        'YP_009742610_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742611_1-LinearBasicDisplay',
+                configuration: 'YP_009742611_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:140,
+                        configuration:
+                        'YP_009742611_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742612_1-LinearBasicDisplay',
+                configuration: 'YP_009742612_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742612_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742613_1-LinearBasicDisplay',
+                configuration: 'YP_009742613_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742613_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742614_1-LinearBasicDisplay',
+                configuration: 'YP_009742614_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742614_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742615_1-LinearBasicDisplay',
+                configuration: 'YP_009742615_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742615_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742616_1-LinearBasicDisplay',
+                configuration: 'YP_009742616_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742616_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009742617_1-LinearBasicDisplay',
+                configuration: 'YP_009742617_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:40,
+                        configuration:
+                        'YP_009742617_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+            {
+                type: 'FeatureTrack',
+                id: 'YP_009725312_1-LinearBasicDisplay',
+                configuration: 'YP_009725312_1',
+                minimized: false,
+                displays: [
+                    {
+                        type: 'LinearBasicDisplay',
+                        height:20,
+                        configuration:
+                        'YP_009725312_1-LinearBasicDisplay',
+                    },
+                ],
+            },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             {
                 type: 'FeatureTrack',
                 id: 'YP_009724390_1-LinearBasicDisplay',

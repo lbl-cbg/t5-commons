@@ -1,0 +1,5 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	806	2719	.	+	.	ID=YP_009742609.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=produced by both pp1a and pp1ab;product=nsp2;protein_id=YP_009742609.1
+NC_045512.2	feature	polypeptide_domain	807	1443	.	+	.	ID=YP_009742609.1:betaCoV_Nsp2_SARS-like;Name=betaCoV_Nsp2_SARS-like;_Parent=YP_009742609.1;region_name=betaCoV_Nsp2_SARS-like
