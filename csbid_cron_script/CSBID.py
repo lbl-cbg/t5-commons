@@ -1,20 +1,16 @@
 import requests 
-import json
-from django.conf import settings
-import base64 
-import re
+import json 
+import base64  
 import os
+from jira_import_util import JIRAImportUtil, JIRAObjectID
+from urllib.parse import quote
+import logging
+logger = logging.getLogger("Logger") 
 
 
-class CSBIDTask:    
+class CSBIDTask(JIRAImportUtil):    
 
     ANL_TOKEN = os.environ.get("ANL_API_TOKEN")
-    JIRA_API_TOKEN_YONG = os.environ.get("JIRA_API_TOKEN_YONG")
-    username = "yong@lbl.gov"
-    credentials = f'{username}:{JIRA_API_TOKEN_YONG}'
-    encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8') 
-    jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace' 
-
     #map species name to jira virus object id
     virus_map = {"chikungunya virus":411,
                 "eastern equine encephalitis virus":410,
@@ -27,21 +23,9 @@ class CSBIDTask:
 
 
     def __init__(self):
-        self.workspace_id = self.get_workspace_id()
-        self.base_url = self.get_base_url(self.workspace_id)
-
-
-    def get_workspace_id(self):
-        response = requests.get(self.jira_servicedeskapi_url, 
-                                headers={'Content-Type': 'application/json', 
-                                        'authorization': 'Basic ' + self.encoded_credentials})
-        workspaces_response_json = response.json() 
-        print("JIRA workspaces:", workspaces_response_json)
-        return workspaces_response_json["values"][0]["workspaceId"]
- 
-
-    def get_base_url(self, workspace_id):
-        return f'https://api.atlassian.com/jsm/assets/workspace/{workspace_id}/v1'
+        logger.debug("Start CSBID task...")
+        self.workspace_id = super().get_workspace_id() 
+        self.base_url = super().get_base_url(self.workspace_id) 
  
 
     def run(self):
@@ -156,6 +140,7 @@ class CSBIDTask:
                                         "harvestid")   
             if len(create_record_response) == len(structure_json):
                 for index,ritem in enumerate(create_record_response):
+                    self.delete_attachemnts(ritem["id"])
                     self.upload_attachment(ritem["id"], structure_json[index])  
             else:
                 print("Something wrong in push structures, len(create_record_response) not equal len(structure_json)")
@@ -168,14 +153,11 @@ class CSBIDTask:
         print("Total allcrystalsummary from api:",len(allcrystalsummary_json))
         print("Total crystals from api:",len(crystals_json)) 
 
-        targets_json = self.get_data();
-        return targets_json
-        create_record_response = self.create_new_jira_record(targets_json["targets"]);
         return create_record_response
     
 
     def get_data(self):
-        print('Get data...') 
+        print('Get CSBID data...') 
         login_endpoint = 'https://sg.bio.anl.gov/intranet/utilities/servers/apilogin.aspx'
         braveapi_endpoint = 'https://sg.bio.anl.gov/intranet/utilities/servers/apibrave.aspx'
         
@@ -203,30 +185,26 @@ class CSBIDTask:
         response = requests.post(braveapi_endpoint, data = json_to_get_targets)
         #print(response.text)
         targets_json = response.json()
-        return targets_json
+        #return targets_json
 
         print("Get Constructs...")
         json_to_get_constructs = '{"data" : [{"apiaction" : "constructsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
         response = requests.post(braveapi_endpoint, data = json_to_get_constructs)
-        print(response.text)
         constructs_json = response.json()
-
+        
         print("Get Purified Proteins...")
         json_to_get_purifiedproteins = '{"data" : [{"apiaction" : "purifiedproteinsummary", "metadata" :"possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
         response = requests.post(braveapi_endpoint, data = json_to_get_purifiedproteins)
-        print(response.text)
         purifiedproteins_json = response.json()
-
+ 
         print("Get All Purified Proteins...")
-        json_to_get_allpurifiedproteins = '{"data" : [{"apiaction" : "allpurifiedproteinsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
-        response = requests.post(braveapi_endpoint, data = json_to_get_allpurifiedproteins)
-        print(response.text)
-        allpurifiedproteins_json = response.json()
+        json_to_get_all_purifiedproteins = '{"data" : [{"apiaction" : "allpurifiedproteinsummary", "metadata" :"possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
+        response = requests.post(braveapi_endpoint, data = json_to_get_all_purifiedproteins)
+        all_purifiedproteins_json = response.json()
 
         print("Get All Crystal Summary...")
         json_to_get_allcrystalsummary = '{"data" : [{"apiaction" : "allcrystalsummary", "metadata" : "possible apiactions: [\'targetsummary\', \'constructsummary\', \'purifiedproteinsummary\', \'allpurifiedproteinsummary\', \'allcrystalsummary\' , \'crystalsummary\']"}],"submissionid" : "' + sessionid +'"}'
         response = requests.post(braveapi_endpoint, data = json_to_get_allcrystalsummary)
-        print(response.text)
         allcrystalsummary_json = response.json()
         print("All Crystal Summary source size:", len(allcrystalsummary_json["allcrystals"]))
         
@@ -258,55 +236,75 @@ class CSBIDTask:
                 "structuresummary_json_list":structuresummary_json_list}
     
 
-    def create_new_jira_record(self, data):
 
-        for data_item in data:
-            found = self.check_jira_record_exit(data_item)
-            if not found:
-                print("not found, create new...")
-                self.push_new_record(data_item)
-
-        return None
-
-
-    def push_new_record(self, data):
-        print("Create new jira record...") 
-         
-        print("target_id: "+data["targets"][0]["targetid"])
-        attributes_data = [
+    def get_target_attributes_data(self, data):
+        return [
             {
                     "objectTypeAttributeId": "96",  # Attribute ID for Targetid
                     "objectAttributeValues": [
                         {
-                            "value": data["targets"][0]["targetid"] # Setting the value for Targetid to UNIQUEID123
+                            "value": data["targetid"].strip()  #Targetid    
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "97", #Originaltargetid
+                    "objectAttributeValues": [
+                        {
+                            "value": data["originaltargetid"].strip()  
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "491", #Parent Name
+                    "objectAttributeValues": [
+                        {
+                            "value": self.getVirusObjectID(data["speciesname"].strip()) 
+                        }
+                    ]
+            }, 
+            {
+                    "objectTypeAttributeId": "99", #Taxonid
+                    "objectAttributeValues": [
+                        {
+                            "value": data["taxonid"].strip() 
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "100", #Targetannotation , unique key
+                    "objectAttributeValues": [
+                        {
+                            "value": data["targetannotation"].strip() 
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "101", #Parentproteinseguid
+                    "objectAttributeValues": [
+                        {
+                            "value": data["parentproteinseguid"].strip()  
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "102", #Parentproteinseq
+                    "objectAttributeValues": [
+                        {
+                            "value": data["parentproteinseq"].strip()  
+                        }
+                    ]
+            },
+            {
+                    "objectTypeAttributeId": "103", #Parentdnaseq
+                    "objectAttributeValues": [
+                        {
+                            "value": data["parentdnaseq"].strip()  
                         }
                     ]
             }
         ]
 
-        create_data = {
-            "objectTypeId": "9",  # Create a "Target" object
-            "attributes": attributes_data,
-            "hasAvatar": False  # Optional avatar
-        }
-
-        base_url = f'{self.base_url}/object/create'
-        headers = {
-                    'Authorization': f'Basic {self.encoded_credentials}',
-                    'Content-Type': 'application/json'
-        }
-
-        # Perform the POST request to create a new asset record
-        create_response = requests.post(base_url, headers=headers, data=json.dumps(create_data))
-
-        # Check the response and handle accordingly
-        if create_response.status_code in [200, 201]:
-            create_results = create_response.json()
-            print("Asset creation successful:", create_results)
-            return create_results
-        else:
-            print("Failed to create asset:", create_response.status_code, create_response.text)
-            return None
     
     def get_construct_attributes_data(self, data):
         return [
@@ -671,16 +669,6 @@ class CSBIDTask:
             } 
         ]
 
-        headers = {
-            'Authorization': f'Basic {self.encoded_credentials}',
-            'Content-Type': 'application/json'
-        }
-        # IQL search query
-        iql_query = f'Targetid == "{data_item["targetid"]}" '
-        search_url = f'{self.base_url}/object/aql'
-        search_data = {
-            "qlQuery": iql_query
-        }
 
     def get_proteininventory_attributes_data(self, data):
         return [ 
@@ -1780,7 +1768,7 @@ class CSBIDTask:
         print("delete:",record_id)
 
         headers = {
-            'Authorization': f'Basic {self.encoded_credentials}',
+            'Authorization': f'Basic {super().jira_encoded_credentials}',
             'Content-Type': 'application/json'
         } 
         delete_url = f'{self.base_url}/object/{record_id}'
@@ -1798,32 +1786,121 @@ class CSBIDTask:
             return False
         
 
+    def getVirusObjectID(self, speciesname):
+        return self.virus_map[speciesname.lower().strip()]
+    
+    
+    def getTargetObjectID(self, target_id):
+        return  self.target_id_map[target_id]
+    
+
+    def setTargetIDMap(self, response_list): 
+        for item in response_list:  
+            attributes = item["attributes"]
+            for attr in attributes:
+                if attr["objectTypeAttributeId"] == "96":  #Target ID attribute
+                    key = attr["objectAttributeValues"][0]["value"].strip() 
+                    if key in self.target_id_map:
+                        print("Something wrong!! Duplicated Target ID in target_id_map ",key)
+                    else:    
+                        self.target_id_map[key] = item["id"] 
+    
+
+    def getPurProteinObjectID(self, purbatchcproprcid): 
+        try:
+            if (len(self.all_pur_protein_id_map)!=0) and (purbatchcproprcid in self.all_pur_protein_id_map):
+                return self.all_pur_protein_id_map[purbatchcproprcid]
+            #elif (len(self.pur_protein_id_map)!=0) and (purbatchcproprcid in self.pur_protein_id_map):
+            #    return self.pur_protein_id_map[purbatchcproprcid]
+            else:
+                return None
+        except:
+            return None
+        '''
+        if (len(self.pur_protein_id_map)==0) or (purbatchcproprcid not in self.pur_protein_id_map):
+            return None
+        try:
+            return self.pur_protein_id_map[purbatchcproprcid]
+        except:
+            return None
+        '''
+     
+
+    def setPurProteinIDMap(self, response_list, attribute_id):
+        try:
+            for item in response_list:  
+                attributes = item["attributes"] 
+                for attr in attributes:
+                    if attr["objectTypeAttributeId"] == attribute_id:  #Pur Protein Purbatchcproprcid attribute 326,374
+                        key = attr["objectAttributeValues"][0]["value"].strip() 
+                        if key in self.pur_protein_id_map:
+                            print("Something wrong!! Duplicated Pur protein Purbatchcproprcid in pur_protein_id_map",key)
+                        else:    
+                            self.pur_protein_id_map[key] = item["id"] 
+        except:
+            print("Erroe:setPurProteinIDMap response_list:",response_list)
+    
+
+    def setAllPurProteinIDMap(self, response_list, attribute_id):
+        try:
+            for item in response_list:  
+                attributes = item["attributes"] 
+                for attr in attributes:
+                    if attr["objectTypeAttributeId"] == attribute_id:  #Pur Protein Purbatchcproprcid attribute 326,374
+                        key = attr["objectAttributeValues"][0]["value"].strip() 
+                        if key in self.all_pur_protein_id_map:
+                            print("Something wrong!! Duplicated Pur protein Purbatchcproprcid in all_pur_protein_id_map",key)
+                        else:    
+                            self.all_pur_protein_id_map[key] = item["id"] 
+        except:
+            print("Error:setAllPurProteinIDMap response_list:",response_list)
             
 
-    '''
-    print('CSBID run task...') 
-    jira_servicedeskapi_url = 'https://taskforce5.atlassian.net/rest/servicedeskapi/assets/workspace'  
-    response = requests.get(jira_servicedeskapi_url, 
-                            headers={'Content-Type': 'application/json', 
-                                    'authorization': 'Basic '+ self.encoded_credentials})
-    workspaces_response_json = response.json()
-    print(workspaces_response_json["values"])
-    print(workspaces_response_json)
-
-
-    workspace_id = workspaces_response_json["values"][0]["workspaceId"]
-    jira_servicedeskapi_url = "https://api.atlassian.com/jsm/assets/workspace/" + workspace_id + "/v1/objectschema/list"
-    response = requests.get(jira_servicedeskapi_url, 
-                            headers={'Content-Type': 'application/json', 
-                                    'authorization': 'Basic '+ self.encoded_credentials})
-
-    print(response.json())
-
-    #update assets
-    base_url = f'https://api.atlassian.com/jsm/assets/workspace/{workspace_id}/v1'
+    def remove_purifiedproteins_from_all_purifiedproteins(self, purifiedproteins_json, all_purifiedproteins_json):
+        out=[]
+        for apitem in all_purifiedproteins_json:
+            found = False
+            for pitem in purifiedproteins_json: 
+                if apitem["purbatchcproprcid"] == pitem["purbatchcproprcid"]:
+                    found = True
+                    break
+                    #print("Found:",pitem["cloneidf"],apitem["cloneidf"])
+            if not found:
+                out.append(apitem)
+         
+        return out
     
-    return update_response.json()
-    '''
+
+    os.umask(0)
+    def opener(path, flags):
+        return os.open(path, flags, 0o777)
+    
+
+    def delete_attachemnts(self, object_id):
+        print("Get attachemnts...")
+        url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments/object/{object_id}'
+        headers = {
+            'Authorization': f'Basic {super().jira_encoded_credentials}',
+            'Content-Type': 'application/json'
+        }
+        
+        response = requests.get(url, headers=headers)
+        response_json = response.json()
+        
+        ids_to_delete=[]
+        for aitem in response_json:
+            ids_to_delete.append(aitem["id"])
+        print("ids_to_delete:",ids_to_delete)
+            
+        url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments'
+        headers = {
+            'Authorization': f'Basic {super().jira_encoded_credentials}',
+            'Content-Type': 'application/json'
+        }
+        if len(ids_to_delete)>0:
+            response = requests.delete(url, headers=headers, json={"attachmentIds":ids_to_delete, "objectId":object_id})
+            print(response)
+
 
     def upload_attachment(self, object_id, structure_json):
         file_path = os.path.dirname(os.path.abspath(__file__)) + "/temp_files/"  #current path: /srv/app/core/jira
@@ -1836,7 +1913,9 @@ class CSBIDTask:
                 if mediatypes['commonname'] == 'coordinates':
                     #print ('found coordinates')
                     coordinates = base64.b64decode(mediatypes['filedata'])
-                    with open(file_path+"structure.pdb", "w") as f:
+                    
+                    #file_path+"structure.pdb"
+                    with open("/temp_data/"+"structure.pdb", "w") as f:
                         print(coordinates, file=f)
                         file_generated = True
 
@@ -1845,7 +1924,7 @@ class CSBIDTask:
             return
 
         headers = {
-        'Authorization': f'Basic {self.encoded_credentials}',
+        'Authorization': f'Basic {super().jira_encoded_credentials}',
         'Accept': 'application/json'
         }
         credentials_url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments/object/{object_id}/credentials'
@@ -1857,7 +1936,7 @@ class CSBIDTask:
         media_base_url = credentials_data['mediaBaseUrl']
         media_jwt_token = credentials_data['mediaJwtToken']
 
-        print(client_id,media_base_url,media_jwt_token)
+        #print(client_id,media_base_url,media_jwt_token)
 
         # Step 2: Upload the file to the media server
         upload_url = f"{media_base_url}/file/binary?name={quote(filename.split('/')[-1])}"
@@ -1888,7 +1967,7 @@ class CSBIDTask:
         # Step 3: Attach the file to the asset
         attach_url = f'https://api.atlassian.com/jsm/assets/workspace/{self.workspace_id}/v1/attachments/object/{object_id}'
         attach_headers = {
-            'Authorization': f'Basic {self.encoded_credentials}',
+            'Authorization': f'Basic {super().jira_encoded_credentials}',
             'Content-Type': 'application/json'
         }
         attach_data = {
@@ -1911,3 +1990,6 @@ class CSBIDTask:
             print("Failed to attach file:", attach_response.status_code, attach_response.text)
 
 
+
+        
+        
