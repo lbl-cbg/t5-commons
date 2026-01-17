@@ -1,0 +1,5 @@
+##gff-version 3
+##sequence-region NC_045512.2 1 29903
+
+NC_045512.2	feature	mat_peptide	10055	10972	.	+	.	ID=YP_009725301.1;gene=ORF1ab;locus_tag=GU280_gp01;_note=nsp5A_3CLpro and nsp5B_3CLpro%3B main proteinase %28Mpro%29%3B mediates cleavages downstream of nsp4. 3D structure of the SARSr-CoV homolog has been determined %28Yang et al.%2C 2003%29%3B produced by both pp1a and pp1ab;product=3C-like proteinase;protein_id=YP_009725301.1;targetid=IDP52005
+NC_045512.2	feature	polypeptide_domain	10058	10354	.	+	.	ID=YP_009725301.1:betaCoV_Nsp5_Mpro;Name=betaCoV_Nsp5_Mpro;_Parent=YP_009725301.1;region_name=betaCoV_Nsp5_Mpro

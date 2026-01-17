@@ -3,4 +3,7 @@
 #!processor NCBI annotwriter
 ##sequence-region NC_003899.1 1 11675
 ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=11021
-NC_003899.1	RefSeq	mature_protein_region_of_CDS	8372	9820	.	+	.	ID=id-NP_632022.1:261..743;xParent=cds-NP_632022.1;gbkey=Prot;product=PE2 protein;protein_id=YP_913809.1
+
+NC_003899.1	feature	mat_peptide	8372	9820	.	+	.	ID=YP_913809.1;locus_tag=EEEVgp3;product=PE2 protein;protein_id=YP_913809.1
+NC_003899.1	feature	polypeptide_domain	8377	8434	.	+	.	ID=YP_913809.1:Alpha_E3_glycop;Name=Alpha_E3_glycop;_Parent=YP_913809.1;region_name=Alpha_E3_glycop
+NC_003899.1	feature	polypeptide_domain	8448	8848	.	+	.	ID=YP_913809.1:Alpha_E2_glycop;Name=Alpha_E2_glycop;_Parent=YP_913809.1;region_name=Alpha_E2_glycop
